@@ -1,0 +1,97 @@
+.EpisodesList{
+	position:absolute;
+	top:150px;
+	left:50px; /* 100px */
+	z-index:5;
+}
+
+.EpisodeListSingle{
+	position:relative;
+	height:293px; /* 220px */
+	width:1820px; /* 1720px */
+	border-bottom: 1px solid grey;
+}
+
+.EpisodeListSingleImage{	
+	display:inline-block;
+	padding:10px 15px;
+	height:200px;
+	width:356px;
+	background-repeat: no-repeat;
+    background-position:center;
+}
+
+.guiTVEpisodes-EpisodeInfo {
+	position:absolute;
+	width:1318px;
+}
+
+.guiTVEpisodes-Options {
+	position:absolute;
+	top:10px;
+	right:0px;
+}
+
+.guiTVEpisodes-Option {
+	display:inline-block;
+	background-color:grey;
+    border-radius:50%;
+    -moz-border-radius:50%;
+    -webkit-border-radius:50%;
+    padding:10px;
+    margin: 10px;
+    fill:white;
+}
+
+.guiTVEpisodes-SeriesName {
+	position:absolute;
+	top:70px;
+	left:130px;
+	font-size:48px;
+}
+
+
+.guiTVEpisodes-EpisodeTitle{
+	position:relative;
+	font-size:36px;
+	padding:5px;
+	width: 1000px
+}
+
+.guiTVEpisodes-Metadata {
+	position:relative;
+	padding:5px;
+	width: 1000px
+}
+
+.guiTVEpisodes-Overview {
+	height:98px;
+	position:relative;
+	overflow-y:hidden;
+}
+
+
+
+.guiTVEpisodes-highlightBackground {
+	background-color:rgba(70,70,70,0.85);
+}
+
+.guiTVEpisodes-MenuItem {
+	display: inline-block;
+	width:160px;
+	padding:10px;
+	border-radius:10px;
+	text-align: center;
+	background-color:rgb(77,77,77);
+	margin-right:20px;
+}
+
+
+.EpisodesAllOptions{
+	position:absolute;
+	width:860px;
+	text-align:center;
+	top:72px;
+	left:1020px;
+	z-index:5;
+}

@@ -1,0 +1,431 @@
+body {
+	padding: 0px;
+	margin: 0px;
+	border: 0px;
+ 	font-family: 'Open Sans', sans-serif;
+ 	font-size: 27px;
+ 	overflow:hidden;
+}
+
+td {
+	color: white;
+	font-size: 27px;
+}
+
+input[type="text"], input[type="password"] {
+    font-size: 1em;
+}
+
+.pageBackground{ 
+	position:absolute;
+    top:0px;
+    left:0px;
+    height:1080px;
+    width:1920px;
+    background-repeat: no-repeat;
+    background-position:center;
+    background-color:rgba(59,59,59,1);
+    background-size:contain;
+    -webkit-transition: opacity 3s ease-in-out;
+    transition: opacity 3s ease-in-out;
+}
+
+.quickFade {
+	-webkit-transition: opacity .2s ease-in-out;
+    transition: opacity .2s ease-in-out;
+}
+
+.pageBackgroundFade{
+	position:absolute;
+    top:0px;
+    left:0px;
+    height:100%;
+    width:100%;
+    background-color:rgba(10,10,10,0.8);
+}
+
+.page {
+	position: absolute;
+ 	left: 0px; top: 0px;
+   	width: 1920px; height: 1080px;
+   	color:#ffffff;	
+	text-align:left;
+    font-size:1em;
+}
+
+.guiDisplay_SeriesIndexing {
+	position:absolute;
+	bottom:440px;
+	left:850px;
+	height: 200px;
+	width: 200px;
+	background-color:rgba(0,0,0,0.8);
+	text-align:center;
+	font-size:5em;
+	padding-top: 30px;
+	border-radius: 25px;
+    border: 2px solid white;
+    -webkit-transition: all 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out;
+    z-index:10;
+}
+
+.counter {
+	position:absolute;
+	bottom:4px;
+	left:10px;	
+	font-size:1.1em;
+	color: white;
+}
+
+.offWhite {
+	color:#f9f9f9;
+}
+
+/*----------------------------------------------------------------------------------------------*/
+
+.User {
+	width: 400px;
+    height: 400px;
+    display:inline-block;
+    position:relative; 
+    margin:8px;
+    border:3px solid rgba(0,0,0,0); 
+    border-radius: 0px;
+    white-space:nowrap;
+    text-overflow:ellipsis; 
+    overflow: hidden; 
+    background-repeat: no-repeat;
+    background-position:center;
+    background-size:contain;
+    background-color: #3b3b3b;  
+
+}
+
+.Series {
+	width: 471px;
+    height: 335px;
+    display:inline-block;
+    position:relative; 
+    margin:25px;
+	border:3px solid rgba(0,0,0,0); 
+	border-radius: 0px;
+    white-space:nowrap;
+    text-overflow:ellipsis; 
+    overflow: hidden; 
+    background-repeat: no-repeat;
+    background-position:center top;
+    background-size:contain;
+    font-size:0.95em;
+}
+
+.SeriesPortrait {
+	width: 180px;  /* */
+    height: 315px; /* 265px; */
+    display:inline-block;
+    vertical-align: middle;
+    position:relative; 
+    margin-top: 0px;
+    margin-bottom: 6px;
+    margin-right: 6px;
+    margin-left: 6px;
+    border:3px solid rgba(0,0,0,0);
+    border-radius: 0px;
+    white-space:nowrap;
+    text-overflow:ellipsis; 
+    overflow: hidden; 
+    background-repeat: no-repeat;
+    background-position:center top;
+    background-size:contain;
+    font-size:0.95em;
+}
+
+.SeriesPortraitLarge {
+	width: 235px;
+    height: 398px;  /*348px */
+    display:inline-block;
+    position:relative; 
+    margin-top: 0px;
+    margin-bottom: 9px;
+    margin-right: 8px;
+    margin-left: 8px;
+    border:3px solid rgba(0,0,0,0);
+    border-radius: 0px;
+    white-space:nowrap;
+    text-overflow:ellipsis; 
+    overflow: hidden; 
+    background-repeat: no-repeat;
+    background-position:center top;
+    background-size:contain;
+    font-size:0.95em;
+}
+
+.Seasons {
+	width: 235px;
+    height: 388px;  /*348px */
+    display:inline-block;
+    position:relative; 
+    margin-top: 0px;
+    margin-bottom: 9px;
+    margin-right: 8px;
+    margin-left: 8px;
+    border:3px solid rgba(0,0,0,0);
+    border-radius: 0px;
+    white-space:nowrap;
+    text-overflow:ellipsis; 
+    overflow: hidden; 
+    background-repeat: no-repeat;
+    background-position:center top;
+    background-size:contain;
+    font-size:0.95em;
+}
+
+.MediaInfo {
+	text-align: left;
+	width: 400px;
+    height: 450px;  /*348px */
+    display:inline-block;
+    position:relative; 
+    white-space:nowrap;
+    text-overflow:ellipsis; 
+    overflow: hidden; 
+}
+
+.MoreEpisodes {
+	width: 400px;
+    height: 265px;
+    display:inline-block;
+    position:relative; 
+    margin-top: 0px;
+    margin-bottom: 9px;
+    margin-right: 8px;
+    margin-left: 8px;
+	border:3px solid rgba(0,0,0,0); 
+	border-radius: 0px;
+    white-space:nowrap;
+    text-overflow:ellipsis; 
+    overflow: hidden; 
+    background-repeat: no-repeat;
+    background-position:center top;
+    background-size:contain;
+    font-size:0.95em;
+}
+
+/*----------------------------------------------------------------------------------------------*/
+/* Overlays like user and home page screen*/
+.displayedItem-TitleContainer {	
+	position:absolute;
+	bottom:0px;
+    width:100%;
+    text-align:center;
+    padding: 5px 0px;
+    background-color:rgba(0,0,0,0.9);
+}
+
+.displayedItem-TitleContainerSeries {	
+	position:absolute;
+	bottom:0px;
+    width:100%;
+    text-align:center;
+    padding: 10px 0px;
+    background-color:rgba(0,0,0,0.9);
+}
+
+.displayedItem-SubTitle {
+	color:grey;
+	font-size:0.8em;
+}
+
+.displayedItem-ProgressBar {
+	width:100%;
+	height:10px;
+	position:absolute;
+	top:255px;
+    left:0px;
+    background-color:rgba(0,0,0,0.8);
+}
+
+.displayedItem-ProgressBarCurrent {
+	height:10px;
+	position:absolute;
+	top:255px;
+    left:0px;
+    background-color:#5AAF48;
+}
+
+.displayedItem-NumberOverlay {
+	position:absolute;
+	top:1px;
+	right:2px;
+	width:45px;
+	height:45px;
+	line-height:45px;
+	text-align:center;
+	border-radius:27px;
+	background-repeat: no-repeat;
+    background-position:center;
+    background-size:100%;
+}
+
+.displayedItem-FavouriteOverlay {
+	position:absolute;
+	top:0px;
+	left:0px;
+	width:45px;
+	height:41px;
+	margin:5px;
+	line-height:30px;
+	text-align:center;
+	background-image:url('images/favorite-45x41.png');
+	background-repeat: no-repeat;
+    background-position:center;
+    background-size:100%;
+}
+
+.Selected {
+	-webkit-transform: scale(1.15);
+	transform: scale(1.2);
+}
+
+.SelectedLarger {
+	-webkit-transform: scale(1.2);
+	transform: scale(1.25);
+}
+/*----------------------------------------------------------------------------------------------*/
+
+.bannerMenu {
+	padding-top:15px;
+	padding-bottom:10px;
+	width:100%;
+	text-align:center;
+}
+
+.bannerItem{
+	display: inline-block;
+	font-size: 1.5em;
+	color:#bababa;
+	height:60px;
+}
+
+.bannerSelection {
+	display:inline-block;
+}
+
+.bannerHamburger{
+	position:absolute;
+	left:60px;
+	top:13px;
+	display: inline-block;
+}
+
+.bannerHamburgerHidden {
+	display:none;
+}
+
+.bannerItemClock{
+	position:absolute;
+	top:24px;
+	right:60px;
+	display: inline-block;
+	font-size: 1em;
+}
+
+.bannerHamburgerPath {
+	stroke:none;
+	fill-rule:nonzero;
+	fill:white;
+	fill-opacity:1;"
+}
+
+.bannerItemPadding{
+	padding-right:60px;
+}
+
+/* ---------------------------------------------------------------------------   */
+
+.metadata-Container {
+	height:50px;
+	padding-bottom:10px
+}
+
+.metadata-Item {
+	display:inline-block;
+	padding-right:20px;
+	font-size:30px;
+	height:50px;
+    z-index:5;
+}
+
+.metadata-ItemStar {
+	display:inline-block;
+	height:50px;
+	padding-left:5px;
+}
+
+.metadata-ItemText {
+	height:50px;
+  	display: table-cell;
+ 	vertical-align: middle;
+}
+
+.metadata-ItemImageWatched {
+	width:50px;
+	background-position:center;
+    background-image:url('../images/metadata/watched-50x50.png');
+    background-repeat: no-repeat;
+}
+
+.metadata-ItemImageFavourite {
+	width:50px;
+	background-position:center;
+    background-image:url('../images/metadata/favourite-50x50.png');
+    background-repeat: no-repeat;
+}
+
+.metadata-ItemImageStarFull {
+	display:inline-block;
+	height:50px;
+	width:50px;
+	background-position:center;
+    background-image:url('../images/metadata/star-full-50x50.png');
+    background-repeat: no-repeat;
+}
+
+
+.metadata-ItemImageStarHalf {
+	display:inline-block;
+	height:50px;
+	width:50px;
+	background-position:center;
+    background-image:url('../images/metadata/star-half-50x50.png');
+    background-repeat: no-repeat;
+}
+
+.metadata-ItemImageStarEmpty {
+	display:inline-block;
+	height:50px;
+	width:50px;
+	background-position:center;
+    background-image:url('../images/metadata/star-empty-50x50.png');
+    background-repeat: no-repeat;
+}
+
+/* ---------------------------------------------------------------------------   */
+/* The below is overridden by user defined stylesheets*/
+/* BUT defaults are needed! DO NOT REMOVE*/
+/* Must be kept at bottom of this stylesheet*/
+.highlightBackground {
+	background-color:rgba(39,164,54,0.85);
+}
+
+.highlightText {
+	color:rgba(39,164,54,1);
+}
+
+.highlightBorder {
+	border:3px solid rgba(39,164,54,1);
+}
+
+.highlightHamburger {
+	fill:rgba(39,164,54,1);
+}

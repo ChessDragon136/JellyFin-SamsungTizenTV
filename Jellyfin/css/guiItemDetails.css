@@ -1,0 +1,102 @@
+.guiItemDetails-SeasonsMovieContainer {
+	position:absolute;
+	bottom:60px;
+	left:368px;
+	text-align:center;
+	width:1532px;
+}
+
+.guiItemDetails-SeasonsContainer {
+	position:absolute;
+	bottom:60px;
+	text-align:center;
+	width:100%;
+}
+
+.guiItemDetails-ItemMovieContainer {
+	position:absolute;
+	top: 30px;
+	left: 368px;
+	width: 1472px;
+	padding:40px;
+}
+
+.guiItemDetails-ItemContainer {
+	position:absolute;
+	top: 30px;
+	left: 630px;
+	width: 1200px;
+	padding:40px;
+}
+
+.guiItemDetails-MenuContainer {
+	margin: 10px 0px;
+}
+
+.guiItemDetails-MenuItem {
+	display: inline-block;
+	min-width:200px;
+	padding:10px;
+	border-radius:10px;
+	text-align: center;
+	background-color:rgb(77,77,77);
+	margin-right:20px;
+	margin-bottom:10px;
+	
+}
+.guiItemDetails-ImageMovie {
+	position:absolute;
+	top:80px;
+	left:30px;
+	width:338px;
+	height:600px;
+	background-repeat: no-repeat;
+    background-position:center;
+    background-size:cover;
+}
+
+.guiItemDetails-ImageEpisode {
+	position:absolute;
+	top:80px;
+	left:30px;
+	width:600px;
+	height:338px;
+	background-repeat: no-repeat;
+    background-position:center;
+    background-size:cover;
+}
+
+.guiItemDetails-MovieOverview {
+	max-height:190px;
+	overflow-y:hidden;
+}
+
+.guiItemDetails-Overview {
+	position:absolute;
+	top:430px;
+	left:50px;
+	width:1820px;
+	max-height:130px;
+	overflow-y:hidden;
+}
+
+
+
+.guiItemDetailsTitle {
+	font-size:48px;
+	padding-top:20px;
+}
+
+.guiItemDetailsSubTitle {
+	font-size:40px;
+	padding-bottom:10px;
+	padding-left:20px;
+}
+
+.infoContainer {
+	position:absolute;
+	left:520px;
+	bottom:50px;
+	width:1040px;
+	z-index:5
+}

@@ -1,0 +1,25 @@
+.homeCenter {
+	position:absolute;
+	left:170px;
+}
+
+.seriesCenter{
+	position:absolute;
+	left:65px;
+}
+
+.oneItemCenter {
+	position:absolute;
+	top:105px;
+	left:200px;
+}
+
+.homePagesTitles{
+	position:relative;
+	display: block;
+	text-align:left;
+	padding-left: 11px;
+	padding-bottom: 15px;
+	font-size:1.3em;
+	z-index:5;
+}

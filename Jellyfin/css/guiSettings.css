@@ -1,0 +1,67 @@
+.guiSettings_Title{
+	position:absolute;
+	font-size:1.2em;
+	top:110px;
+	left:60px;
+}
+
+.guiSettings_Settings {
+	position:absolute;
+	top:180px;
+	left: 100px;
+	max-height:851px;
+	overflow-y:hidden;
+}
+
+.guiSettingsRow {
+	width:200px;
+}
+
+.guiSettingsTD {
+	padding:20px 0px 20px 20px;
+	width:400px;
+	border-radius:10px;
+}
+
+.guiSetting_SubSelected {
+	background-color:rgba(0,0,0,0);
+}
+
+.guiSetting_UnSelected {
+	background-color:rgba(0,0,0,0);
+}
+
+.guiSettingsTVSettings {
+	padding-top:50px;
+	padding-bottom:30px;
+	font-size:1.2em;
+}
+
+.guiSettings_Overview {
+	position:absolute;
+	top:130px;
+	left:1200px;
+	width:600px;
+	height:800px;
+	border:6px solid black;
+	border-radius:20px;
+	background-color:rgba(0,0,0,0.5);
+	padding:20px;
+}
+
+#guiSettings_Overview_Title {
+	font-size:1.2em;
+	padding-bottom:20px;
+	width:520px;
+}
+
+#guiSettings_Overview_Content {
+	padding-left:10px;
+	padding-right:10px;
+	width:500px;
+}
+
+.liFix {
+	position:relative;
+	vertical-align:middle;
+}

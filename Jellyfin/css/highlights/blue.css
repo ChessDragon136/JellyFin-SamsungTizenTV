@@ -1,0 +1,16 @@
+.highlightBackground {
+	background-color:rgba(0,164,220,0.85);
+}
+
+.highlightText {
+	color:rgba(0,164,220,1);
+}
+
+.highlightBorder {
+	border:3px solid rgba(0,164,220,1);
+}
+
+
+.highlightHamburger {
+	fill:rgba(0,164,220,1);
+}

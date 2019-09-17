@@ -1,0 +1,18 @@
+.guiServerUsers-Options {
+	position:relative;
+	z-index:5;
+	padding-top:50px;
+}
+
+.guiUsersManual-Container { /*Used on guiUsersManual, not server page*/
+	position:absolute;
+	padding:30px;
+	top:100px;
+	left:200px;
+	width:740px;
+	height:300px;
+	text-align:center;
+	background-color:#303030;
+	border-radius: 25px;
+	z-index:5;
+}

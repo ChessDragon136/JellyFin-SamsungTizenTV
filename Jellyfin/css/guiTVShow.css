@@ -1,0 +1,55 @@
+.guiTVShow-SeasonsContainer {
+	position:absolute;
+	bottom:60px;
+	text-align:center;
+	width:100%;
+}
+
+.showItemContainer {
+	position:absolute;
+	top: 105px;
+	left: 420px;
+	width: 1480px;
+	padding:10px;
+}
+
+.guiTVShow-MenuContainer {
+	margin: 20px 0px;
+}
+
+.guiTVShow-MenuItem {
+	display: inline-block;
+	width:160px;
+	padding:10px;
+	border-radius:10px;
+	text-align: center;
+	background-color:rgb(77,77,77);
+	margin-right:20px;
+}
+
+.ShowImage {
+	position:absolute;
+	top:80px;
+	left:30px;
+	width:350px;
+	height:500px;
+	background-repeat: no-repeat;
+    background-position:center;
+}
+
+.ShowOverview {
+	max-height:500px;
+	overflow-y:hidden;
+}
+
+.guiTVShowTitle {
+	font-size:48px;
+}
+
+.infoContainer {
+	position:absolute;
+	left:520px;
+	bottom:50px;
+	width:1040px;
+	z-index:5
+}

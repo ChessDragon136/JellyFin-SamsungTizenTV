@@ -1,0 +1,14 @@
+.guiHome-Center {
+	position:absolute;
+	left:170px;
+}
+
+.guiHome-Title{
+	position:relative;
+	display: block;
+	text-align:left;
+	padding-left: 11px;
+	padding-bottom: 15px;
+	font-size:1.3em;
+	z-index:5;
+}
