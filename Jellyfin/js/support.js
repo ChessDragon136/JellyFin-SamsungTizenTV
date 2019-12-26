@@ -298,12 +298,12 @@ support.updateSelectedNEW = function(Array,selectedItemID,startPos,endPos,strIfS
 
 
 //Called when moving from item to banner or the like
-support.updateSelectedItem = function(Array,selectedItemID,strIfSelected,strIfNot,DivIdPrepend,action) {
+support.updateSelectedItem = function(divName,strIfSelected,strIfNot,DivIdPrepend,action) {
 	if (action == "REMOVE") {
-		document.getElementById(DivIdPrepend + Array[selectedItemID].Id).className = strIfNot;		
+		document.getElementById(DivIdPrepend + divName).className = strIfNot;		
 	} 
 	if (action == "ADD") {
-		document.getElementById(DivIdPrepend + Array[selectedItemID].Id).className = strIfSelected;		
+		document.getElementById(DivIdPrepend + divName).className = strIfSelected;		
 	}
 }
 

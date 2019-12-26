@@ -181,9 +181,9 @@ guiHomeTwoItems.updateSelectedItems = function () {
 
 guiHomeTwoItems.updateSelectedItem = function (action) {
 	if (this.selectedRow == remotecontrol.ITEM2) {
-		support.updateSelectedItem(this.ItemData2.Items,this.selectedItem2,"Series Selected highlightBorder","Series",this.divprepend2,action);
+		support.updateSelectedItem(this.ItemData2.Items[this.selectedItem2].Id,"Series Selected highlightBorder","Series",this.divprepend2,action);
 	} else {
-		support.updateSelectedItem(this.ItemData.Items,this.selectedItem,"Series Selected highlightBorder","Series",this.divprepend,action);
+		support.updateSelectedItem(this.ItemData.Items[this.selectedItem].Id,"Series Selected highlightBorder","Series",this.divprepend,action);
 	}
 }
 

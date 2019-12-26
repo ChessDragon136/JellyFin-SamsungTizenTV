@@ -150,7 +150,7 @@ guiTVEpisodes.updateSelectedItems = function () {
 }
 
 guiTVEpisodes.updateSelectedItem = function (action) {
-	support.updateSelectedItem(this.ItemData.Items,this.selectedItem,"EpisodeListSingle guiTVEpisodes-highlightBackground","EpisodeListSingle","",action);
+	support.updateSelectedItem(this.ItemData.Items[this.selectedItem].Id,"EpisodeListSingle guiTVEpisodes-highlightBackground","EpisodeListSingle","",action);
 	
 	if (action == "ADD") {
 		//Hide controls from all items bar the selected one

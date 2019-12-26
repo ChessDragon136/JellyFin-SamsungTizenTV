@@ -177,9 +177,9 @@ guiSeries.updateSelectedItems = function () {
 
 guiSeries.updateSelectedItem = function (action) {
 	if (filesystem.getUserProperty("LargerView") == true) {
-		support.updateSelectedItem(this.ItemData.Items,this.selectedItem,"SeriesPortraitLarge Selected highlightBorder","SeriesPortraitLarge","",action);
+		support.updateSelectedItem(this.ItemData.Items[this.selectedItem].Id,"SeriesPortraitLarge Selected highlightBorder","SeriesPortraitLarge","",action);
 	} else {
-		support.updateSelectedItem(this.ItemData.Items,this.selectedItem,"SeriesPortrait SelectedLarger highlightBorder","SeriesPortrait","",action);
+		support.updateSelectedItem(this.ItemData.Items[this.selectedItem].Id,"SeriesPortrait SelectedLarger highlightBorder","SeriesPortrait","",action);
 	}
 }
 

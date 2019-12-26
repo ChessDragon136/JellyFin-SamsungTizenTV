@@ -177,7 +177,7 @@ guiTVShow.updateSelectedItems = function () {
 };
 
 guiTVShow.updateSelectedItem = function (action) {
-	support.updateSelectedItem(this.ItemData.Items,this.selectedItem,"Seasons Selected highlightBorder","Seasons","",action);
+	support.updateSelectedItem(this.ItemData.Items[this.selectedItem].Id,"Seasons Selected highlightBorder","Seasons","",action);
 }
 
 
@@ -194,7 +194,7 @@ guiTVShow.updateDisplayedCastItems = function() {
 }
 
 guiTVShow.updateSelectedCastItem = function (action) {
-	support.updateSelectedItem(this.ShowData.People,this.selectedItem,"Seasons Selected highlightBorder","Seasons","",action);
+	support.updateSelectedItem(this.ShowData.People[this.selectedItem].Id,"Seasons Selected highlightBorder","Seasons","",action);
 }
 
 

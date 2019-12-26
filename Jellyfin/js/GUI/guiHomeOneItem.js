@@ -134,7 +134,7 @@ guiHomeOneItem.updateSelectedItems = function () {
 }
 
 guiHomeOneItem.updateSelectedItem = function (action) {
-	support.updateSelectedItem(this.ItemData.Items,this.selectedItem,"Series Selected highlightBorder","Series","",action);
+	support.updateSelectedItem(this.ItemData.Items[this.selectedItem].Id,"Series Selected highlightBorder","Series","",action);
 }
 
 guiHomeOneItem.updateSelectedBannerItems = function() {

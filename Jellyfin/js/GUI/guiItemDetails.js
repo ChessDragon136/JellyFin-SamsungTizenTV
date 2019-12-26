@@ -275,7 +275,7 @@ guiItemDetails.updateDisplayedMoretItems = function() {
 }
 
 guiItemDetails.updateSelectedMoreItem = function (action) {
-	support.updateSelectedItem(this.EpisodeData.Items,this.selectedItem,"MoreEpisodes Selected highlightBorder","MoreEpisodes","",action);
+	support.updateSelectedItem(this.EpisodeData.Items[this.selectedItem].Id,"MoreEpisodes Selected highlightBorder","MoreEpisodes","",action);
 }
 
 
@@ -295,7 +295,7 @@ guiItemDetails.updateDisplayedCastItems = function() {
 }
 
 guiItemDetails.updateSelectedCastItem = function (action) {
-	support.updateSelectedItem(this.ItemData.People,this.selectedItem,"Seasons Selected highlightBorder","Seasons","",action);
+	support.updateSelectedItem(this.ItemData.People[this.selectedItem].Id,"Seasons Selected highlightBorder","Seasons","",action);
 }
 
 //Menu
