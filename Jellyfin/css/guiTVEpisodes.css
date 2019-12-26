@@ -1,24 +1,25 @@
 .EpisodesList{
 	position:absolute;
-	top:150px;
+	top:180px;
 	left:50px; /* 100px */
 	z-index:5;
 }
 
 .EpisodeListSingle{
 	position:relative;
-	height:293px; /* 220px */
+	height:280px; /* 220px */
 	width:1820px; /* 1720px */
 	border-bottom: 1px solid grey;
 }
 
 .EpisodeListSingleImage{	
 	display:inline-block;
-	padding:10px 15px;
+	margin:10px 15px;
 	height:200px;
 	width:356px;
 	background-repeat: no-repeat;
     background-position:center;
+    background-size:contain;
 }
 
 .guiTVEpisodes-EpisodeInfo {
@@ -45,7 +46,7 @@
 
 .guiTVEpisodes-SeriesName {
 	position:absolute;
-	top:70px;
+	top:98px;
 	left:130px;
 	font-size:48px;
 }
@@ -91,7 +92,7 @@
 	position:absolute;
 	width:860px;
 	text-align:center;
-	top:72px;
+	top:102px;
 	left:1020px;
 	z-index:5;
 }

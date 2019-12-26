@@ -96,7 +96,7 @@ guiHomeOneItem.start = function(selectedItem,topLeftItem) {
 			
 			for (var index = 0; index < randomImageData.Items.length; index++) {
 				if (randomImageData.Items[index ].BackdropImageTags.length > 0) {
-					var imgsrc = server.getBackgroundImageURL(randomImageData.Items[index ].Id,"Backdrop",main.backdropWidth,main.backdropHeight,0,false,0,randomImageData.Items[index ].BackdropImageTags.length);
+					var imgsrc = server.getImageURL(randomImageData.Items[index ].Id,"Backdrop",randomImageData.Items[index ].BackdropImageTags.length);
 					support.fadeImage(imgsrc);
 					break;
 				}

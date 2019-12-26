@@ -14,7 +14,7 @@ xmlhttp.setRequestHeaders = function (xmlHttp) {
 xmlhttp.testConnectionSettings = function (servervar,fromFile) {	
 	xmlHttp = new XMLHttpRequest();
 	if (xmlHttp) {
-		xmlHttp.open("GET", "http://" + servervar + "/emby/System/Info/Public?format=json",false);
+		xmlHttp.open("GET", "http://" + servervar + "/jellyfin/System/Info/Public?format=json",false);
 		xmlHttp.setRequestHeader("Content-Type", 'application/json');
 		xmlHttp.onreadystatechange = function () {
 			if (xmlHttp.readyState == 4) {
@@ -24,7 +24,7 @@ xmlhttp.testConnectionSettings = function (servervar,fromFile) {
 			    		filesystem.saveServerToFile(json.Id,json.ServerName,servervar); 
 			    	}
 			       	//Set server.serverAddr!
-			    	server.setserverAddr("http://" + servervar + "/emby");
+			    	server.setserverAddr("http://" + servervar + "/jellyfin");
 			       	guiUsers.start();
 		        } else {
 		        }

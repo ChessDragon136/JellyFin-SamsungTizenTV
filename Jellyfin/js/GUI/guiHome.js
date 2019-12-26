@@ -26,11 +26,11 @@ guiHome.processHomePageMenu = function (menuItem) {
 		}
 		break;
 	case "TV":
-		var url = server.getItemTypeURL("&IncludeItemTypes=Series"+server.getTvViewQueryPart()+"&SortBy=SortName&SortOrder=Ascending&fields=ParentId,SortName,Overview,Genres,RunTimeTicks&recursive=true");
+		var url = server.getItemTypeURL("&IncludeItemTypes=Series&SortBy=SortName&SortOrder=Ascending&fields=ParentId,SortName,Overview,Genres,RunTimeTicks&recursive=true");
 		guiSeries.start("All TV",url,0,0);
 		break;	
 	case "Movies":
-		var url = server.getItemTypeURL("&IncludeItemTypes=Movie"+server.getMoviesViewQueryPart()+"&SortBy=SortName&SortOrder=Ascending&fields=ParentId,SortName,Overview,Genres,RunTimeTicks&recursive=true");
+		var url = server.getItemTypeURL("&IncludeItemTypes=Movie&SortBy=SortName&SortOrder=Ascending&fields=ParentId,SortName,Overview,Genres,RunTimeTicks&recursive=true");
 		guiSeries.start("All Movies",url,0,0);
 		break;
 	/*
@@ -98,11 +98,11 @@ guiHome.initUserViewsURL = function() {
 	this.ContinueWatching = server.getserverAddr() + "/Users/"+server.getUserID()+"/Items?SortBy=DatePlayed&SortOrder=Descending&MediaTypes=Video&Filters=IsResumable&Limit=10&Recursive=true&Fields=PrimaryImageAspectRatio,BasicSyncInfo&CollapseBoxSetItems=false&ExcludeLocationTypes=Virtual&ImageTypeLimit=1&EnableImageTypes=Primary,Backdrop,Banner,Thumb&EnableTotalRecordCount=false";
 	this.TVNextUp = server.getserverAddr() + "/Shows/NextUp?format=json&UserId="+server.getUserID()+"&IncludeItemTypes=Episode&ExcludeLocationTypes=Virtual&Limit=24&Fields=PrimaryImageAspectRatio,SeriesInfo,DateCreated,SyncInfo,SortName&ImageTypeLimit=1&EnableImageTypes=Primary,Backdrop,Banner,Thumb&EnableTotalRecordCount=false";
 	this.Favourites = server.getItemTypeURL("&SortBy=SortName&SortOrder=Ascending&Filters=IsFavorite&fields=SortName&recursive=true");
-	this.FavouriteMovies = server.getserverAddr() + "/Users/"+server.getUserID()+"/Items?format=json&SortBy=SortName&SortOrder=Ascending&IncludeItemTypes=Movie"+server.getMoviesViewQueryPart()+"&Filters=IsFavorite&Limit=10&Recursive=true&Fields=PrimaryImageAspectRatio,SyncInfo&CollapseBoxSetItems=false&ExcludeLocationTypes=Virtual";
-	this.FavouriteSeries = server.getserverAddr() + "/Users/"+server.getUserID()+"/Items?format=json&SortBy=SortName&SortOrder=Ascending&IncludeItemTypes=Series"+server.getTvViewQueryPart()+"&Filters=IsFavorite&Limit=10&Recursive=true&Fields=PrimaryImageAspectRatio,SyncInfo&CollapseBoxSetItems=false&ExcludeLocationTypes=Virtual";
+	this.FavouriteMovies = server.getserverAddr() + "/Users/"+server.getUserID()+"/Items?format=json&SortBy=SortName&SortOrder=Ascending&IncludeItemTypes=Movie&Filters=IsFavorite&Limit=10&Recursive=true&Fields=PrimaryImageAspectRatio,SyncInfo&CollapseBoxSetItems=false&ExcludeLocationTypes=Virtual";
+	this.FavouriteSeries = server.getserverAddr() + "/Users/"+server.getUserID()+"/Items?format=json&SortBy=SortName&SortOrder=Ascending&IncludeItemTypes=Series&Filters=IsFavorite&Limit=10&Recursive=true&Fields=PrimaryImageAspectRatio,SyncInfo&CollapseBoxSetItems=false&ExcludeLocationTypes=Virtual";
 	this.FavouriteEpisodes = server.getserverAddr() + "/Users/"+server.getUserID()+"/Items?format=json&SortBy=SortName&SortOrder=Ascending&IncludeItemTypes=Episode&Filters=IsFavorite&Limit=10&Recursive=true&Fields=PrimaryImageAspectRatio,SyncInfo&CollapseBoxSetItems=false&ExcludeLocationTypes=Virtual";
 	this.SuggestedMovies = server.getCustomURL("/Movies/Recommendations?format=json&userId="+server.getUserID()+"&categoryLimit=2&ItemLimit=6&Fields=PrimaryImageAspectRatio,MediaSourceCount,SyncInfo&ImageTypeLimit=1&EnableImageTypes=Primary,Backdrop,Banner,Thumb");
 	this.MediaFolders = server.getItemTypeURL("&SortBy=SortName&SortOrder=Ascending&CollapseBoxSetItems=false&fields=SortName");
 	this.LatestTV = server.getCustomURL("/Users/" + server.getUserID() + "/Items/Latest?format=json&IncludeItemTypes=Episode&IsFolder=false&fields=SortName,Overview,Genres,RunTimeTicks");
-	this.LatestMovies = server.getCustomURL("/Users/" + server.getUserID() + "/Items/Latest?format=json&IncludeItemTypes=Movie"+server.getMoviesViewQueryPart()+"&IsFolder=false&fields=ParentId,SortName,Overview,Genres,RunTimeTicks");
+	this.LatestMovies = server.getCustomURL("/Users/" + server.getUserID() + "/Items/Latest?format=json&IncludeItemTypes=Movie&IsFolder=false&fields=ParentId,SortName,Overview,Genres,RunTimeTicks");
 }

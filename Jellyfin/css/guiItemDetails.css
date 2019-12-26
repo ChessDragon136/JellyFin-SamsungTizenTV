@@ -16,8 +16,8 @@
 .guiItemDetails-ItemMovieContainer {
 	position:absolute;
 	top: 30px;
-	left: 368px;
-	width: 1472px;
+	left: 620px;
+	width: 1215px;
 	padding:40px;
 }
 
@@ -30,7 +30,18 @@
 }
 
 .guiItemDetails-MenuContainer {
-	margin: 10px 0px;
+	position:absolute;
+	top: 430px;
+	text-align: center;
+	width:100%;
+	left:0;
+  	right:0;
+  	margin-left: auto;
+  	margin-right: auto;
+}
+
+.guiItemDetails-MenuMovieContainer {
+	margin: 10px auto;
 }
 
 .guiItemDetails-MenuItem {
@@ -46,10 +57,10 @@
 }
 .guiItemDetails-ImageMovie {
 	position:absolute;
-	top:80px;
+	top:120px;
 	left:30px;
-	width:338px;
-	height:600px;
+	width:600px;
+	height:900px;
 	background-repeat: no-repeat;
     background-position:center;
     background-size:cover;
@@ -72,10 +83,6 @@
 }
 
 .guiItemDetails-Overview {
-	position:absolute;
-	top:430px;
-	left:50px;
-	width:1820px;
 	max-height:130px;
 	overflow-y:hidden;
 }

@@ -191,26 +191,6 @@ input[type="text"], input[type="password"] {
     overflow: hidden; 
 }
 
-.MoreEpisodes {
-	width: 400px;
-    height: 265px;
-    display:inline-block;
-    position:relative; 
-    margin-top: 0px;
-    margin-bottom: 9px;
-    margin-right: 8px;
-    margin-left: 8px;
-	border:3px solid rgba(0,0,0,0); 
-	border-radius: 0px;
-    white-space:nowrap;
-    text-overflow:ellipsis; 
-    overflow: hidden; 
-    background-repeat: no-repeat;
-    background-position:center top;
-    background-size:contain;
-    font-size:0.95em;
-}
-
 /*----------------------------------------------------------------------------------------------*/
 /* Overlays like user and home page screen*/
 .displayedItem-TitleContainer {	
@@ -295,9 +275,11 @@ input[type="text"], input[type="password"] {
 
 .bannerMenu {
 	padding-top:15px;
-	padding-bottom:10px;
+	padding-bottom:0px;
 	width:100%;
 	text-align:center;
+	background-color: rgba(47, 47, 47, 0.72);
+	height:60px;
 }
 
 .bannerItem{

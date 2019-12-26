@@ -38,7 +38,7 @@ guiMainMenu.start = function() {
 	
 	//User Image
 	if (UserData.PrimaryImageTag) {
-		var imgsrc = server.getImageURL(UserData.Id,"UsersPrimary",70,70,0,false,0);
+		var imgsrc = server.getImageURL(UserData.Id,"UsersPrimary");
 		document.getElementById("menuUserImage").style.backgroundImage = "url(" + imgsrc + ")";	
 	} else {
 		document.getElementById("menuUserImage").style.backgroundImage = "url(images/menu/User-70x70.png)";

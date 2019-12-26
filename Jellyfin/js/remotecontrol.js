@@ -73,6 +73,9 @@ remotecontrol.keyDown = function() {
 	case "guiTVEpisodes": 
 		guiTVEpisodes.keyDown();
 		break;	
+	case "guiTVEpisode": 
+		guiTVEpisode.keyDown();
+		break;			
 	case "videoPlayer":
 		player.keyDown();
 		break;

@@ -62,7 +62,7 @@ guiTVEpisodes.start = function(title,url,selectedItem,topLeftItem) {
 		
 		//Set backdrop
 		if (this.ItemData.Items[0].ParentBackdropImageTags){
-			var imgsrc = server.getBackgroundImageURL(this.ItemData.Items[0].ParentBackdropItemId,"Backdrop",main.backdropWidth,main.backdropHeight,0,false,0,this.ItemData.Items[0].ParentBackdropImageTags.length);
+			var imgsrc = server.getImageURL(this.ItemData.Items[0].ParentBackdropItemId,"Backdrop",this.ItemData.Items[0].ParentBackdropImageTags.length);
 			support.fadeImage(imgsrc);
 		}
 		
@@ -107,7 +107,7 @@ guiTVEpisodes.updateDisplayedItems = function() {
 		htmlToAdd += "<div id=" + this.ItemData.Items[index].Id + " class='EpisodeListSingle'>";
 		
 		if (this.ItemData.Items[index].ImageTags.Primary) {			
-			var imgsrc = server.getImageURL(this.ItemData.Items[index].Id,"Primary",356,200,0,false,0);
+			var imgsrc = server.getImageURL(this.ItemData.Items[index].Id,"Primary");
 			htmlToAdd += "<span class='EpisodeListSingleImage' style=background-image:url(" +imgsrc+ ")></span>";
 		} else {
 			htmlToAdd += "<span class='EpisodeListSingleImage'></span>";

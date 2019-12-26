@@ -301,7 +301,8 @@ support.updateSelectedNEW = function(Array,selectedItemID,startPos,endPos,strIfS
 support.updateSelectedItem = function(Array,selectedItemID,strIfSelected,strIfNot,DivIdPrepend,action) {
 	if (action == "REMOVE") {
 		document.getElementById(DivIdPrepend + Array[selectedItemID].Id).className = strIfNot;		
-	} if (action == "ADD") {
+	} 
+	if (action == "ADD") {
 		document.getElementById(DivIdPrepend + Array[selectedItemID].Id).className = strIfSelected;		
 	}
 }
@@ -370,22 +371,22 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 	var htmlToAdd = "";	
 	for (var index = startPos; index < endPos; index++) {
 		if (isResume == true) {
-			progress = Math.round((main.posterWidth / 100) * Math.round(Items[index].UserData.PlayedPercentage));
+			progress = Math.round(Items[index].UserData.PlayedPercentage);
 			//Calculate Width of Progress Bar
 			if (Items[index].Type == "Episode") {
 				var title = this.getNameFormat(Items[index].SeriesName, Items[index].ParentIndexNumber, Items[index].Name, Items[index].IndexNumber);
 				var imgsrc = "";
 				if (Items[index].ParentThumbItemId) {
-					imgsrc = server.getImageURL(Items[index].SeriesId,"Thumb",main.posterWidth,main.posterHeight,0,false);
-				} else if (Items[index].ParentBackdropImageTags.length > 0) {	
-					imgsrc = server.getImageURL(Items[index].ParentBackdropItemId,"Backdrop",main.posterWidth,main.posterHeight,0,false);
+					imgsrc = server.getImageURL(Items[index].SeriesId,"Thumb");
+				} else if (Items[index].ParentBackdropImageTags !== undefined && Items[index].ParentBackdropImageTags.length > 0) {	
+					imgsrc = server.getImageURL(Items[index].ParentBackdropItemId,"Backdrop",Items[index].ParentBackdropImageTags.length);
 				} else if (Items[index].ImageTags.Primary) {	
-					imgsrc = server.getImageURL(Items[index].Id,"Primary",main.posterWidth,main.posterHeight,0,false);
+					imgsrc = server.getImageURL(Items[index].Id,"Primary");
 				} else {
 					imgsrc = "images/collection.png";
 				}
 				//Add watched and favourite overlays.
-				htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style='background-image:url(" +imgsrc+ ");background-size:contain'><div class=displayedItem-ProgressBar></div><div class=displayedItem-ProgressBarCurrent style='width:"+progress+"px;'></div>";
+				htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style='background-image:url(" +imgsrc+ ");background-size:contain'><div class=displayedItem-ProgressBar></div><div class=displayedItem-ProgressBarCurrent style='width:"+progress+"%;'></div>";
 				if (Items[index].UserData.Played) {
 					htmlToAdd += "<div class='displayedItem-NumberOverlay highlightBackground'>&#10003</div>";	
 				}
@@ -397,16 +398,16 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 			} else {
 				var title = Items[index].Name;
 				if (Items[index].ImageTags.Thumb) {		
-					var imgsrc = server.getImageURL(Items[index].Id,"Thumb",main.posterWidth,main.posterHeight,Items[index].UserData.PlayCount,Items[index].UserData.Played);
-					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")><div class=displayedItem-ProgressBar></div><div class=displayedItem-ProgressBarCurrent style='width:"+progress+"px;'></div>";	
+					var imgsrc = server.getImageURL(Items[index].Id,"Thumb");
+					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")><div class=displayedItem-ProgressBar></div><div class=displayedItem-ProgressBarCurrent style='width:"+progress+"%;'></div>";	
 				} else if (Items[index].BackdropImageTags.length > 0) {	
-					var imgsrc = server.getImageURL(Items[index].Id,"Backdrop",main.posterWidth,main.posterHeight,Items[index].UserData.PlayCount,Items[index].UserData.Played);
-					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")><div class=displayedItem-ProgressBar></div><div class=displayedItem-ProgressBarCurrent style='width:"+progress+"px;'></div>";	
+					var imgsrc = server.getImageURL(Items[index].Id,"Backdrop".Items[index].BackdropImageTags.length);
+					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")><div class=displayedItem-ProgressBar></div><div class=displayedItem-ProgressBarCurrent style='width:"+progress+"%;'></div>";	
 				} else if (Items[index].ImageTags.Primary) {		
-					var imgsrc = server.getImageURL(Items[index].Id,"Primary",main.posterWidth,main.posterHeight,0,false,0);
-					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")><div class=displayedItem-ProgressBar></div><div class=displayedItem-ProgressBarCurrent style='width:"+progress+"px;'></div>";	
+					var imgsrc = server.getImageURL(Items[index].Id,"Primary");
+					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")><div class=displayedItem-ProgressBar></div><div class=displayedItem-ProgressBarCurrent style='width:"+progress+"%;'></div>";	
 				} else {
-					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(images/collection.png)><div class=displayedItem-ProgressBar></div><div class=displayedItem-ProgressBarCurrent style='width:"+progress+"px;'></div>";
+					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(images/collection.png)><div class=displayedItem-ProgressBar></div><div class=displayedItem-ProgressBarCurrent style='width:"+progress+"%;'></div>";
 				}
 				htmlToAdd += "<div class=displayedItem-TitleContainer>" + title +"</div></div>";
 			}			
@@ -416,20 +417,20 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 				var title = Items[index].Name;
 				if (showBackdrop == true) {
 					if (Items[index].ImageTags.Thumb) {		
-						var imgsrc = server.getImageURL(Items[index].Id,"Thumb",main.posterWidth,main.posterHeight,0,false,0);
+						var imgsrc = server.getImageURL(Items[index].Id,"Thumb");
 						htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style='background-image:url(" +imgsrc+ ")'>";
 					} else if (Items[index].BackdropImageTags.length > 0) {
-						var imgsrc = server.getBackgroundImageURL(Items[index].Id,"Backdrop",main.posterWidth,main.posterHeight,0,false,0,Items[index].BackdropImageTags.length);
+						var imgsrc = server.getImageURL(Items[index].Id,"Backdrop",Items[index].BackdropImageTags.length);
 						htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style='background-image:url(" +imgsrc+ ")'>";
 					} else if (Items[index].ImageTags.Primary) {		
-						var imgsrc = server.getImageURL(Items[index].Id,"Primary",main.posterWidth,main.posterHeight,0,false,0);
+						var imgsrc = server.getImageURL(Items[index].Id,"Primary");
 						htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style='background-image:url(" +imgsrc+ ")'>";
 					} else {
 						htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style='background-image:rgba(0,0,0,0.5)'>";				
 					}
 				} else {
 					if (Items[index].ImageTags.Primary) {
-						var imgsrc = (filesystem.getUserProperty("LargerView") == true) ? server.getImageURL(Items[index].Id,"Primary",main.seriesPosterLargeWidth,main.seriesPosterLargeHeight,0,false,0) : server.getImageURL(Items[index].Id,"Primary",main.seriesPosterWidth,main.seriesPosterHeight,0,false,0); 
+						var imgsrc = (filesystem.getUserProperty("LargerView") == true) ? server.getImageURL(Items[index].Id,"Primary",main.seriesPosterLargeWidth,main.seriesPosterLargeHeight) : server.getImageURL(Items[index].Id,"Primary",main.seriesPosterWidth,main.seriesPosterHeight); 
 						htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style='background-image:url(" +imgsrc+ ")'>";
 					} else {
 						htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style='background-image:rgba(0,0,0,0.5)'>";				
@@ -450,40 +451,41 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 			} else if (Items[index].Type == "Season") {
 				var title = Items[index].Name;
 				if (Items[index].ImageTags.Primary) {			
-					var imgsrc = server.getImageURL(Items[index].Id,"Primary",main.seriesPosterLargeWidth,main.seriesPosterLargeHeight,0,false,0);
+					var imgsrc = server.getImageURL(Items[index].Id,"Primary",main.seriesPosterLargeWidth,main.seriesPosterLargeHeight);
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style='background-image:url(" +imgsrc+ ")'>";	
 				} else {
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style='background-color:rgba(0,0,0,0.5)'>";
 				}
 				htmlToAdd += "<div class=displayedItem-TitleContainerSeries>"+ title + "</div></div>";
 			//----------------------------------------------------------------------------------------------
-			} else if (Items[index].Type == "Episode") {
+			} else if (Items[index].Type == "Episode") {			
 				if (showEpisodeImage) {
 					var title = Items[index].IndexNumber + ". " + Items[index].Name;				
 					var imageData = "";	
 					if (Items[index].ImageTags.Primary) {	
-						var imgsrc = server.getImageURL(Items[index].Id,"Primary",main.posterWidth,main.posterHeight,0,Items[index].UserData.Played,0);	
+						var imgsrc = server.getImageURL(Items[index].Id,"Primary");	
 						imageData = "'background-image:url(" +imgsrc+ ")'";
 					} else {
 						imageData = "background-color:rgba(0,0,0,0.5)";
 					}
 				} else {
+
 					var title = this.getNameFormat(Items[index].SeriesName, Items[index].ParentIndexNumber, Items[index].Name, Items[index].IndexNumber);				
 					var imageData = "";	
 					if (Items[index].ParentThumbItemId) {	
-						var imgsrc = server.getImageURL(Items[index].SeriesId,"Thumb",main.posterWidth,main.posterHeight,0,Items[index].UserData.Played,0);
+						var imgsrc = server.getImageURL(Items[index].SeriesId,"Thumb");
 						imageData = "'background-image:url(" +imgsrc+ ")'";
-					} else if (Items[index].ParentBackdropImageTags.length > 0) {	
-						var imgsrc = server.getImageURL(Items[index].ParentBackdropItemId,"Backdrop",main.posterWidth,main.posterHeight,0,false);
+					} else if (Items[index].ParentBackdropImageTags !== undefined && Items[index].ParentBackdropImageTags.length > 0) {	
+						var imgsrc = server.getImageURL(Items[index].ParentBackdropItemId,"Backdrop",Items[index].ParentBackdropImageTags.length);
 						imageData = "'background-image:url(" +imgsrc+ ")'";
 					} else 	if (Items[index].ImageTags.Primary) {	
-						var imgsrc = server.getImageURL(Items[index].Id,"Primary",main.posterWidth,main.posterHeight,0,Items[index].UserData.Played,0);	
+						var imgsrc = server.getImageURL(Items[index].Id,"Primary");	
 						imageData = "'background-image:url(" +imgsrc+ ")'";
 					} else {
 						imageData = "background-color:rgba(0,0,0,0.5)";
 					}
 				}
-
+				
 				htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style="+imageData+">";
 				//Add overlays.
 				if (Items[index].UserData.Played) {
@@ -497,7 +499,7 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 			} else if (Items[index].Type == "Actor" || Items[index].Type == "GuestStar") {
 				var title = Items[index].Name;
 				if (Items[index].PrimaryImageTag) {			
-					var imgsrc = server.getImageURL(Items[index].Id,"Primary",main.seriesPosterLargeWidth,main.seriesPosterLargeHeight,0,false,0);
+					var imgsrc = server.getImageURL(Items[index].Id,"Primary",main.seriesPosterLargeWidth,main.seriesPosterLargeHeight);
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")>";	
 				} else {
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-color:rgba(0,0,0,0.5);>";
@@ -518,7 +520,7 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 					break;
 				}
 				if (Items[index].ImageTags.Primary) {
-					var imgsrc = (filesystem.getUserProperty("LargerView") == true) ? server.getImageURL(Items[index].Id,"Primary",main.seriesPosterLargeWidth,main.seriesPosterLargeHeight,0,false,0) : server.getImageURL(Items[index].Id,"Primary",main.seriesPosterWidth,main.seriesPosterHeight,0,false,0); 
+					var imgsrc = (filesystem.getUserProperty("LargerView") == true) ? server.getImageURL(Items[index].Id,"Primary",main.seriesPosterLargeWidth,main.seriesPosterLargeHeight) : server.getImageURL(Items[index].Id,"Primary",main.seriesPosterWidth,main.seriesPosterHeight); 
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")><div class='displayedItem-NumberOverlay highlightBackground'>"+itemCount+"</div>";	
 					
 				} else {
@@ -545,7 +547,7 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 				var title = Items[index].Name + "<br>" + support.AirDate(Items[index].StartDate,"Recording");		
 				
 				if (Items[index].ImageTags.Primary) {			
-					var imgsrc = server.getImageURL(Items[index].Id,"Primary",main.posterWidth,main.posterHeight,0,false,0);
+					var imgsrc = server.getImageURL(Items[index].Id,"Primary",0,false,0);
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")><div class=displayedItem-TitleContainer>"+ title + "</div>";	
 				} else {
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style='background-position:center;background-color:rgba(63,81,181,0.8);background-image:url(images/Live-TV-108x98.png)')><div class=displayedItem-TitleContainer>"+ title + "</div>";
@@ -564,11 +566,11 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 			} else if (Items[index].Type == "Channel") {
 				var title = Items[index].Name;	 
 				if (Items[index].BackdropImageTags.length > 0) {			
-					var imgsrc = server.getBackgroundImageURL(Items[index].Id,"Backdrop",main.posterWidth,main.posterHeight,0,false,0,Items[index].BackdropImageTags.length);
+					var imgsrc = server.getBackgroundImageURL(Items[index].Id,"Backdrop",0,false,0,Items[index].BackdropImageTags.length);
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")><div class=displayedItem-TitleContainer>"+ title + "</div></div>";	
 				}
 				else if (Items[index].ImageTags.Thumb) {		
-					var imgsrc = server.getImageURL(Items[index].Id,"Thumb",main.posterWidth,main.posterHeight,0,false,0);
+					var imgsrc = server.getImageURL(Items[index].Id,"Thumb",0,false,0);
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")><div class=displayedItem-TitleContainer>"+ title + "</div></div>";
 				}
 				else {
@@ -578,7 +580,7 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 			} else if (Items[index].Type == "ChannelFolderItem") {
 				var title = Items[index].Name;		
 				if (Items[index].ImageTags.Primary) {			
-					var imgsrc = server.getImageURL(Items[index].Id,"Primary",main.posterWidth,main.posterHeight,0,false,0);
+					var imgsrc = server.getImageURL(Items[index].Id,"Primary",0,false,0);
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")><div class=displayedItem-TitleContainer>"+ title + "</div></div>";	
 				} else {
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-color:rgba(0,0,0,0.5);background-image:url(images/EmptyFolder-122x98.png)><div class=displayedItem-TitleContainer>"+ title + "</div></div>";
@@ -587,7 +589,7 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 			} else if (Items[index].Type == "ChannelVideoItem") {
 				var title = Items[index].Name;		
 				if (Items[index].ImageTags.Primary) {			
-					var imgsrc = server.getImageURL(Items[index].Id,"Primary",main.posterWidth,main.posterHeight,0,false,0);
+					var imgsrc = server.getImageURL(Items[index].Id,"Primary",0,false,0);
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")><div class=displayedItem-TitleContainer>"+ title + "</div></div>";	
 				} else {
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-color:rgba(0,0,0,0.5);><div class=displayedItem-TitleContainer>"+ title + "</div></div>";
@@ -596,13 +598,13 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 			} else if (Items[index].Type == "Playlist" || Items[index].Type == "CollectionFolder" ) {
 				var title = Items[index].Name;	
 				if (Items[index].ImageTags.Primary) {			
-					var imgsrc = server.getImageURL(Items[index].Id,"Primary",main.posterWidth,main.posterHeight,0,false,0);
+					var imgsrc = server.getImageURL(Items[index].Id,"Primary",0,false,0);
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")><div class=displayedItem-TitleContainer>"+ title + "</div></div>";	
 				} else if (Items[index].ImageTags.Thumb) {			
-					var imgsrc = server.getImageURL(Items[index].Id,"Thumb",main.posterWidth,main.posterHeight,0,false,0);
+					var imgsrc = server.getImageURL(Items[index].Id,"Thumb",0,false,0);
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")><div class=displayedItem-TitleContainer>"+ title + "</div></div>";	
 				} else if (Items[index].BackdropImageTags.length > 0) {			
-					var imgsrc = server.getBackgroundImageURL(Items[index].Id,"Backdrop",main.posterWidth,main.posterHeight,0,false,0,Items[index].BackdropImageTags.length);
+					var imgsrc = server.getBackgroundImageURL(Items[index].Id,"Backdrop",0,false,0,Items[index].BackdropImageTags.length);
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")><div class=displayedItem-TitleContainer>"+ title + "</div></div>";	
 				} else {
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-color:rgba(0,0,0,0.5);><div class=displayedItem-TitleContainer>"+ title + "</div></div>";
@@ -611,7 +613,7 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 			}  else if (Items[index].Type == "Photo") {
 				var title = Items[index].Name;		
 				if (Items[index].ImageTags.Primary) {			
-					var imgsrc = server.getImageURL(Items[index].Id,"Primary",main.posterWidth,main.posterHeight,0,false,0);
+					var imgsrc = server.getImageURL(Items[index].Id,"Primary",0,false,0);
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")><div class=displayedItem-TitleContainer></div></div>";	
 				} else {
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-color:rgba(0,0,0,0.5);><div class=displayedItem-TitleContainer>"+ title + "</div></div>";
@@ -620,10 +622,10 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 			}  else if (Items[index].Type == "Folder") {
 				var title = Items[index].Name;
 				if (Items[index].ImageTags.Thumb) {		
-					var imgsrc = server.getImageURL(Items[index].Id,"Thumb",main.posterWidth,main.posterHeight,0,false,0);
+					var imgsrc = server.getImageURL(Items[index].Id,"Thumb",0,false,0);
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")><div class=displayedItem-TitleContainer>"+ title + "</div></div>";
 				} else if (Items[index].ImageTags.Primary) {			
-					var imgsrc = server.getImageURL(Items[index].Id,"Primary",main.posterWidth,main.posterHeight,0,false,0);
+					var imgsrc = server.getImageURL(Items[index].Id,"Primary",0,false,0);
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")><div class=displayedItem-TitleContainer>"+ title + "</div></div>";	
 				} else {
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-color:rgba(0,0,0,0.5);background-image:url(images/EmptyFolder-122x98.png)><div class=displayedItem-TitleContainer>"+ title + "</div></div>";
@@ -632,10 +634,10 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 			}  else if (Items[index].Type == "PhotoAlbum") {
 				var title = Items[index].Name;		
 				if (Items[index].ImageTags.Thumb) {		
-					var imgsrc = server.getImageURL(Items[index].Id,"Thumb",main.posterWidth,main.posterHeight,0,false,0);
+					var imgsrc = server.getImageURL(Items[index].Id,"Thumb",0,false,0);
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")><div class=displayedItem-TitleContainer>"+ title + "</div></div>";
 				} else if (Items[index].ImageTags.Primary) {			
-					var imgsrc = server.getImageURL(Items[index].Id,"Primary",main.posterWidth,main.posterHeight,0,false,0);
+					var imgsrc = server.getImageURL(Items[index].Id,"Primary",0,false,0);
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")><div class=displayedItem-TitleContainer>"+ title + "</div></div>";	
 				} else {
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-color:rgba(0,0,0,0.5);><div class=displayedItem-TitleContainer>"+ title + "</div></div>";
@@ -644,13 +646,13 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 			} else if (Items[index].Type == "Video") {
 				var title = Items[index].Name;	
 				if (Items[index].ImageTags.Primary) {			
-					var imgsrc = server.getImageURL(Items[index].Id,"Primary",main.posterWidth,main.posterHeight,0,false,0);
+					var imgsrc = server.getImageURL(Items[index].Id,"Primary",0,false,0);
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")><div class=displayedItem-TitleContainer>"+ title + "</div></div>";	
 				} else if (Items[index].ImageTags.Thumb) {		
-					var imgsrc = server.getImageURL(Items[index].Id,"Thumb",main.posterWidth,main.posterHeight,0,false,0);
+					var imgsrc = server.getImageURL(Items[index].Id,"Thumb",0,false,0);
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")><div class=displayedItem-TitleContainer>"+ title + "</div></div>";
 				} else if (Items[index].BackdropImageTags.length > 0) {			
-					var imgsrc = server.getBackgroundImageURL(Items[index].Id,"Backdrop",main.posterWidth,main.posterHeight,0,false,0,Items[index].BackdropImageTags.length);
+					var imgsrc = server.getBackgroundImageURL(Items[index].Id,"Backdrop",0,false,0,Items[index].BackdropImageTags.length);
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")><div class=displayedItem-TitleContainer>"+ title + "</div></div>";	
 				} else {
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-color:rgba(0,0,0,0.5);><div class=displayedItem-TitleContainer>"+ title + "</div></div>";
@@ -661,10 +663,10 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 				logger.log("Unhandled Item type: "+Items[index].Type)
 				var title = Items[index].Name;		
 				if (Items[index].ImageTags.Thumb) {		
-					var imgsrc = server.getImageURL(Items[index].Id,"Thumb",main.posterWidth,main.posterHeight,0,false,0);
+					var imgsrc = server.getImageURL(Items[index].Id,"Thumb");
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")>";
 				} else if (Items[index].BackdropImageTags.length > 0) {			
-					var imgsrc = server.getBackgroundImageURL(Items[index].Id,"Backdrop",main.posterWidth,main.posterHeight,0,false,0,Items[index].BackdropImageTags.length);
+					var imgsrc = server.getImageURL(Items[index].Id,"Backdrop",Items[index].BackdropImageTags.length);
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")>";	
 				} else {
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-color:rgba(0,0,0,0.5);>";
@@ -766,7 +768,7 @@ support.processSelectedItem = function(page,SelectedItem,startParams,selectedIte
 			break;	
 		case "Episode":
 			var url = server.getItemInfoURL(SelectedItem.Id,null);
-			guiItemDetails.start(url,0,0);
+			guiTVEpisode.start(url,0,0);
 			break;
 		case "Genre":
 			var url = server.getItemTypeURL("&SortBy=SortName&SortOrder=Ascending&IncludeItemTypes="+genreType+"&Recursive=true&CollapseBoxSetItems=false&fields=ParentId,SortName,Overview,RunTimeTicks&Genres=" + SelectedItem.Name);

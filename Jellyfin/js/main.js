@@ -9,19 +9,16 @@ var main =
 	height : 1080,
 	backdropWidth : 1920,
 	backdropHeight : 1080,
-	posterWidth : 473,
-	posterHeight : 267,
-	seriesPosterWidth : 180,
-	seriesPosterHeight : 270,
-	seriesPosterLargeWidth : 235,
-	seriesPosterLargeHeight : 350,
-			
+
+	//Enable . Disable functions
 	enableMusic : false,
 	enableLiveTV : false,
 	enableCollections : false,
 	enableChannels : false,
 	enablePlaylists : false,
-	enableImageCache : true
+	
+	//Test Server - Really saves time not typing this in - set to NULL for real production!
+	testServer : "192.168.1.130:8096"
 };
 
 main.isMusicEnabled = function() {
@@ -44,16 +41,16 @@ main.isPlaylistsEnabled = function() {
 	return this.enablePlaylists;
 };
 
-main.isImageCaching = function() {
-	return this.enableImageCache;
-};
-
 main.getVersion = function() {
 	return this.version;
 }
 
 main.getDebugLevel = function() {
 	return this.debugLevel;
+}
+
+main.getTestServer = function() {
+	return this.testServer;
 }
 
 
@@ -89,12 +86,6 @@ window.onload = function () {
         fileJson = filesystem.getConfigJSON();	 	
     }
     
-    //Load ImageCache - Not Required! See filesystem.js
-    //if (main.isImageCaching()) {
-    //	filesystem.loadimagecache();
-    //}
-    
-    
     //Check if Server exists
     if (fileJson.Servers.length > 1) {
     	//If no default show user Servers page (Can set default on that page)
@@ -119,7 +110,12 @@ window.onload = function () {
     	xmlhttp.testConnectionSettings(fileJson.Servers[0].Path,true);
     } else {
     	//No Server Defined - Load GuiPage_IP
-    	logger.log("No server defined. Loading the new server page.");
-    	guiServerNew.start();    	
+    	if (main.getTestServer() != null) {
+    		logger.log("No server defined. Using Test Server.");
+    		xmlhttp.testConnectionSettings(main.getTestServer());
+    	} else {
+    		logger.log("No server defined. Loading the new server page.");
+        	guiServerNew.start();   
+    	} 	
     }
 };

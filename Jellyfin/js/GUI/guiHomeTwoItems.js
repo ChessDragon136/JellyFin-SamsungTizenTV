@@ -133,7 +133,7 @@ guiHomeTwoItems.start = function(selectedItem,topLeftItem,isTop) {
 			
 			for (var index = 0; index < randomImageData.Items.length; index++) {
 				if (randomImageData.Items[index ].BackdropImageTags.length > 0) {
-					var imgsrc = server.getBackgroundImageURL(randomImageData.Items[index ].Id,"Backdrop",main.backdropWidth,main.backdropHeight,0,false,0,randomImageData.Items[index ].BackdropImageTags.length);
+					var imgsrc = server.getImageURL(randomImageData.Items[index ].Id,"Backdrop",randomImageData.Items[index ].BackdropImageTags.length);
 					support.fadeImage(imgsrc);
 					break;
 				}
@@ -373,11 +373,11 @@ guiHomeTwoItems.processSelectedItem = function () {
 		}
 	} else {
 		var isLatest = false;
-		if (this.selectedRow == remotecontrol.ITEM2) {
+		if (this.selectedRow == remotecontrol.ITEM2) {			
 			if (this.startParams[0] == "New TV") {
 				isLatest = true;
 			}
-			support.processSelectedItem("guiHomeTwoItems",this.ItemData2.Items[this.selectedItem],null,this.selectedItem2,this.topLeftItem2,false,null,isLatest); 
+			support.processSelectedItem("guiHomeTwoItems",this.ItemData2.Items[this.selectedItem2],null,this.selectedItem2,this.topLeftItem2,false,null,isLatest); 
 		} else {
 			if (this.startParams[2] == "New TV") {
 				isLatest = true;
@@ -391,6 +391,6 @@ guiHomeTwoItems.playSelectedItem = function () {
 	if (this.selectedRow == remotecontrol.ITEM1) {
 		support.playSelectedItem("guiHomeTwoItems",this.ItemData.Items[this.selectedItem],null,this.selectedItem,this.topLeftItem,true);	
 	} else if (this.selectedRow == remotecontrol.ITEM2) {
-		support.playSelectedItem("guiHomeTwoItems",this.ItemData2.Items[this.selectedItem],null,this.selectedItem2,this.topLeftItem2,false);	
+		support.playSelectedItem("guiHomeTwoItems",this.ItemData2.Items[this.selectedItem2],null,this.selectedItem2,this.topLeftItem2,false);	
 	}
 }
