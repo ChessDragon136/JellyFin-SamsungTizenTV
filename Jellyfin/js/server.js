@@ -114,9 +114,19 @@
 	server.getSeasonsURL = function(seriesID) {
 	    return server.getserverAddr() + "/Shows/" + seriesID + "/Seasons?UserId=" + server.getUserID() + "&format=json";
 	}
+	
+	server.getSimilarURL = function(itemId) {
+		 return server.getserverAddr() + "/Items/" + itemId + "/Similar?UserId=" + server.getUserID() + "&Limit=12&format=json&fields=SortName,Overview";
+	}	
 
 	server.getEpisodesURL = function(seriesID, seasonID) {
-	    return server.getserverAddr() + "/Shows/" + seriesID + "/Episodes?UserId=" + server.getUserID() + "&SeasonId=" + seasonID + "&format=json&Fields=Overview";
+		if (seasonID == null) {
+			//Used in GuiTVEpisode to get all episodes of a show - Test - Will go into settings
+			 return server.getserverAddr() + "/Shows/" + seriesID + "/Episodes?UserId=" + server.getUserID() + "&format=json&fields=SortName,Overview";
+		} else {
+			 return server.getserverAddr() + "/Shows/" + seriesID + "/Episodes?UserId=" + server.getUserID() + "&SeasonId=" + seasonID + "&format=json&fields=SortName,Overview";
+		}
+	   
 	}
 
 	 //------------------------------------------------------------
@@ -132,7 +142,7 @@
 	            query = "/Items/" + itemId + "/Images/Banner/0?"
 	            break;
 	        case "Backdrop":
-	        	var totalimages = (totalimages !== undefined && Number.isInteger(totalimages)) ? totalimages : 0;
+	        	var totalimages = (totalimages !== undefined) ? totalimages : 0;
 	        	var index = Math.floor((Math.random() * totalimages) + 0);
 	            query = "/Items/" + itemId + "/Images/Backdrop/" + index + "?"; 
 	            break;
@@ -173,6 +183,15 @@
 	    	var date = new Date();
 		    var queryDate = date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2) + ("0" + date.getHours()).slice(-2) + ("0" + date.getMinutes()).slice(-2) + ("0" + date.getSeconds()).slice(-2);
 		    url += "?DatePlayed=" + queryDate;
+		    xmlhttp.postContent(url, null);
+	    } else {
+	    	xmlhttp.deleteContent(url);
+	    }
+	}
+	
+	server.setFavourite = function(ID,isFavourite) {
+	    var url = this.serverAddr + "/Users/" + server.getUserID() + "/FavoriteItems/" + ID;  
+	    if (isFavourite == true) {
 		    xmlhttp.postContent(url, null);
 	    } else {
 	    	xmlhttp.deleteContent(url);

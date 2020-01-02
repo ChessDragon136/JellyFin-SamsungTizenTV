@@ -1,50 +1,102 @@
 .guiTVShow-SeasonsContainer {
 	position:absolute;
-	bottom:60px;
+	bottom:40px;
+	left:660px;
 	text-align:center;
-	width:100%;
+	width:1240px;
 }
 
-.showItemContainer {
+.guiTVShow-ItemContainer {
 	position:absolute;
-	top: 105px;
-	left: 420px;
-	width: 1480px;
-	padding:10px;
+	top: 30px;
+	left: 630px;
+	width: 1200px;
+	padding:40px;
+}
+
+.guiTVShow-MenuContainerPreMove {
+	position:absolute;
+	top: 525px;
+	text-align: center;
+	width:100%;
+	left:0;
+  	right:0;
+  	margin-left: auto;
+  	margin-right: auto;
 }
 
 .guiTVShow-MenuContainer {
-	margin: 20px 0px;
+	width:100%;
 }
 
 .guiTVShow-MenuItem {
 	display: inline-block;
-	width:160px;
+	min-width:200px;
 	padding:10px;
 	border-radius:10px;
 	text-align: center;
 	background-color:rgb(77,77,77);
 	margin-right:20px;
+	margin-bottom:10px;
+	
 }
 
-.ShowImage {
+.guiTVShow-MenuItemSVG {
+	display:inline-block;
+	background-color:rgb(77,77,77);
+    border-radius:50%;
+    -moz-border-radius:50%;
+    -webkit-border-radius:50%;
+    padding:10px;
+	margin-right:20px;
+	margin-bottom:10px;
+    fill:white;
+    vertical-align:bottom;
+}
+
+.guiTVShow-ImageEpisode {
 	position:absolute;
 	top:80px;
-	left:30px;
-	width:350px;
-	height:500px;
+	left:35px;
+	width:600px;
+	height:900px;
 	background-repeat: no-repeat;
     background-position:center;
     background-size:contain;
+    background-color:black;
 }
 
-.ShowOverview {
-	max-height:500px;
+.guiTVShow-Overview {
+	margin-top:12px;
+	max-height:330px;
 	overflow-y:hidden;
 }
 
-.guiTVShowTitle {
+.guiTVShow-Title {
 	font-size:48px;
+	padding-top:20px;
+	width: 1080px;
+	overflow:hidden;
+	white-space: nowrap;	
+}
+
+.guiTVShow-SubTitle {
+	font-size:40px;
+	padding-bottom:10px;
+	padding-left:20px;
+	width: 1060px;
+	overflow:hidden;
+	white-space: nowrap;
+}
+
+.guiTVShow-ContentTitle{
+	position:absolute;
+	left:660px;
+	top:620px;
+	font-size:40px;
+	width: 1060px;
+	overflow:hidden;
+	white-space: nowrap;	
 }
 
 .infoContainer {
@@ -53,4 +105,48 @@
 	bottom:50px;
 	width:1040px;
 	z-index:5
+}
+
+.guiTVShow-MetaDataPadding {
+	padding-left:10px;
+}
+
+.Cast {
+	width: 200px;
+    height: 320px;  /*348px */
+    display:inline-block;
+    position:relative; 
+    margin-top: 0px;
+    margin-bottom: 9px;
+    margin-right: 8px;
+    margin-left: 8px;
+    border:3px solid rgba(0,0,0,0);
+    border-radius: 0px;
+    white-space:nowrap;
+    text-overflow:ellipsis; 
+    overflow: hidden; 
+    background-repeat: no-repeat;
+    background-position:center top;
+    background-size:contain;
+    font-size:0.95em;
+}
+
+.MoreEpisodes {
+	width: 500px;
+    height: 320px;
+    display:inline-block;
+    position:relative; 
+    margin-top: 0px;
+    margin-bottom: 9px;
+    margin-right: 8px;
+    margin-left: 8px;
+	border:3px solid rgba(0,0,0,0); 
+	border-radius: 0px;
+    white-space:nowrap;
+    text-overflow:ellipsis; 
+    overflow: hidden; 
+    background-repeat: no-repeat;
+    background-position:center top;
+    background-size:contain;
+    font-size:0.95em;
 }

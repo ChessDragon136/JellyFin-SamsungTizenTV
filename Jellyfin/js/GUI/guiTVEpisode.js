@@ -9,11 +9,12 @@ var guiTVEpisode = {
 		EpisodeData : null,
 		
 		menuItems : [],
-		selectedMenuItem : 0,	
+		selectedMenuItem : 0,
+		menuItemCastPos : null,
 		
 		//No Banner Items - No selectedBannerItem
 		
-		MAXCOLUMNCOUNTCAST : 6,
+		MAXCOLUMNCOUNTCAST : 7,
 		MAXCOLUMNCOUNT : 3,
 		MAXROWCOUNT : 1,
 		
@@ -43,8 +44,7 @@ guiTVEpisode.start = function(url,selectedItem,topLeftItem) {
 	//Setup Menu Items
 	if (this.ItemData.LocationType != "Virtual") {
 		if (this.ItemData.UserData.PlaybackPositionTicks > 0) {
-			var resumeTicksSamsung = this.ItemData.UserData.PlaybackPositionTicks / 10000;
-			this.menuItems.push("Resume - "+support.convertTicksToTimeSingle(resumeTicksSamsung));
+			this.menuItems.push("Resume");
 		}
 		this.menuItems.push("Play");
 		
@@ -54,25 +54,15 @@ guiTVEpisode.start = function(url,selectedItem,topLeftItem) {
 	document.getElementById("pageContent").innerHTML = "<div id=Content class='guiTVEpisode-SeasonsContainer'></div>" + 
 	"<div id='ShowImage' class='guiTVEpisode-ImageEpisode'></div>" + 
 	"<div class='guiTVEpisode-ItemContainer'>" + 
-		"<div id='ShowTitle' class='guiItemDetailsTitle'></div>" +
-		"<div id='ShowSubTitle' class='guiItemDetailsSubTitle'></div>" +
-		"<div id='ShowMetadata' class='metadata-Container'></div>" +
+		"<div id='ShowTitle' class='guiTVEpisode-Title'></div>" +
+		"<div id='ShowSubTitle' class='guiTVEpisode-SubTitle'></div>" +
+		"<div id='ShowMetadata' class='metadata-Container guiTVEpisode-MetaDataPadding'></div>" +
+		"<div id='ShowMetadata2' class='metadata-Container guiTVEpisode-MetaDataPadding'></div>" +
+		"<div id='guiTVEpisode-MenuContainer1' class='guiTVEpisode-MenuContainer'></div>" +
 		"<div id='ShowOverview' class='guiTVEpisode-Overview'></div>" +
 	"</div>" +
-	"<div id='guiTVEpisode-MenuContainer1' class='guiTVEpisode-MenuContainer'></div>";
-	
-	this.menuItems.push("Media Info");
-		
-	//Get Episode Data - Is this the right URL?
-	var episodesUrl = server.getChildItemsURL(this.ItemData.SeasonId,"&IncludeItemTypes=Episode&fields=SortName,Overview");
-	this.EpisodeData = xmlhttp.getContent(episodesUrl);
-	if (this.EpisodeData == null) { return; }
-	
-	//Browse season episodes
-	if (this.EpisodeData.Items.length !== undefined && this.EpisodeData.Items.length > 1) {
-		this.menuItems.push("More Episodes");
-	}
-		
+	"<div id='guiTVEpisode-ContentTitle' class='guiTVEpisode-ContentTitle'></div>";
+			
 	//If no cast, remove cast button from menu
 	//Catch if Actor or GuestStar Only - Seems to be many different types and without documentationof all available types
 	//Unable to catch in support.updatedisplayeditems, so remove from array if not Actor or GuestStar
@@ -83,8 +73,16 @@ guiTVEpisode.start = function(url,selectedItem,topLeftItem) {
 			}
 		}
 	}
-	if (this.ItemData.People.length > 0) {
-		this.menuItems.push("Cast");
+
+	//Get Episode Data
+	//var episodesUrl = server.getChildItemsURL(this.ItemData.SeriesId,"&IncludeItemTypes=Episode&fields=SortName,Overview");
+	var episodesUrl = server.getEpisodesURL(this.ItemData.SeriesId,null);//,this.ItemData.SeasonId); 
+	this.EpisodeData = xmlhttp.getContent(episodesUrl);
+	
+	//If there is More Episodes & Cast, Push Cast Button
+	//Mode Episodes is default view so needs no button - Cast Button changes to More Episodes when Cast is displayed
+	if (this.EpisodeData.Items !== undefined && this.EpisodeData.Items.length > 1 && this.ItemData.People !== undefined && this.ItemData.People.length > 0) {
+		this.menuItemCastPos = this.menuItems.push("Cast") - 1; //push returns array length, not index position in array.
 	}
 		
 	this.menuItems.push("Watched");
@@ -96,6 +94,9 @@ guiTVEpisode.start = function(url,selectedItem,topLeftItem) {
 	document.getElementById("ShowTitle").innerHTML = this.ItemData.SeriesName + " - " + this.ItemData.SeasonName;	
 	document.getElementById("ShowSubTitle").innerHTML = title;
 	
+	support.scrollingTextHorizontal("ShowTitle");
+	support.scrollingTextHorizontal2("ShowSubTitle");
+	
 	//Set Episode Primary Image
 	if (this.ItemData.ImageTags.Primary) {			
 		var imgsrc = server.getImageURL(this.ItemData.Id,"Primary");
@@ -105,7 +106,16 @@ guiTVEpisode.start = function(url,selectedItem,topLeftItem) {
 	//Generate Menu Items
 	document.getElementById("guiTVEpisode-MenuContainer1").innerHTML = "";
 	for (var index = 0; index < this.menuItems.length; index++) {
-		document.getElementById("guiTVEpisode-MenuContainer1").innerHTML += "<span id='guiTVEpisode-MenuItem" + index + "' class='guiTVEpisode-MenuItem'>"+this.menuItems[index]+"</span>";			
+		//Adds time code to resume whilst keeping the name in the menu array as resume - makes life easier when calling processselecteditem
+		if (this.menuItems[index] == "Resume") {
+			document.getElementById("guiTVEpisode-MenuContainer1").innerHTML += "<span id='guiTVEpisode-MenuItem" + index + "' class='guiTVEpisode-MenuItem'>"+this.menuItems[index]+ " - " + support.convertTicksToTimeSingle(this.ItemData.UserData.PlaybackPositionTicks / 10000) + "</span>";	
+		} else if (this.menuItems[index] == "Watched") {
+			document.getElementById("guiTVEpisode-MenuContainer1").innerHTML += "<svg id='guiTVEpisode-MenuItem" + index + "' class='guiTVEpisode-MenuItemSVG ' xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 48 48'><path d='M18 32.34L9.66 24l-2.83 2.83L18 38l24-24-2.83-2.83z'/></svg></span>"
+		} else if (this.menuItems[index] == "Favourite") {
+			document.getElementById("guiTVEpisode-MenuContainer1").innerHTML += "<svg id='guiTVEpisode-MenuItem" + index + "' class='guiTVEpisode-MenuItemSVG ' xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 48 48'><path d='M24 42.7l-2.9-2.63C10.8 30.72 4 24.55 4 17 4 10.83 8.83 6 15 6c3.48 0 6.82 1.62 9 4.17C26.18 7.62 29.52 6 33 6c6.17 0 11 4.83 11 11 0 7.55-6.8 13.72-17.1 23.07L24 42.7z'/></svg></span>";
+		} else {
+			document.getElementById("guiTVEpisode-MenuContainer1").innerHTML += "<span id='guiTVEpisode-MenuItem" + index + "' class='guiTVEpisode-MenuItem'>"+this.menuItems[index]+"</span>";	
+		}		
 	}	
 			
 	//Set Show MetaData
@@ -124,19 +134,80 @@ guiTVEpisode.start = function(url,selectedItem,topLeftItem) {
 		htmlforTitle += "<span class='metadata-Item'><span class='metadata-ItemText'>" + this.ItemData.OfficialRating + "</span></span>";
 	}
 	
+	if (this.ItemData.RunTimeTicks != null) {
+		htmlforTitle += "<span class='metadata-Item'><span class='metadata-ItemText'>"+support.convertTicksToMinutesJellyfin(this.ItemData.RunTimeTicks)+"</span></span>";
+	}
+	
 	if (this.ItemData.UserData.IsFavorite) {
-		htmlforTitle += "<span class='metadata-Item metadata-ItemImageFavourite'></span>";
+		htmlforTitle += "<span id='guiTVEpisode-Favourite' class='metadata-Item metadata-ItemImageFavourite'></span>";
+	} else {
+		htmlforTitle += "<span id='guiTVEpisode-Favourite'></span>";
 	}
 	if (this.ItemData.UserData.Played) {
-		htmlforTitle += "<span class='metadata-Item metadata-ItemImageWatched'></span>";
+		htmlforTitle += "<span id='guiTVEpisode-Watched' class='metadata-Item metadata-ItemImageWatched'></span>";
+	} else {
+		htmlforTitle += "<span id='guiTVEpisode-Watched'></span>";
 	}
+	
 	htmlforTitle += "";
 	document.getElementById("ShowMetadata").innerHTML = htmlforTitle;
+	
+	
+	htmlforTitle += "";
+	if (this.ItemData.OfficialRating !== undefined) {
+		htmlforTitle += "<span class='metadata-Item'><span class='metadata-ItemText'>" + this.ItemData.OfficialRating + "</span></span>";
+	}
+		
+	//Video + Audio Display Titles
+	var metaVideoDefault = null;
+	var metaVideoFirst = null;
+	var metaAudioDefault = null;
+	var metaAudioFirst = null;	
+	for (var index=0;index < this.ItemData.MediaStreams.length; index++) {
+		if (this.ItemData.MediaStreams[index].Type == "Video" && metaVideoFirst == null) {
+			metaVideoFirst = index;
+		}		
+		if (this.ItemData.MediaStreams[index].Type == "Video" && this.ItemData.MediaStreams[index].IsDefault == true && metaVideoDefault == null) {
+			metaVideoDefault = index;
+		}
+		if (this.ItemData.MediaStreams[index].Type == "Audio" && metaAudioFirst == null) {
+			metaAudioFirst = index;
+		}		
+		if (this.ItemData.MediaStreams[index].Type == "Audio" && this.ItemData.MediaStreams[index].IsDefault == true && metaAudioDefault == null) {
+			metaAudioDefault = index;
+		}
+	}
+	
+	htmlforTitle2 = "<span class='metadata-Item'><span class='metadata-ItemText'>";
+	if (metaVideoDefault != null) {
+		htmlforTitle2 += "Video:&nbsp&nbsp" + this.ItemData.MediaStreams[metaVideoDefault].DisplayTitle;
+	} else {
+		if (metaVideoFirst != null) {
+			htmlforTitle2 += "Video:&nbsp&nbsp" + this.ItemData.MediaStreams[metaVideoFirst].DisplayTitle;
+		}
+	}
+	if (metaAudioDefault != null) {
+		htmlforTitle2 += "&nbsp&nbsp&nbsp&nbsp&nbspAudio:&nbsp&nbsp" + this.ItemData.MediaStreams[metaAudioDefault].DisplayTitle;
+	} else {
+		if (metaAudioFirst != null) {
+			htmlforTitle2 += "&nbsp&nbsp&nbsp&nbsp&nbspAudio:&nbsp&nbsp" + this.ItemData.MediaStreams[metaAudioFirst].DisplayTitle;
+		}
+	}	
+	document.getElementById("ShowMetadata2").innerHTML = htmlforTitle2 + "</span></span>";
 
 	//Set Show Overview
 	if (this.ItemData.Overview !== undefined) {
 		document.getElementById("ShowOverview").innerHTML = this.ItemData.Overview;
 		support.scrollingText("ShowOverview");
+	}
+	
+	//Load Background - Check id so if returning from episodes it doesnt re-load the backdrop image
+	if (this.ItemData.SeriesId != support.getBackdropId()) {
+		if (this.ItemData.ParentBackdropImageTags !== undefined && this.ItemData.ParentBackdropImageTags.length > 0){
+			support.setBackdropId(this.ItemData.SeriesId);
+			var imgsrc = server.getImageURL(this.ItemData.SeriesId,"Backdrop",this.ItemData.ParentBackdropImageTags.length);
+			support.fadeImage(imgsrc);
+		}				
 	}
 		
 	this.selectedRow = remotecontrol.MENU;
@@ -146,39 +217,21 @@ guiTVEpisode.start = function(url,selectedItem,topLeftItem) {
 	//NOTE - As entry point is a menu, selectedItem & topLeft Item are irrelevant and calculated as new even on return
 	//Display More Items - Loop to get right position to start from - needs work
 	//Check to see if there are any, else default to Media Info
+	this.rowDisplayed = remotecontrol.ITEM1; //YES Outside if below!
 	if (this.EpisodeData.Items.length !== undefined && this.EpisodeData.Items.length > 1) {
-		for (var index = 0; index < this.EpisodeData.Items.length; index++) {
-			if (this.EpisodeData.Items[index].Id == this.ItemData.Id) {
-				this.topLeftItem = index;
-				this.selectedItem = index;
-			}
-		}
+		document.getElementById("guiTVEpisode-ContentTitle").innerHTML = "More Episodes";
+		this.setupMoreEpisodesView(); //Sets top left and selected based on where in list of series episode is
 		this.updateDisplayedMoreItems();
 		this.updateSelectedMoreItems(); //Will select 1st ID
 		this.updateSelectedMoreItem("REMOVE"); //Will hide it
-	} else {
-		//Media Info
-		this.topLeftItem = 0;
-		this.selectedItem = 0;
-		this.updateDisplayedMediaItems();
 	}
-
-			
+	
 	//Set Focus for Key Events
 	remotecontrol.setCurrentPage("guiTVEpisode");
 }
 //---------------------------------------------------------------------------------------------------
 //    ITEM HANDLERS
 //---------------------------------------------------------------------------------------------------
-
-//Media Info - Custom 1 Off View
-guiTVEpisode.updateDisplayedMediaItems = function() {
-	this.displayMediaItemDetails();
-	this.updateCounter();
-}
-
-
-
 
 //More Episodes
 guiTVEpisode.updateSelectedMoreItems = function () {
@@ -188,7 +241,7 @@ guiTVEpisode.updateSelectedMoreItems = function () {
 };
 
 guiTVEpisode.updateDisplayedMoreItems = function() {
-	document.getElementById("Content").style.bottom = "65px";
+	document.getElementById("Content").style.bottom = "40px";
 	support.updateDisplayedItems(this.EpisodeData.Items,this.selectedItem,this.topLeftItem,
 		Math.min(this.topLeftItem + this.getMaxDisplay(),this.EpisodeData.Items.length),"Content","",false,null,false,true); 
 }
@@ -197,14 +250,10 @@ guiTVEpisode.updateSelectedMoreItem = function (action) {
 	support.updateSelectedItem(this.EpisodeData.Items[this.selectedItem].Id,"MoreEpisodes Selected highlightBorder","MoreEpisodes","",action);
 }
 
-
-
-
-
 //Cast
 guiTVEpisode.updateSelectedCastItems = function () {
 	support.updateSelectedNEW(this.ItemData.People,this.selectedItem,this.topLeftItem,
-			Math.min(this.topLeftItem + this.getMaxCastDisplay(),this.ItemData.People.length),"Seasons Selected highlightBorder","Seasons","");
+			Math.min(this.topLeftItem + this.getMaxCastDisplay(),this.ItemData.People.length),"Cast Selected highlightBorder","Cast","");
 	this.updateCounter();
 };
 
@@ -215,12 +264,12 @@ guiTVEpisode.updateDisplayedCastItems = function() {
 }
 
 guiTVEpisode.updateSelectedCastItem = function (action) {
-	support.updateSelectedItem(this.ItemData.People[this.selectedItem].Id,"Seasons Selected highlightBorder","Seasons","",action);
+	support.updateSelectedItem(this.ItemData.People[this.selectedItem].Id,"Cast Selected highlightBorder","Cast","",action);
 }
 
 //Menu
 guiTVEpisode.updateSelectedMenuItems = function() {
-	support.updateSelectedMenuItems(this.menuItems.length,this.selectedMenuItem,"guiTVEpisode-MenuItem highlightBackground","guiTVEpisode-MenuItem","guiTVEpisode-MenuItem");
+	support.updateSelectedMenuItems(this.menuItems.length,this.selectedMenuItem,"guiTVEpisode-MenuItem highlightBackground","guiTVEpisode-MenuItem","guiTVEpisode-MenuItem","guiTVEpisode-MenuItemSVG highlightBackground","guiTVEpisode-MenuItemSVG");
 }
 
 guiTVEpisode.updateCounter = function () {
@@ -281,7 +330,6 @@ guiTVEpisode.keyDown = function() {
 
 //remotecontrol.ITEM1 = More Episodes
 //remotecontrol.ITEM2 = Cast
-//remotecontrol.ITEM3 = Media Info
 
 guiTVEpisode.processLeftKey = function() {
 	switch (this.selectedRow) {
@@ -313,7 +361,8 @@ guiTVEpisode.processLeftKey = function() {
 			this.selectedItem = 0;
 		} else {
 			if (this.selectedItem < this.topLeftItem) {
-				this.topLeftItem =  this.selectedItem - (this.getMaxDisplay() - 1);
+				this.topLeftItem =  this.selectedItem - (this.getMaxCastDisplay
+						() - 1);
 				if (this.topLeftItem < 0) {
 					this.topLeftItem = 0;
 				}
@@ -347,10 +396,10 @@ guiTVEpisode.processRightKey = function() {
 		break;	
 	case (remotecontrol.ITEM2):
 		this.selectedItem++;
-		if (this.selectedItem >= this.ShowData.People.length) {
+		if (this.selectedItem >= this.ItemData.People.length) {
 			this.selectedItem--;
 		} else {
-			if (this.selectedItem >= this.topLeftItem+this.getMaxDisplay() ) {
+			if (this.selectedItem >= this.topLeftItem+this.getMaxCastDisplay() ) {
 				this.topLeftItem = this.selectedItem;
 				this.updateDisplayedCastItems();
 			}
@@ -394,15 +443,18 @@ guiTVEpisode.processDownKey = function() {
 		this.updateSelectedMenuItems();
 		break;
 	case (remotecontrol.MENU):
-		this.selectedMenuItem = -1;
-		this.updateSelectedMenuItems();		
 		switch (this.rowDisplayed) {
-		default:
 		case (remotecontrol.ITEM1):
-			this.selectedRow = remotecontrol.ITEM1;
-			this.updateSelectedMoreItem("ADD");
+			if (this.EpisodeData.Items !== undefined && this.EpisodeData.Items.length > 0) {
+				this.selectedMenuItem = -1;
+				this.updateSelectedMenuItems();	
+				this.selectedRow = remotecontrol.ITEM1;
+				this.updateSelectedMoreItem("ADD");
+			}
 			break;
 		case (remotecontrol.ITEM2):
+			this.selectedMenuItem = -1;
+			this.updateSelectedMenuItems();	
 			this.selectedRow = remotecontrol.ITEM2;
 			this.updateSelectedCastItem("ADD");
 			break;
@@ -418,40 +470,81 @@ guiTVEpisode.processSelectedItem = function() {
 		this.selectedBannerItem = 0;
 		this.selectedItem = 0;
 		this.topLeftItem = 0;
-		this.selectedRow = remotecontrol.ITEM1;
+		this.selectedMenuItem = 0;
+		this.selectedRow = remotecontrol.MENU;
 		pagehistory.updateURLHistory("guiTVEpisode",null,this.startParams[1],null,null,0,0,null);
-		guiMainMenu.requested("guiTVEpisode",this.ItemData.Items[0].Id, "SeriesPortraitLarge Selected highlightBorder");
+		guiMainMenu.requested("guiTVEpisode","guiTVEpisode-MenuItem0", "guiTVEpisode-MenuItem highlightBackground");		
 		break;
 	case (remotecontrol.MENU):
 		switch (this.menuItems[this.selectedMenuItem]) {
-		case ('Show Cast') : 
+		case ("Resume") :
+			this.playSelectedItem();
+			break;
+		case ("Play") :
+			this.playSelectedItem();
+			break;
+		case ("More Episodes") :
 			this.selectedMenuItem = -1;
 			this.updateSelectedMenuItems();
-			this.menuItems[3] = 'Show Seasons';
-			document.getElementById("guiTVEpisode-MenuItem3").innerHTML = 'Show Seasons';
+			this.menuItems[this.menuItemCastPos] = 'Cast';
+			document.getElementById("guiTVEpisode-MenuItem"+this.menuItemCastPos).innerHTML = 'Cast';
+			document.getElementById("guiTVEpisode-ContentTitle").innerHTML = "More Episodes";
+			this.setupMoreEpisodesView() //Sets top left and selected based on where in list of series episode is
+			this.selectedRow = remotecontrol.ITEM1;
+			this.rowDisplayed = remotecontrol.ITEM1;
+			this.updateDisplayedMoreItems();
+			this.updateSelectedMoreItems();					
+			break;
+		case ("Cast") :
+			this.selectedMenuItem = -1;
+			this.updateSelectedMenuItems();
+			this.menuItems[this.menuItemCastPos] = 'More Episodes';
+			document.getElementById("guiTVEpisode-MenuItem"+this.menuItemCastPos).innerHTML = 'More Episodes';	
+			document.getElementById("guiTVEpisode-ContentTitle").innerHTML = "Cast";
 			this.selectedItem = 0;
 			this.topLeftItem = 0;
 			this.selectedRow = remotecontrol.ITEM2;
 			this.rowDisplayed = remotecontrol.ITEM2;
 			this.updateDisplayedCastItems();
-			this.updateSelectedCastItems();
+			this.updateSelectedCastItems();			
 			break;
-		case ('Show Seasons') :
-			this.selectedMenuItem = -1;
-			this.updateSelectedMenuItems();
-			this.menuItems[3] = 'Show Cast';
-			document.getElementById("guiTVEpisode-MenuItem3").innerHTML = 'Show Cast';
-			this.selectedItem = 0;
-			this.topLeftItem = 0;
-			this.selectedRow = remotecontrol.ITEM1;
-			this.rowDisplayed = remotecontrol.ITEM1;
-			this.updateDisplayedItems();
-			this.updateSelectedItems();
+		case ('Favourite') :
+			if (this.ItemData.UserData.IsFavorite == false) {
+				this.ItemData.UserData.IsFavorite = true;
+				document.getElementById("guiTVEpisode-Favourite").className = "metadata-Item metadata-ItemImageFavourite";
+				server.setFavourite(this.ItemData.Id,true);
+			} else {
+				this.ItemData.UserData.IsFavorite = false;
+				document.getElementById("guiTVEpisode-Favourite").className = "";
+				server.setFavourite(this.ItemData.Id,false);
+			}
 			break;
+		case ('Watched') :
+			//Check if Watched or not
+			if (this.ItemData.UserData.Played == false) {
+				this.ItemData.UserData.Played = true;
+				document.getElementById("guiTVEpisode-Watched").className = "metadata-Item metadata-ItemImageWatched";
+				server.setWatched(this.ItemData.Id,true);
+			} else {
+				this.ItemData.UserData.Played = false;
+				document.getElementById("guiTVEpisode-Watched").className = "";
+				server.setWatched(this.ItemData.Id,false);				
+			}
+			break;		
 		}
 		break;
 	case (remotecontrol.ITEM1):
-		support.processSelectedItem("guiTVEpisode", this.EpisodeData.Items[this.selectedItem], this.startParams, this.selectedItem, this.topLeftItem, null, null, null);
+		//Check user hasnt selected the same episode that they are currently on - If so, just reset
+		if (this.EpisodeData.Items[this.selectedItem].Id == this.ItemData.Id) {
+			this.updateSelectedMoreItem("REMOVE");
+			this.selectedRow = remotecontrol.MENU;
+			this.selectedMenuItem = 0;
+			this.updateSelectedMenuItems();
+			this.updateCounter();
+		} else {
+			support.processSelectedItem("guiTVEpisode", this.EpisodeData.Items[this.selectedItem], this.startParams, this.selectedItem, this.topLeftItem, null, null, null);
+		}
+		
 		break;	
 	case (remotecontrol.ITEM2):
 		//Should load cast page here when I get around to fixing it
@@ -461,55 +554,37 @@ guiTVEpisode.processSelectedItem = function() {
 
 guiTVEpisode.playSelectedItem = function () {
 	if (this.selectedRow == remotecontrol.ITEM1) {
-		support.playSelectedItem("guiTVEpisode",this.ItemData.Items[this.selectedItem],this.startParams,this.selectedItem,this.topLeftItem,null);
-	}
-}
-
-
-//---------------------------------------------------------------------------------------------------
-// Special Displays - Media Items
-//---------------------------------------------------------------------------------------------------
-guiTVEpisode.displayMediaItemDetails = function() {
-	document.getElementById("Content").innerHTML = "";
-	
-	var maxpos = Math.min(this.topLeftItem + this.getMaxDisplay(),this.ItemData.MediaStreams.length);
-	for (var index=this.topLeftItem;index < maxpos; index++) {
-		if (this.ItemData.MediaStreams[index].Type == "Video") {
-			document.getElementById("Content").innerHTML += "<div id='MediaInfo"+index+"' class='MediaInfo'>Video<br><br>" +
-				"Title: " + this.ItemData.MediaStreams[index].DisplayTitle + "<br>" +
-				"Codec: " + this.ItemData.MediaStreams[index].Codec + "<br>" +
-				"AVC: " + this.ItemData.MediaStreams[index].IsAVC + "<br>" +
-				"Profile: " + this.ItemData.MediaStreams[index].Profile + "<br>" +
-				"Level: " + this.ItemData.MediaStreams[index].Level + "<br>" +
-				"Resolution: " + this.ItemData.MediaStreams[index].Width + "x" + this.ItemData.MediaStreams[index].Height + "<br>" +
-				"Aspect Ratio: " + this.ItemData.MediaStreams[index].AspectRatio + "<br>" +
-				"Interlaced: " + this.ItemData.MediaStreams[index].IsInterlaced + "<br>" +
-				"Framerate: " + this.ItemData.MediaStreams[index].RealFrameRate + "<br>" +
-				"Bitrate: " + this.ItemData.MediaStreams[index].BitRate + "<br>" +
-				"Bit Depth: " + this.ItemData.MediaStreams[index].BitDepth + " Bit<br>" +
-				"Pixel Format: " + this.ItemData.MediaStreams[index].PixelFormat + "</div>";
+		support.playSelectedItem("guiTVEpisode",this.EpisodeData.Items[this.selectedItem],this.startParams,this.selectedItem,this.topLeftItem,null,null);
+	} else if (this.selectedRow == remotecontrol.MENU) {
+		if (this.menuItems[this.selectedMenuItem] == "Resume") {
+			support.playSelectedItem("guiTVEpisode",this.ItemData,this.startParams,this.selectedItem,this.topLeftItem,null,null,this.ItemData.UserData.PlaybackPositionTicks);
 		}
-		if (this.ItemData.MediaStreams[index].Type == "Audio") {
-			document.getElementById("Content").innerHTML += "<div id='MediaInfo"+index+"' class='MediaInfo'>Audio<br><br>" +
-				"Title: " + this.ItemData.MediaStreams[index].DisplayTitle + "<br>" +
-				"Language: " + this.ItemData.MediaStreams[index].Language + "<br>" +
-				"Codec: " + this.ItemData.MediaStreams[index].Codec + "<br>" +			
-				"Profile: " + this.ItemData.MediaStreams[index].Profile + "<br>" +
-				"Layout: " + this.ItemData.MediaStreams[index].ChannelLayout + "<br>" +
-				"Channels: " + this.ItemData.MediaStreams[index].Channels + "<br>" +
-				"BitRate: " + this.ItemData.MediaStreams[index].BitRate + "<br>" +
-				"Sample Rate: " + this.ItemData.MediaStreams[index].SampleRate + "<br>" +
-				"Default: " + this.ItemData.MediaStreams[index].IsDefault + "</div>";
-		}
-		if (this.ItemData.MediaStreams[index].Type == "Subtitle") {
-			document.getElementById("Content").innerHTML += "<div id='MediaInfo"+index+"' class='MediaInfo'>Subtitle<br><br>" +
-			"Title: " + this.ItemData.MediaStreams[index].DisplayTitle + "<br>" +
-			"Language: " + this.ItemData.MediaStreams[index].Language + "<br>" +
-			"Codec: " + this.ItemData.MediaStreams[index].Codec + "<br>" +	
-			"Default: " + this.ItemData.MediaStreams[index].IsDefault + "<br>" +
-			"Forced: " + this.ItemData.MediaStreams[index].IsForced + "<br>" +
-			"External: " + this.ItemData.MediaStreams[index].IsExternal + "</div>";
+		if (this.menuItems[this.selectedMenuUtem] == "Play") {
+			support.playSelectedItem("guiTVEpisode",this.ItemData,this.startParams,this.selectedItem,this.topLeftItem,null,null);
 		}		
 	}
 }
 
+
+//---------------------------------------------------------------------------------------------------
+// Special Displays
+//---------------------------------------------------------------------------------------------------
+
+guiTVEpisode.setupMoreEpisodesView = function() {
+	for (var index = 0; index < this.EpisodeData.Items.length; index++) {
+		if (this.EpisodeData.Items[index].Id == this.ItemData.Id) {		
+			//Setup More episodes such that the current episode is shown in the middle
+			//If Last Entry or 1st entry, ensure 3 items are displayed
+			if (index == this.EpisodeData.Items.length-1) {
+				this.topLeftItem = index-(this.MAXCOLUMNCOUNT-1);
+				this.selectedItem = index;
+			} else if (index == 0) {
+				this.topLeftItem = index;
+				this.selectedItem = index;
+			} else {
+				this.topLeftItem = index - 1;
+				this.selectedItem = index;
+			}
+		}
+	}
+}

@@ -13,7 +13,7 @@
 	padding:40px;
 }
 
-.guiTVEpisode-MenuContainer {
+.guiTVEpisode-MenuContainerPreMove {
 	position:absolute;
 	top: 525px;
 	text-align: center;
@@ -22,6 +22,10 @@
   	right:0;
   	margin-left: auto;
   	margin-right: auto;
+}
+
+.guiTVEpisode-MenuContainer {
+	width:100%;
 }
 
 .guiTVEpisode-MenuItem {
@@ -36,31 +40,62 @@
 	
 }
 
+.guiTVEpisode-MenuItemSVG {
+	display:inline-block;
+	background-color:rgb(77,77,77);
+    border-radius:50%;
+    -moz-border-radius:50%;
+    -webkit-border-radius:50%;
+    padding:10px;
+	margin-right:20px;
+	margin-bottom:10px;
+    fill:white;
+    vertical-align:bottom;
+}
+
 .guiTVEpisode-ImageEpisode {
 	position:absolute;
 	top:80px;
 	left:35px;
 	width:750px;
-	height:422px;
+	height:520px;
 	background-repeat: no-repeat;
     background-position:center;
     background-size:contain;
+    background-color:black;
 }
 
 .guiTVEpisode-Overview {
-	max-height:230px;
+	margin-top:12px;
+	max-height:240px;
 	overflow-y:hidden;
 }
 
-.guiItemDetailsTitle {
+.guiTVEpisode-Title {
 	font-size:48px;
 	padding-top:20px;
+	width: 1080px;
+	overflow:hidden;
+	white-space: nowrap;	
 }
 
-.guiItemDetailsSubTitle {
+.guiTVEpisode-SubTitle {
 	font-size:40px;
 	padding-bottom:10px;
 	padding-left:20px;
+	width: 1060px;
+	overflow:hidden;
+	white-space: nowrap;
+}
+
+.guiTVEpisode-ContentTitle{
+	position:absolute;
+	left:50px;
+	top:610px;
+	font-size:40px;
+	width: 1060px;
+	overflow:hidden;
+	white-space: nowrap;	
 }
 
 .infoContainer {
@@ -71,9 +106,33 @@
 	z-index:5
 }
 
+.guiTVEpisode-MetaDataPadding {
+	padding-left:10px;
+}
+
+.Cast {
+	width: 200px;
+    height: 320px;  /*348px */
+    display:inline-block;
+    position:relative; 
+    margin-top: 0px;
+    margin-bottom: 9px;
+    margin-right: 8px;
+    margin-left: 8px;
+    border:3px solid rgba(0,0,0,0);
+    border-radius: 0px;
+    white-space:nowrap;
+    text-overflow:ellipsis; 
+    overflow: hidden; 
+    background-repeat: no-repeat;
+    background-position:center top;
+    background-size:contain;
+    font-size:0.95em;
+}
+
 .MoreEpisodes {
-	width: 550px;
-    height: 350px;
+	width: 500px;
+    height: 320px;
     display:inline-block;
     position:relative; 
     margin-top: 0px;

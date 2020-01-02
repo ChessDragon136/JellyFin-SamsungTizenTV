@@ -23,15 +23,39 @@ guiHomeOneItem.getMaxDisplay = function() {
 
 guiHomeOneItem.start = function(selectedItem,topLeftItem) {	
 	//Get Titles
-	var title1 = filesystem.getUserViewName("View1");
+	var title = filesystem.getUserViewName("View1");
 	
 	//Get URLs - YES the below syntax is correct 
 	//View URL initiated in guiHome with the same name as value stored in user setting
-	var url1 = guiHome[filesystem.getUserProperty("View1")];
+	var url = guiHome[filesystem.getUserProperty("View1")];
 	
 	//Load Data
 	this.ItemData = xmlhttp.getContent(url);
-	if (this.ItemData == null) { pagehistory.processReturnURLHistory(); }
+	if (this.ItemData == null) { 
+		//Logger.log
+		//Exit App
+	}
+	
+	if (this.ItemData.Items.length == 0) {
+		var title = filesystem.getUserViewName("View2");
+		var url = guiHome[filesystem.getUserProperty("View2")];
+		this.ItemData = xmlhttp.getContent(url);
+		if (this.ItemData == null) { 
+			//Logger.log
+			//Exit App
+		}
+	}
+	
+	//If all user selected homepages are blank try media items
+	if (this.ItemData.Items.length == 0) {
+		title = "Media Folders"
+		var url = server.getItemTypeURL("&SortBy=SortName&SortOrder=Ascending&CollapseBoxSetItems=false&fields=SortName");
+		this.ItemData = xmlhttp.getContent(url);
+		if (this.ItemData == null) { 
+			//Logger.log
+			//Exit App - Nothing on home page is a problem
+		}
+	}
 	
 	//If array like MoviesRecommended alter 
 	if (title == "Suggested For You") {
@@ -44,17 +68,7 @@ guiHomeOneItem.start = function(selectedItem,topLeftItem) {
 	//Latest Page Fix
 	if (title == "Latest TV" || title == "Latest Movies") {
 		this.ItemData.Items = this.ItemData;
-	}
-	
-	//If all user selected homepages are blank try media items
-	if (this.ItemData.Items.length == 0) {
-		title = "Media Folders"
-		var newURL = server.getItemTypeURL("&SortBy=SortName&SortOrder=Ascending&CollapseBoxSetItems=false&fields=SortName");
-		this.ItemData = xmlhttp.getContent(newURL);
-		if (this.ItemData == null) { 
-			pagehistory.processReturnURLHistory(); 
-		}
-	}
+	}	
 	
 	if (this.ItemData.Items.length > 0) {		
 		//Set page content
@@ -80,7 +94,7 @@ guiHomeOneItem.start = function(selectedItem,topLeftItem) {
 				document.getElementById("bannerSelection").innerHTML += "<div id='bannerItem" + index + "' class='bannerItem offWhite'>"+this.bannerItems[index].replace(/_/g, ' ')+"</div>";					
 			}
 		}
-	
+		
 		//Display first XX series
 		this.selectedItem = selectedItem;
 		this.selectedRow = remotecontrol.ITEM1;
@@ -88,6 +102,8 @@ guiHomeOneItem.start = function(selectedItem,topLeftItem) {
 		this.updateDisplayedItems();
 		this.updateSelectedItems();
 
+		
+		
 		//Function to generate random backdrop
 		this.backdropTimeout = setTimeout(function(){
 			var randomImageURL = server.getItemTypeURL("&SortBy=Random&IncludeItemTypes=Series,Movie&Recursive=true&CollapseBoxSetItems=false&Limit=20&EnableTotalRecordCount=false");
@@ -96,6 +112,7 @@ guiHomeOneItem.start = function(selectedItem,topLeftItem) {
 			
 			for (var index = 0; index < randomImageData.Items.length; index++) {
 				if (randomImageData.Items[index ].BackdropImageTags.length > 0) {
+					support.setBackdropId(randomImageData.Items[index ].Id);
 					var imgsrc = server.getImageURL(randomImageData.Items[index ].Id,"Backdrop",randomImageData.Items[index ].BackdropImageTags.length);
 					support.fadeImage(imgsrc);
 					break;
@@ -105,6 +122,8 @@ guiHomeOneItem.start = function(selectedItem,topLeftItem) {
 		
 		//Set Focus for Key Events
 		remotecontrol.setCurrentPage("guiHomeOneItem");
+		
+		
 		
 	} else {
 		//Set message to user

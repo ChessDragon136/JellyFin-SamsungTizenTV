@@ -133,6 +133,7 @@ guiHomeTwoItems.start = function(selectedItem,topLeftItem,isTop) {
 			
 			for (var index = 0; index < randomImageData.Items.length; index++) {
 				if (randomImageData.Items[index ].BackdropImageTags.length > 0) {
+					support.setBackdropId(randomImageData.Items[index ].Id);
 					var imgsrc = server.getImageURL(randomImageData.Items[index ].Id,"Backdrop",randomImageData.Items[index ].BackdropImageTags.length);
 					support.fadeImage(imgsrc);
 					break;
@@ -144,12 +145,12 @@ guiHomeTwoItems.start = function(selectedItem,topLeftItem,isTop) {
 		remotecontrol.setCurrentPage("guiHomeTwoItems");
 		
 	} else if (this.ItemData.Items.length > 0 && this.ItemData2.Items.length == 0) {
-		guiHomeOneItem.start(title1,url1,0,0);
+		guiHomeOneItem.start(0,0);
 	} else if (this.ItemData.Items.length == 0 && this.ItemData2.Items.length > 0) {
-		guiHomeOneItem.start(title2,url2,0,0);
+		guiHomeOneItem.start(0,0);
 	} else if (this.ItemData.Items.length == 0 && this.ItemData2.Items.length == 0) {
 		//No data to Show at all!!
-		guiHomeOneItem.start(title1,url1,0,0);
+		guiHomeOneItem.start(0,0);
 	}
 }
 

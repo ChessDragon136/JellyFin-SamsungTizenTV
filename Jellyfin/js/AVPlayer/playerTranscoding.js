@@ -39,6 +39,7 @@ playerTranscoding.start = function(showId, MediaSource,MediaSourceIndex, videoIn
 
 	var streamparams = "";
 	var transcodeStatus = "";
+	var streamAudioCodec = "aac"; //Temp - Not sure what to use! Probably was tied into settings
 
 	if (this.isVideo && this.isAudio) {
 		transcodeStatus = "Direct Play";

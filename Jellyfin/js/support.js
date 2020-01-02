@@ -4,6 +4,22 @@ var support = {
 		scroller : null,
 		scrollpos : 0,
 		resetToTop : null,
+		
+		//Series + Season Title
+		startScrollHorizontal : null,
+		scrollerHorizontal : null,
+		scrollposHorizontal : 0,
+		resetToTopHorizontal : null,
+		
+		//Episode Name Title
+		startScrollHorizontal2 : null,
+		scrollerHorizontal2 : null,
+		scrollposHorizontal2 : 0,
+		resetToTopHorizontal2 : null,	
+		
+		//CurrentBackdropItemId
+		backdropId : null
+		
 };
 
 //------------------------------------------------------------
@@ -29,6 +45,14 @@ support.clock = function() {
 	  if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
 	  return i;
 	}
+}
+
+support.getBackdropId = function() {
+	return this.backdropId;
+}
+
+support.setBackdropId = function(backdropId) {
+	this.backdropId = backdropId;
 }
 
 //Used for background image
@@ -79,6 +103,59 @@ support.scrollingText = function(divToScroll) {
 		}, 200); //Scrolling speed
 	}, 10000);	//Intial delay
 }
+
+support.scrollingTextHorizontal = function(divToScroll) {
+	clearTimeout(support.startScrollHorizontal);
+	clearTimeout(support.resetToTopHorizontal);
+	clearInterval(support.scrollerHorizontal);
+	
+	var div = $('#'+divToScroll+'');
+	div.scrollLeft(0);
+	support.scrollposHorizontal = 0;
+
+	support.startScrollHorizontal = setTimeout(function(){		
+		support.scrollerHorizontal = setInterval(function(){
+			var pos = div.scrollLeft() + 5;
+		    div.scrollLeft(pos);
+		    
+		    if (support.scrollposHorizontal == pos) {
+		    	clearInterval(support.scrollerHorizontal);
+		    	support.resetToTopHorizontal = setTimeout(function(){	
+		    		support.scrollingTextHorizontal(divToScroll);
+				}, 5000); //Length of pause at the bottom
+		    } else {
+		    	support.scrollposHorizontal = pos;
+		    }	    
+		}, 100); //Scrolling speed
+	}, 5000);	//Intial delay
+}
+
+support.scrollingTextHorizontal2 = function(divToScroll) {
+	clearTimeout(support.startScrollHorizontal2);
+	clearTimeout(support.resetToTopHorizontal2);
+	clearInterval(support.scrollerHorizontal2);
+	
+	var div = $('#'+divToScroll+'');
+	div.scrollLeft(0);
+	support.scrollposHorizontal2 = 0;
+
+	support.startScrollHorizontal2 = setTimeout(function(){		
+		support.scrollerHorizontal2 = setInterval(function(){
+			var pos = div.scrollLeft() + 5;
+		    div.scrollLeft(pos);
+		    
+		    if (support.scrollposHorizontal2 == pos) {
+		    	clearInterval(support.scrollerHorizontal2);
+		    	support.resetToTopHorizontal2 = setTimeout(function(){	
+		    		support.scrollingTextHorizontal2(divToScroll);
+				}, 5000); //Length of pause at the bottom
+		    } else {
+		    	support.scrollposHorizontal2 = pos;
+		    }	    
+		}, 100); //Scrolling speed
+	}, 5000);	//Intial delay
+}
+
 
 support.convertTicksToMinutes = function (currentTime) {
 	timeMinute = Math.floor((currentTime / 3600000) * 60);
@@ -307,17 +384,19 @@ support.updateSelectedItem = function(divName,strIfSelected,strIfNot,DivIdPrepen
 	}
 }
 
-support.updateSelectedMenuItems = function(menuLength,selectedItemID,strIfSelected,strIfNot,DivIdPrepend) {
+support.updateSelectedMenuItems = function(menuLength,selectedItemID,strIfSelected,strIfNot,DivIdPrepend,strIfSelectedSVG, strIfNotSVG) {
 	for (var index = 0; index < menuLength; index++) {	
 		if (selectedItemID == index) {
 			if (document.getElementById(DivIdPrepend+index).tagName.toLowerCase() == "svg") {
-				document.getElementById(DivIdPrepend+index).className.baseVal = strIfSelected;
+				var toUse = (strIfSelectedSVG !== undefined) ? strIfSelectedSVG : strIfSelected
+				document.getElementById(DivIdPrepend+index).className.baseVal = toUse;
 			} else {
 				document.getElementById(DivIdPrepend+index).className = strIfSelected;
 			}
 		} else {
 			if (document.getElementById(DivIdPrepend+index).tagName.toLowerCase() == "svg") {
-				document.getElementById(DivIdPrepend+index).className.baseVal = strIfNot;
+				var toUse = (strIfNotSVG !== undefined) ? strIfNotSVG : strIfNot
+				document.getElementById(DivIdPrepend+index).className.baseVal = toUse;
 			} else {
 				document.getElementById(DivIdPrepend+index).className = strIfNot;
 			}
@@ -368,7 +447,7 @@ support.updateCounter = function(selectedItemID, totalItems) {
 }
 
 support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,DivIdUpdate,DivIdPrepend,isResume,Genre,showBackdrop,showEpisodeImage) {
-	var htmlToAdd = "";	
+	var htmlToAdd = "";		
 	for (var index = startPos; index < endPos; index++) {
 		if (isResume == true) {
 			progress = Math.round(Items[index].UserData.PlayedPercentage);
@@ -393,7 +472,7 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 				if (Items[index].UserData.IsFavorite) {
 					htmlToAdd += "<div class=displayedItem-FavouriteOverlay></div>";
 				}
-				htmlToAdd += "<div class=displayedItem-TitleContainer>" + title +"</div></div>";
+				htmlToAdd += "<div class=displayedItem-TitleContainer><div class=displayedItem-TitleContainerText>"+ title + "</div></div></div>";	
 	
 			} else {
 				var title = Items[index].Name;
@@ -409,7 +488,7 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 				} else {
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(images/collection.png)><div class=displayedItem-ProgressBar></div><div class=displayedItem-ProgressBarCurrent style='width:"+progress+"%;'></div>";
 				}
-				htmlToAdd += "<div class=displayedItem-TitleContainer>" + title +"</div></div>";
+				htmlToAdd += "<div class=displayedItem-TitleContainer><div class=displayedItem-TitleContainerText>"+ title + "</div></div></div>";	
 			}			
 		} else {
 			//----------------------------------------------------------------------------------------------
@@ -445,7 +524,7 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 				if (Items[index].UserData.IsFavorite) {
 					htmlToAdd += "<div class=displayedItem-FavouriteOverlay></div>";
 				}
-				htmlToAdd += "<div class=displayedItem-TitleContainerSeries>"+ title + "</div></div>";
+				htmlToAdd += "<div class=displayedItem-TitleContainerSeries><div class=displayedItem-TitleContainerText>"+ title + "</div></div></div>";	
 				
 			//----------------------------------------------------------------------------------------------	
 			} else if (Items[index].Type == "Season") {
@@ -456,9 +535,9 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 				} else {
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style='background-color:rgba(0,0,0,0.5)'>";
 				}
-				htmlToAdd += "<div class=displayedItem-TitleContainerSeries>"+ title + "</div></div>";
+				htmlToAdd += "<div class=displayedItem-TitleContainerSeries><div class=displayedItem-TitleContainerText>"+ title + "</div></div></div>";	
 			//----------------------------------------------------------------------------------------------
-			} else if (Items[index].Type == "Episode") {			
+			} else if (Items[index].Type == "Episode") {	
 				if (showEpisodeImage) {
 					var title = Items[index].IndexNumber + ". " + Items[index].Name;				
 					var imageData = "";	
@@ -469,8 +548,7 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 						imageData = "background-color:rgba(0,0,0,0.5)";
 					}
 				} else {
-
-					var title = this.getNameFormat(Items[index].SeriesName, Items[index].ParentIndexNumber, Items[index].Name, Items[index].IndexNumber);				
+					var title = this.getNameFormat(Items[index].SeriesName, Items[index].ParentIndexNumber, Items[index].Name, Items[index].IndexNumber);
 					var imageData = "";	
 					if (Items[index].ParentThumbItemId) {	
 						var imgsrc = server.getImageURL(Items[index].SeriesId,"Thumb");
@@ -494,7 +572,7 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 				if (Items[index].UserData.IsFavorite) {
 					htmlToAdd += "<div class=displayedItem-FavouriteOverlay></div>";
 				}
-				htmlToAdd += "<div class=displayedItem-TitleContainer>"+ title + "</div></div>";				
+				htmlToAdd += "<div class=displayedItem-TitleContainer><div class=displayedItem-TitleContainerText>"+ title + "</div></div></div>";	
 			//----------------------------------------------------------------------------------------------
 			} else if (Items[index].Type == "Actor" || Items[index].Type == "GuestStar") {
 				var title = Items[index].Name;
@@ -504,7 +582,7 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 				} else {
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-color:rgba(0,0,0,0.5);>";
 				}
-				htmlToAdd += "<div class=displayedItem-TitleContainer>"+ title + "</div></div>";		
+				htmlToAdd += "<div class=displayedItem-TitleContainer><div class=displayedItem-TitleContainerText>"+ title + "</div></div></div>";		
 			//----------------------------------------------------------------------------------------------
 			} else if (Items[index].Type == "Genre") {	
 				var itemCount = 0;
@@ -526,7 +604,7 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 				} else {
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-color:rgba(0,0,0,0.5);><div class='displayedItem-NumberOverlay highlightBackground'>"+itemCount+"</div>";
 				}
-				htmlToAdd += "<div class=displayedItem-TitleContainer>" + title +"</div></div>";
+				htmlToAdd += "<div class=displayedItem-TitleContainer><div class=displayedItem-TitleContainerText>"+ title + "</div></div></div>";	
 			//----------------------------------------------------------------------------------------------
 				/*
 				 * 
@@ -671,7 +749,7 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 				} else {
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-color:rgba(0,0,0,0.5);>";
 				}
-				htmlToAdd += "<div class=displayedItem-TitleContainer>" + title +"</div></div>";
+				htmlToAdd += "<div class=displayedItem-TitleContainer><div class=displayedItem-TitleContainerText>"+ title + "</div></div></div>";	
 			}	 	
 		}
     }
@@ -846,7 +924,7 @@ support.processSelectedItem = function(page,SelectedItem,startParams,selectedIte
 //   Play Selected Item
 //------------------------------------------------------------	
 
-support.playSelectedItem = function(page,SelectedItem,startParams,selectedItemID,topLeftItem,isTop,shuffle) {
+support.playSelectedItem = function(page,SelectedItem,startParams,selectedItemID,topLeftItem,isTop,shuffle, resumeTimeJellyfin) {
 	shuffle = (shuffle === undefined) ? null : shuffle;
 	
 	if (startParams == null) {
@@ -857,20 +935,21 @@ support.playSelectedItem = function(page,SelectedItem,startParams,selectedItemID
 		pagehistory.updateURLHistory(page,startParams[0],startParams[1],selectedItemID,topLeftItem,null);
 	}
 	
+	var playbackStartTime = (resumeTimeJellyfin !== undefined) ? resumeTimeJellyfin / 10000 : 0;
 	var url = server.getItemInfoURL(SelectedItem.Id,"&ExcludeLocationTypes=Virtual");		
 	if (SelectedItem.Type == "Movie" || SelectedItem.Type == "Episode") {
 		url = server.getItemInfoURL(SelectedItem.Id,"&ExcludeLocationTypes=Virtual");
-		player.start("PLAY",url,0,page);
+		player.start("PLAY",url,playbackStartTime,page);
 	} else if (SelectedItem.Type == "Series") {
 		if (shuffle != null) {
 			url= server.getChildItemsURL(SelectedItem.Id,"&ExcludeLocationTypes=Virtual&IncludeItemTypes=Episode&Recursive=true&SortBy=SortName&SortOrder=Ascending&Fields=ParentId,SortName,MediaSources")
 		} else {
 			url= server.getChildItemsURL(SelectedItem.Id,"&ExcludeLocationTypes=Virtual&IncludeItemTypes=Episode&Recursive=true&SortBy=Random&SortOrder=Ascending&Fields=ParentId,SortName,MediaSources")
 		}
-		player.start("PlayAll",url,0,page);
+		player.start("PlayAll",url,playbackStartTime,page);
 	} else if (SelectedItem.Type == "Season") {
 		urlToPlay= server.getChildItemsURL(SelectedItem.Id,"&ExcludeLocationTypes=Virtual&IncludeItemTypes=Episode&Recursive=true&SortBy=SortName&SortOrder=Ascending&Fields=ParentId,SortName,MediaSources")
-		player.start("PlayAll",urlToPlay,0,page);	
+		player.start("PlayAll",urlToPlay,playbackStartTime,page);	
 	/*
 	 * 
 	 * The Below is currently not implemented and will definitely need major alterations! Mose of the below has noe been updated since 2017 SWH 29/08/2019

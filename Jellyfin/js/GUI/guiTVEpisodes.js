@@ -60,12 +60,6 @@ guiTVEpisodes.start = function(title,url,selectedItem,topLeftItem) {
 			document.getElementById("guiTVEpisodes-MenuContainer").innerHTML += "<span id='guiTVEpisodes-MenuItem" + index + "' class='guiTVEpisodes-MenuItem'>"+this.menuItems[index]+"</span>";			
 		}
 		
-		//Set backdrop
-		if (this.ItemData.Items[0].ParentBackdropImageTags){
-			var imgsrc = server.getImageURL(this.ItemData.Items[0].ParentBackdropItemId,"Backdrop",this.ItemData.Items[0].ParentBackdropImageTags.length);
-			support.fadeImage(imgsrc);
-		}
-		
 		//Set Series Name
 		document.getElementById('guiTVEpisodes-SeriesName').innerHTML = this.SeasonData.SeriesName + " - " + title; 
 		

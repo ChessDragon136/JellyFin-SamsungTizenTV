@@ -61,6 +61,9 @@ pagehistory.processReturnURLHistory = function() {
 			case "guiTVEpisodes":
 				guiTVEpisodes.start(title,url,selectedItem,topLeftItem);
 				break;
+			case "guiTVEpisode":
+				guiTVEpisode.start(url,selectedItem,topLeftItem);
+				break;	
 			case "guiTVShow":
 				guiTVShow.start(url,selectedItem,topLeftItem);
 				break;		

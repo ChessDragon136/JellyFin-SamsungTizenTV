@@ -1,24 +1,9 @@
-.guiItemDetails-SeasonsMovieContainer {
-	position:absolute;
-	bottom:60px;
-	left:368px;
-	text-align:center;
-	width:1532px;
-}
-
 .guiItemDetails-SeasonsContainer {
 	position:absolute;
-	bottom:60px;
+	bottom:40px;
+	left:660px;
 	text-align:center;
-	width:100%;
-}
-
-.guiItemDetails-ItemMovieContainer {
-	position:absolute;
-	top: 30px;
-	left: 620px;
-	width: 1215px;
-	padding:40px;
+	width:1240px;
 }
 
 .guiItemDetails-ItemContainer {
@@ -29,9 +14,9 @@
 	padding:40px;
 }
 
-.guiItemDetails-MenuContainer {
+.guiItemDetails-MenuContainerPreMove {
 	position:absolute;
-	top: 430px;
+	top: 525px;
 	text-align: center;
 	width:100%;
 	left:0;
@@ -40,8 +25,8 @@
   	margin-right: auto;
 }
 
-.guiItemDetails-MenuMovieContainer {
-	margin: 10px auto;
+.guiItemDetails-MenuContainer {
+	width:100%;
 }
 
 .guiItemDetails-MenuItem {
@@ -55,49 +40,63 @@
 	margin-bottom:10px;
 	
 }
-.guiItemDetails-ImageMovie {
-	position:absolute;
-	top:120px;
-	left:30px;
-	width:600px;
-	height:900px;
-	background-repeat: no-repeat;
-    background-position:center;
-    background-size:cover;
+
+.guiItemDetails-MenuItemSVG {
+	display:inline-block;
+	background-color:rgb(77,77,77);
+    border-radius:50%;
+    -moz-border-radius:50%;
+    -webkit-border-radius:50%;
+    padding:10px;
+	margin-right:20px;
+	margin-bottom:10px;
+    fill:white;
+    vertical-align:bottom;
 }
 
 .guiItemDetails-ImageEpisode {
 	position:absolute;
 	top:80px;
-	left:30px;
+	left:35px;
 	width:600px;
-	height:338px;
+	height:900px;
 	background-repeat: no-repeat;
     background-position:center;
-    background-size:cover;
-}
-
-.guiItemDetails-MovieOverview {
-	max-height:190px;
-	overflow-y:hidden;
+    background-size:contain;
+    background-color:black;
 }
 
 .guiItemDetails-Overview {
-	max-height:130px;
+	margin-top:12px;
+	max-height:260px;
 	overflow-y:hidden;
 }
 
-
-
-.guiItemDetailsTitle {
+.guiItemDetails-Title {
 	font-size:48px;
 	padding-top:20px;
+	width: 1080px;
+	overflow:hidden;
+	white-space: nowrap;	
 }
 
-.guiItemDetailsSubTitle {
+.guiItemDetails-SubTitle {
 	font-size:40px;
 	padding-bottom:10px;
 	padding-left:20px;
+	width: 1060px;
+	overflow:hidden;
+	white-space: nowrap;
+}
+
+.guiItemDetails-ContentTitle{
+	position:absolute;
+	left:660px;
+	top:620px;
+	font-size:40px;
+	width: 1060px;
+	overflow:hidden;
+	white-space: nowrap;	
 }
 
 .infoContainer {
@@ -106,4 +105,48 @@
 	bottom:50px;
 	width:1040px;
 	z-index:5
+}
+
+.guiItemDetails-MetaDataPadding {
+	padding-left:10px;
+}
+
+.Cast {
+	width: 200px;
+    height: 320px;  /*348px */
+    display:inline-block;
+    position:relative; 
+    margin-top: 0px;
+    margin-bottom: 9px;
+    margin-right: 8px;
+    margin-left: 8px;
+    border:3px solid rgba(0,0,0,0);
+    border-radius: 0px;
+    white-space:nowrap;
+    text-overflow:ellipsis; 
+    overflow: hidden; 
+    background-repeat: no-repeat;
+    background-position:center top;
+    background-size:contain;
+    font-size:0.95em;
+}
+
+.MoreEpisodes {
+	width: 500px;
+    height: 320px;
+    display:inline-block;
+    position:relative; 
+    margin-top: 0px;
+    margin-bottom: 9px;
+    margin-right: 8px;
+    margin-left: 8px;
+	border:3px solid rgba(0,0,0,0); 
+	border-radius: 0px;
+    white-space:nowrap;
+    text-overflow:ellipsis; 
+    overflow: hidden; 
+    background-repeat: no-repeat;
+    background-position:center top;
+    background-size:contain;
+    font-size:0.95em;
 }

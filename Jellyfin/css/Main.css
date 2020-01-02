@@ -202,6 +202,14 @@ input[type="text"], input[type="password"] {
     background-color:rgba(0,0,0,0.9);
 }
 
+.displayedItem-TitleContainerText {	
+    text-align:center;
+    padding:0px 10px;
+    overflow:hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
 .displayedItem-TitleContainerSeries {	
 	position:absolute;
 	bottom:0px;
@@ -209,6 +217,8 @@ input[type="text"], input[type="password"] {
     text-align:center;
     padding: 10px 0px;
     background-color:rgba(0,0,0,0.9);
+    overflow:hidden;
+	white-space: nowrap;
 }
 
 .displayedItem-SubTitle {
