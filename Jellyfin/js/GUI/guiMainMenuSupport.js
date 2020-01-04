@@ -49,6 +49,14 @@ guiMainMenuSupport.generateMainMenu = function() {
 		}
 	}
 	
+	//Check Media Folders
+	var urlMF = server.getItemTypeURL("&Limit=0");
+	var hasMediaFolders = xmlhttp.getContent(urlMF);
+		
+	if (hasMediaFolders.TotalRecordCount > 0) {
+		menuItems.push("Media_Folders");
+	}	
+	
 	//Check Server Playlists - 
 	/*
 	 * 
@@ -103,17 +111,13 @@ guiMainMenuSupport.generateMainMenu = function() {
 		}
 	}
 	
-	//Check Media Folders
-	var urlMF = server.getItemTypeURL("&Limit=0");
-	var hasMediaFolders = xmlhttp.getContent(urlMF);
-		
-	if (hasMediaFolders.TotalRecordCount > 0) {
-		menuItems.push("Media_Folders");
-	}
+	*/
 	
+
+	
+	/*
 	//Push Search
 	menuItems.push("Search");
-	
 	*/
 	
 	//Push Settings
@@ -161,10 +165,6 @@ guiMainMenuSupport.generateTopMenu = function() {
 	}
 	
 	//Check Media Folders
-	/*
-	 * 
-	 * Below is not implemented SWH 29/08/2019
-	 * 
 	var urlMF = server.getItemTypeURL("&Limit=0");
 	var hasMediaFolders = xmlhttp.getContent(urlMF);
 	if (hasMediaFolders == null) { return; }
@@ -172,7 +172,6 @@ guiMainMenuSupport.generateTopMenu = function() {
 	if (hasMediaFolders.TotalRecordCount > 0) {
 		menuItems.push("Media_Folders");
 	}
-	*/
 	
 	return menuItems;
 }

@@ -73,12 +73,13 @@ pagehistory.processReturnURLHistory = function() {
 			case "GuiPage_Settings": 	
 				guiSettings.start();
 				break;
+			case "guiOneItem":
+				guiOneItem.start(title,url,selectedItem,topLeftItem);
+				break;					
 			/*	
 			 * Below not Implemented yet
 			 * 
-			case "guiOneItem":
-				guiOneItem.start(title,url,selectedItem,topLeftItem);
-				break;				
+			
 			case "guiMusicArtist": 	
 				guiMusicArtist.start(title,url,selectedItem, topLeftItem);
 				break;

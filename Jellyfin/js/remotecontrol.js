@@ -61,9 +61,6 @@ remotecontrol.keyDown = function() {
 	case "guiItemDetails": 
 		guiItemDetails.keyDown();
 		break;		
-	case "guiItemDetailsSub":
-		guiItemDetails.subKeyDown();
-		break;
 	case "guiSeries": 
 		guiSeries.keyDown();
 		break;	

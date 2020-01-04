@@ -58,7 +58,7 @@ guiUsers.updateDisplayedUsers = function() {
 	var htmltoadd = "";
 	for (var index = this.topLeftItem; index < (Math.min(this.topLeftItem + this.getMaxDisplay(),this.UserData.length)); index++) {
 		if (this.UserData[index].PrimaryImageTag) {			
-			var imgsrc = server.getImageURL(this.UserData[index].Id,"UsersPrimary");
+			var imgsrc = server.getImageURL(this.UserData[index].Id,"UsersPrimary",this.UserData[index].PrimaryImageTag);
 			htmltoadd += "<div id=" + this.UserData[index].Id + " style='background-image:url(" +imgsrc+ ");'><div class=displayedItem-TitleContainer>"+ this.UserData[index].Name + "</div></div>";
 		} else {
 			htmltoadd += "<div id=" + this.UserData[index].Id + " style='background-image:url(images/guiUsersNoImage.png);'><div class=displayedItem-TitleContainer>"+ this.UserData[index].Name + "</div></div>";

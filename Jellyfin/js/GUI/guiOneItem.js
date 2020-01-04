@@ -1,19 +1,13 @@
 var guiOneItem = {
 		ItemData : null,
-		ItemIndexData : null,
 		
+		selectedRow : remotecontrol.ITEM1,
 		selectedItem : 0,
 		topLeftItem : 0,
 		MAXCOLUMNCOUNT : 3,
-		MAXROWCOUNT : 3,
+		MAXROWCOUNT : 2,
 		
-		indexSeekPos : -1,
-		isResume : false,
-		genreType : "",
-		
-		startParams : [],
-		isLatest : false,
-		backdropTimeout : null
+		startParams : []
 }
 
 guiOneItem.getMaxDisplay = function() {
@@ -24,27 +18,20 @@ guiOneItem.start = function(title,url,selectedItem,topLeftItem) {
 	//Save Start Params	
 	this.startParams = [title,url];
 	
+	//Clear Banner
+	document.getElementById("bannerSelection").innerHTML = "";
+	
 	//Reset Values
 	this.indexSeekPos = -1;
 	this.selectedItem = selectedItem;
 	this.topLeftItem = topLeftItem;
-	this.genreType = null;
 	
 	//Load Data
 	this.ItemData = xmlhttp.getContent(url + "&Limit="+filesystem.getTVProperty("ItemPaging"));
 	if (this.ItemData == null) { pagehistory.processReturnURLHistory(); }
-	//Once we've browsed the channels down to a content folder we should display them using GuiDisplay_Series.
-	if (this.ItemData.TotalRecordCount >0){
-		if (this.ItemData.Items[0].Type == "ChannelVideoItem" || 
-				this.ItemData.Items[0].Type == "ChannelAudioItem" || 
-				this.ItemData.Items[0].Type == "Trailer" ||
-				this.ItemData.Items[0].Type == "AudioPodcast") {
-			guiSeries.start("All "+this.ItemData.Items[0].Type,url,selectedItem,topLeftItem,this.ItemData);
-			return;
-		}	
-	}
 
 	//Setup display width height based on title
+	/*
 	switch (title) {
 	case "Collections":
 	case "Channels":
@@ -62,15 +49,12 @@ guiOneItem.start = function(title,url,selectedItem,topLeftItem) {
 		this.MAXROWCOUNT = 3;
 		break;
 	}
+	*/
 	
 	//Set Page Content
-	document.getElementById("pageContent").innerHTML = "<div id='title'>"+title+"</div>" +
-			"<div id=Center class='oneItemCenter'><div id=Content></div></div>";	
+	document.getElementById("pageContent").innerHTML = "<div id=Center class='oneItemCenter'><div id='title' class='homePagesTitles'>"+title+"</div><div id=Content></div></div>";	
 	
 	if (this.ItemData.Items.length > 0) {
-		//Set isResume based on title - used in UpdateDisplayedItems
-		this.isResume = (title == "Resume") ? true : false;
-
 		//Display first XX series
 		this.updateDisplayedItems();
 			
@@ -89,9 +73,13 @@ guiOneItem.start = function(title,url,selectedItem,topLeftItem) {
 	}	
 }
 
+//---------------------------------------------------------------------------------------------------
+//ITEM HANDLERS
+//---------------------------------------------------------------------------------------------------
+
 guiOneItem.updateDisplayedItems = function() {
 	support.updateDisplayedItems(this.ItemData.Items,this.selectedItem,this.topLeftItem,
-			Math.min(this.topLeftItem + this.getMaxDisplay(),this.ItemData.Items.length),"Content","",this.isResume,this.genreType,true);
+			Math.min(this.topLeftItem + this.getMaxDisplay(),this.ItemData.Items.length),"Content","",false,null,true);
 }
 
 //Function sets CSS Properties so show which user is selected
@@ -101,9 +89,24 @@ guiOneItem.updateSelectedItems = function () {
 			Math.min(this.topLeftItem + this.getMaxDisplay(),this.ItemData.Items.length),"Series Selected highlightBorder","Series","");
 }
 
+guiOneItem.updateSelectedItem = function (action) {
+	support.updateSelectedItem(this.ItemData.Items[this.selectedItem].Id,"Series Selected highlightBorder","Series","",action);
+}
+
+guiOneItem.updateCounter = function () {
+	if (this.selectedRow == remotecontrol.BANNER) {
+		support.updateCounter(null,0);
+	} else if (this.selectedRow == remotecontrol.ITEM1) {
+		support.updateCounter(this.selectedItem,this.ItemData.Items.length);
+	} 
+}
+
+//---------------------------------------------------------------------------------------------------
+//REMOTE CONTROL HANDLER
+//---------------------------------------------------------------------------------------------------
+
 guiOneItem.keyDown = function() {
 	var keyCode = event.keyCode;
-	
 	switch(keyCode) {
 		//Need Logout Key
 		case 37:
@@ -122,19 +125,12 @@ guiOneItem.keyDown = function() {
 			logger.log("DOWN");
 			this.processDownKey();
 			break;	
-		case 427: 
-			this.processChannelUpKey();
-			break;			
-		case 428:
-			this.processChannelDownKey();
-			break;	
 		case 10009:
 			logger.log("RETURN");
 			event.preventDefault();
 			pagehistory.processReturnURLHistory();
 			break;	
 		case 13:
-		
 			logger.log("ENTER");
 			this.processSelectedItem();
 			break;
@@ -148,118 +144,117 @@ guiOneItem.keyDown = function() {
 	}
 }
 
-guiOneItem.processSelectedItem = function() {
-	clearTimeout(this.backdropTimeout);
-	support.processSelectedItem("guiOneItem",this.ItemData.Items[this.selectedItem],this.startParams,this.selectedItem,this.topLeftItem,null,this.genreType,this.isLatest); 
-}
-
-guiOneItem.playSelectedItem = function () {
-	clearTimeout(this.backdropTimeout);
-	support.playSelectedItem("guiOneItem",this.ItemData.Items[this.selectedItem],this.startParams,this.selectedItem,this.topLeftItem,null);
-}
-
-guiOneItem.openMenu = function() {
-	pagehistory.updateURLHistory("guiOneItem",this.startParams[0],this.startParams[1],this.selectedItem,this.topLeftItem,null);
-	guiMainMenu.requested("guiOneItem",this.ItemData.Items[this.selectedItem].Id);
-}
-
 guiOneItem.processLeftKey = function() {
-	if (this.selectedItem % this.MAXCOLUMNCOUNT == 0){
-		this.openMenu(); //Going left from anywhere in the first column.
-	} else {
+	switch (this.selectedRow) {
+	case (remotecontrol.ITEM1):		
 		this.selectedItem--;
 		if (this.selectedItem == -1) {
 			this.selectedItem = 0;
-			this.openMenu();
 		} else {
 			if (this.selectedItem < this.topLeftItem) {
-				this.topLeftItem = this.selectedItem - (this.getMaxDisplay() - 1);
+				this.topLeftItem =  this.selectedItem - (this.getMaxDisplay() - 1);
 				if (this.topLeftItem < 0) {
 					this.topLeftItem = 0;
 				}
 				this.updateDisplayedItems();
 			}
+			this.updateSelectedItems();
 		}
-		this.updateSelectedItems();
+		break;
 	}
 }
 
 guiOneItem.processRightKey = function() {
-	this.selectedItem++;
-	if (this.selectedItem >= this.ItemData.Items.length) {
-		this.selectedItem--;
-	} else {
-		if (this.selectedItem >= this.topLeftItem+this.getMaxDisplay() ) {
-			this.topLeftItem = this.selectedItem;
-			this.updateDisplayedItems();
-		}
+	switch (this.selectedRow) {
+	case (remotecontrol.ITEM1):	
+		this.selectedItem++;
+		if (this.selectedItem >= this.ItemData.Items.length) {
+			this.selectedItem--;
+		} else {
+			if (this.selectedItem >= this.topLeftItem+this.getMaxDisplay() ) {
+				this.topLeftItem = this.selectedItem;
+				this.updateDisplayedItems();
+			}
+			this.updateSelectedItems();
+		}	
+		break;
 	}
-	this.updateSelectedItems();
 }
 
 guiOneItem.processUpKey = function() {
-	this.selectedItem = this.selectedItem - this.MAXCOLUMNCOUNT;
-	if (this.selectedItem < 0) {
-		//Check User Setting
-		this.selectedItem = this.selectedItem + this.MAXCOLUMNCOUNT;	
-	} else {
-		if (this.selectedItem < this.topLeftItem) {
-			if (this.topLeftItem - this.MAXCOLUMNCOUNT < 0) {
-				this.topLeftItem = 0;
-			} else {
-				this.topLeftItem = this.topLeftItem - this.MAXCOLUMNCOUNT;
+	switch (this.selectedRow) {
+	case (remotecontrol.ITEM1):
+		this.selectedItem = this.selectedItem - this.MAXCOLUMNCOUNT;
+		if (this.selectedItem < 0) {
+			this.selectedItem = this.selectedItem + this.MAXCOLUMNCOUNT;
+			this.updateSelectedItem("REMOVE");
+			this.selectedRow = remotecontrol.BANNER;
+			document.getElementById("bannerHamburgerPath").className.baseVal = "bannerHamburgerPath highlightHamburger";
+			this.updateCounter();
+		} else {
+			if (this.selectedItem < this.topLeftItem) {
+				if (this.topLeftItem - this.MAXCOLUMNCOUNT < 0) {
+					this.topLeftItem = 0;
+				} else {
+					this.topLeftItem = this.topLeftItem - this.MAXCOLUMNCOUNT;
+				}
+				this.updateDisplayedItems();
 			}
-			this.updateDisplayedItems();
-		}
-	}
-	this.updateSelectedItems();
+			this.updateSelectedItems();
+		}	
+		break;
+	}	
 }
 
 guiOneItem.processDownKey = function() {
-	this.selectedItem = this.selectedItem + this.MAXCOLUMNCOUNT;
-	if (this.selectedItem >= this.ItemData.Items.length) {
-		this.selectedItem = (this.ItemData.Items.length-1);
-		if (this.selectedItem >= (this.topLeftItem  + this.getMaxDisplay())) {
-			this.topLeftItem = this.topLeftItem + this.getMaxDisplay();
-			this.updateDisplayedItems();
-		}
-	} else {
-		if (this.selectedItem >= (this.topLeftItem + this.getMaxDisplay())) {
-			this.topLeftItem = this.topLeftItem + this.MAXCOLUMNCOUNT;
-			this.updateDisplayedItems();
-		}
+	switch (this.selectedRow) {
+	case (remotecontrol.BANNER):
+		document.getElementById("bannerHamburgerPath").className.baseVal = "bannerHamburgerPath";
+		this.selectedRow = remotecontrol.ITEM1;
+		this.updateSelectedItem("ADD");
+		this.updateCounter();
+		break;
+	case (remotecontrol.ITEM1):
+		this.selectedItem = this.selectedItem + this.MAXCOLUMNCOUNT;
+		if (this.selectedItem >= this.ItemData.Items.length) {
+			this.selectedItem = (this.ItemData.Items.length-1);
+			if (this.selectedItem >= (this.topLeftItem  + this.getMaxDisplay())) {
+				this.topLeftItem = this.topLeftItem + this.getMaxDisplay();
+				this.updateDisplayedItems();
+			}
+		} else {
+			if (this.selectedItem >= (this.topLeftItem + this.getMaxDisplay())) {
+				this.topLeftItem = this.topLeftItem + this.MAXCOLUMNCOUNT;
+				this.updateDisplayedItems();
+			}
+		}	
+		this.updateSelectedItems();
+		break;	
 	}
-	this.updateSelectedItems();
 }
 
-guiOneItem.processChannelUpKey = function() {
-	this.selectedItem = this.selectedItem - this.getMaxDisplay();
-	if (this.selectedItem < 0) {
+guiOneItem.processSelectedItem = function() {
+	switch (this.selectedRow) {
+	case (remotecontrol.BANNER):	
+		//Menu Hamburger
+		//Reset all vars to default as user may return from menu
+		document.getElementById("bannerHamburgerPath").className.baseVal = "bannerHamburgerPath";
 		this.selectedItem = 0;
 		this.topLeftItem = 0;
-		this.updateDisplayedItems();
-	} else {
-		if (this.topLeftItem - this.getMaxDisplay() < 0) {
-			this.topLeftItem = 0;
-		} else {
-			this.topLeftItem = this.topLeftItem - this.getMaxDisplay();
-		}
-		this.updateDisplayedItems();
+		this.selectedRow = remotecontrol.ITEM1;
+		pagehistory.updateURLHistory("guiOneItem",this.startParams[0],this.startParams[1],0,0,true);
+		guiMainMenu.requested("guiOneItem",this.ItemData.Items[0].Id, "Series Selected highlightBorder");
+		break;
+	case (remotecontrol.ITEM1): 
+		support.processSelectedItem("guiOneItem",this.ItemData.Items[this.selectedItem],this.startParams,this.selectedItem,this.topLeftItem,null,null,false); 
+		break;
 	}
-	this.updateSelectedItems();
 }
 
-guiOneItem.processChannelDownKey = function() {
-	this.selectedItem = this.selectedItem + this.getMaxDisplay();
-	if (this.selectedItem >= this.ItemData.Items.length) {		
-		this.selectedItem = (this.ItemData.Items.length-1);
-		if (this.selectedItem >= this.topLeftItem + this.getMaxDisplay()) {
-			this.topLeftItem = this.topLeftItem + this.getMaxDisplay();
-		}
-		this.updateDisplayedItems();
-	} else {
-		this.topLeftItem = this.topLeftItem + this.getMaxDisplay();
-		this.updateDisplayedItems();
+guiOneItem.playSelectedItem = function () {
+	switch (this.selectedRow) {
+	case (remotecontrol.ITEM1): 
+		support.playSelectedItem("guiOneItem",this.ItemData.Items[this.selectedItem],this.startParams,this.selectedItem,this.topLeftItem,null);
+		break;
 	}
-	this.updateSelectedItems();
 }

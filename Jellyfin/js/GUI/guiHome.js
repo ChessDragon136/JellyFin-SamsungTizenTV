@@ -33,6 +33,10 @@ guiHome.processHomePageMenu = function (menuItem) {
 		var url = server.getItemTypeURL("&IncludeItemTypes=Movie&SortBy=SortName&SortOrder=Ascending&fields=ParentId,SortName,Overview,Genres,RunTimeTicks&recursive=true");
 		guiSeries.start("All Movies",url,0,0);
 		break;
+	case "Media_Folders":
+		var url = server.getItemTypeURL("&SortBy=SortName&SortOrder=Ascending&CollapseBoxSetItems=false&fields=SortName");	
+		guiOneItem.start("Media Folders", url,0,0);
+		break;		
 	/*
 	 * 
 	 * The Below is currently not implemented - Will need major work SWH 29/08/2019
@@ -48,10 +52,7 @@ guiHome.processHomePageMenu = function (menuItem) {
 		var url = server.getItemTypeURL("&SortBy=SortName&SortOrder=Ascending&Filters=IsFavorite&fields=SortName&recursive=true");
 		guiOneItem.start("Favourites", url,0,0);
 		break;	
-	case "Media_Folders":
-		var url = server.getItemTypeURL("&SortBy=SortName&SortOrder=Ascending&CollapseBoxSetItems=false&fields=SortName");	
-		guiOneItem.start("Media Folders", url,0,0);
-		break;
+
 	case "Channels":
 		var url = server.getCustomURL("/Channels?userId="+server.getUserID()+"&format=json");	
 		guiOneItem.start("Channels", url,0,0);

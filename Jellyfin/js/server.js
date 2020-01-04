@@ -132,7 +132,7 @@
 	 //------------------------------------------------------------
 	 //  Image Functions
 	 //------------------------------------------------------------		
-	server.getImageURL = function(itemId, imagetype, totalimages) {
+	server.getImageURL = function(itemId, imagetype, tag, view, imagePos) {
 	    var query = "";
 	    switch (imagetype) {
 	        case "Primary":
@@ -142,9 +142,7 @@
 	            query = "/Items/" + itemId + "/Images/Banner/0?"
 	            break;
 	        case "Backdrop":
-	        	var totalimages = (totalimages !== undefined) ? totalimages : 0;
-	        	var index = Math.floor((Math.random() * totalimages) + 0);
-	            query = "/Items/" + itemId + "/Images/Backdrop/" + index + "?"; 
+	            query = "/Items/" + itemId + "/Images/Backdrop/" + imagePos + "?"; 
 	            break;
 	        case "Thumb":
 	            query = "/Items/" + itemId + "/Images/Thumb/0?";
@@ -162,8 +160,31 @@
 	            query = "/Items/" + itemId + "/Images/Chapter/" + chapter + "?";
 	            break;
 	    }
+	    
+	    switch (view) {
+	    case "Series":
+	    case "MoreEpisodes":	
+	    	//Use Biggest Width Between Series & MoreEpisodes views.css
+	    	query += "maxwidth=500&";
+	    	break;  
+	    case "SeriesPortrait":
+	    case "SeriesPortraitLarge":
+	    	query += "maxheight=348&";
+	    	break; 
+	    case "Cast":
+	    	//Also used for seasons
+	    	query += "maxwidth=200&";
+	    	break; 
+	    case "GUITVEpisodes": //Special View controller in GuiTVEpisodes
+	    	query += "maxwidth=200&";
+	    	break;
+	    case "AppBackdrop":
+	    	//background image
+	    	query += "height=1080&width=1920&";
+	    	break;  	    	
+	    }
 
-	    return server.getserverAddr() + query;
+	    return server.getserverAddr() + query + "tag=" + tag;//+"&quality=90";
 	}
 
 	 //------------------------------------------------------------

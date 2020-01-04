@@ -113,7 +113,8 @@ guiHomeOneItem.start = function(selectedItem,topLeftItem) {
 			for (var index = 0; index < randomImageData.Items.length; index++) {
 				if (randomImageData.Items[index ].BackdropImageTags.length > 0) {
 					support.setBackdropId(randomImageData.Items[index ].Id);
-					var imgsrc = server.getImageURL(randomImageData.Items[index ].Id,"Backdrop",randomImageData.Items[index ].BackdropImageTags.length);
+					var imagePos = Math.floor((Math.random() * randomImageData.Items[index].BackdropImageTags.length) + 0);
+					var imgsrc = server.getImageURL(randomImageData.Items[index ].Id,"Backdrop",randomImageData.Items[index ].BackdropImageTags[imagePos],"AppBackdrop",imagePos);
 					support.fadeImage(imgsrc);
 					break;
 				}

@@ -84,7 +84,7 @@ guiTVShow.start = function(url,selectedItem,topLeftItem) {
 			
 			//Set Episode Primary Image
 			if (this.ShowData.ImageTags.Primary) {			
-				var imgsrc = server.getImageURL(this.ShowData.Id,"Primary");
+				var imgsrc = server.getImageURL(this.ShowData.Id,"Primary",this.ShowData.ImageTags.Primary);
 				document.getElementById("ShowImage").style.backgroundImage="url('" + imgsrc + "')";
 			}
 			
@@ -160,7 +160,8 @@ guiTVShow.start = function(url,selectedItem,topLeftItem) {
 			if (this.ShowData.Id != support.getBackdropId()) {
 				if (this.ShowData.BackdropImageTags.length > 0){
 					support.setBackdropId(this.ShowData.Id);
-					var imgsrc = server.getImageURL(this.ShowData.Id,"Backdrop",this.ShowData.BackdropImageTags.length);
+					var imagePos = Math.floor((Math.random() * this.ShowData.BackdropImageTags.length) + 0);
+					var imgsrc = server.getImageURL(this.ShowData.Id,"Backdrop",this.ShowData.BackdropImageTags[imagePos],"AppBackdrop",imagePos);
 					support.fadeImage(imgsrc);
 				}				
 			}

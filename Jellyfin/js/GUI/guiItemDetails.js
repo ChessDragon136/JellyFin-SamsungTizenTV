@@ -98,7 +98,7 @@ guiItemDetails.start = function(url,selectedItem,topLeftItem) {
 	
 	//Set Episode Primary Image
 	if (this.ItemData.ImageTags.Primary) {			
-		var imgsrc = server.getImageURL(this.ItemData.Id,"Primary");
+		var imgsrc = server.getImageURL(this.ItemData.Id,"Primary",this.ItemData.ImageTags.Primary);
 		document.getElementById("ShowImage").style.backgroundImage="url('" + imgsrc + "')";
 	}
 	
@@ -204,7 +204,8 @@ guiItemDetails.start = function(url,selectedItem,topLeftItem) {
 	if (this.ItemData.Id != support.getBackdropId()) {
 		if (this.ItemData.BackdropImageTags !== undefined && this.ItemData.BackdropImageTags.length > 0){
 			support.setBackdropId(this.ItemData.Id);
-			var imgsrc = server.getImageURL(this.ItemData.Id,"Backdrop",this.ItemData.BackdropImageTags.length);
+			var imagePos = Math.floor((Math.random() * this.ItemData.BackdropImageTags.length) + 0);
+			var imgsrc = server.getImageURL(this.ItemData.Id,"Backdrop",this.ItemData.BackdropImageTags[imagePos],"AppBackdrop",imagePos);
 			support.fadeImage(imgsrc);
 		}				
 	}
@@ -487,7 +488,8 @@ guiItemDetails.processSelectedItem = function() {
 			this.menuItems[this.menuItemCastPos] = 'Cast';
 			document.getElementById("guiItemDetails-MenuItem"+this.menuItemCastPos).innerHTML = 'Cast';
 			document.getElementById("guiItemDetails-ContentTitle").innerHTML = "Simlar";
-			this.setupMoreEpisodesView() //Sets top left and selected based on where in list of series episode is
+			this.selectedItem = 0;
+			this.topLeftItem = 0;
 			this.selectedRow = remotecontrol.ITEM1;
 			this.rowDisplayed = remotecontrol.ITEM1;
 			this.updateDisplayedSimilarItems();

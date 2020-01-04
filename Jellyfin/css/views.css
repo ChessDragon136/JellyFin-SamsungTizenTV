@@ -1,0 +1,154 @@
+.User {
+	width: 400px;
+    height: 400px;
+    display:inline-block;
+    position:relative; 
+    margin:8px;
+    border:3px solid rgba(0,0,0,0); 
+    border-radius: 0px;
+    white-space:nowrap;
+    text-overflow:ellipsis; 
+    overflow: hidden; 
+    background-repeat: no-repeat;
+    background-position:center;
+    background-size:contain;
+    background-color: #3b3b3b;  
+
+}
+
+.Series {
+	width: 471px;
+    height: 335px;
+    display:inline-block;
+    position:relative; 
+    margin:25px;
+	border:3px solid rgba(0,0,0,0); 
+	border-radius: 0px;
+    white-space:nowrap;
+    text-overflow:ellipsis; 
+    overflow: hidden; 
+    background-repeat: no-repeat;
+    background-position:center top;
+    background-size:471px 294px;
+    background-color: #3b3b3b;  
+    font-size:0.95em;
+}
+
+.MoreEpisodes {
+	width: 500px;
+    height: 320px;
+    display:inline-block;
+    position:relative; 
+    margin-top: 0px;
+    margin-bottom: 9px;
+    margin-right: 8px;
+    margin-left: 8px;
+	border:3px solid rgba(0,0,0,0); 
+	border-radius: 0px;
+    white-space:nowrap;
+    text-overflow:ellipsis; 
+    overflow: hidden; 
+    background-repeat: no-repeat;
+    background-position:center top;
+    background-size:500px 279px;
+    background-color: #3b3b3b;  
+    font-size:0.95em;
+}
+
+.SeriesPortrait {
+	width: 180px;  /* */
+    height: 315px; /* 265px; */
+    display:inline-block;
+    vertical-align: middle;
+    position:relative; 
+    margin-top: 0px;
+    margin-bottom: 6px;
+    margin-right: 6px;
+    margin-left: 6px;
+    border:3px solid rgba(0,0,0,0);
+    border-radius: 0px;
+    white-space:nowrap;
+    text-overflow:ellipsis; 
+    overflow: hidden; 
+    background-repeat: no-repeat;
+    background-position:center top;
+    background-size:180px 264px;
+    background-color: #3b3b3b;  
+    font-size:0.95em;
+}
+
+.SeriesPortraitLarge {
+	width: 235px;
+    height: 398px;  /*348px */
+    display:inline-block;
+    position:relative; 
+    margin-top: 0px;
+    margin-bottom: 9px;
+    margin-right: 8px;
+    margin-left: 8px;
+    border:3px solid rgba(0,0,0,0);
+    border-radius: 0px;
+    white-space:nowrap;
+    text-overflow:ellipsis; 
+    overflow: hidden; 
+    background-repeat: no-repeat;
+    background-position:center top;
+    background-size:235px 348px;
+    background-color: #3b3b3b;  
+    font-size:0.95em;
+}
+
+.Cast {
+	width: 200px;
+    height: 320px;
+    display:inline-block;
+    position:relative; 
+    margin-top: 0px;
+    margin-bottom: 9px;
+    margin-right: 8px;
+    margin-left: 8px;
+    border:3px solid rgba(0,0,0,0);
+    border-radius: 0px;
+    white-space:nowrap;
+    text-overflow:ellipsis; 
+    overflow: hidden; 
+    background-repeat: no-repeat;
+    background-position:center top;
+    background-size:200px 269px;
+    background-color: #3b3b3b;  
+    font-size:0.95em;
+}
+
+/*
+.Seasons {
+	width: 235px;
+    height: 388px;  
+    display:inline-block;
+    position:relative; 
+    margin-top: 0px;
+    margin-bottom: 9px;
+    margin-right: 8px;
+    margin-left: 8px;
+    border:3px solid rgba(0,0,0,0);
+    border-radius: 0px;
+    white-space:nowrap;
+    text-overflow:ellipsis; 
+    overflow: hidden; 
+    background-repeat: no-repeat;
+    background-position:center top;
+    background-size:contain;
+    font-size:0.95em;
+}
+
+.MediaInfo {
+	text-align: left;
+	width: 400px;
+    height: 450px;  
+    display:inline-block;
+    position:relative; 
+    white-space:nowrap;
+    text-overflow:ellipsis; 
+    overflow: hidden; 
+}
+*/
+

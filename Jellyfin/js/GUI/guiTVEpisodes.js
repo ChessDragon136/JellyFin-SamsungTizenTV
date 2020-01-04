@@ -8,7 +8,7 @@ var guiTVEpisodes = {
 		selectedRow : 0,
 		selectedBannerItem : 0, //Menu Icon
 		
-		menuItems : ['Play All','Shuffle All'],		
+		menuItems : ['Play All'],		
 		selectedMenuItem : 0,   //Play All, Shuffle All
 		
 		//Do not change order! Used in selectedItem statically
@@ -101,7 +101,7 @@ guiTVEpisodes.updateDisplayedItems = function() {
 		htmlToAdd += "<div id=" + this.ItemData.Items[index].Id + " class='EpisodeListSingle'>";
 		
 		if (this.ItemData.Items[index].ImageTags.Primary) {			
-			var imgsrc = server.getImageURL(this.ItemData.Items[index].Id,"Primary");
+			var imgsrc = server.getImageURL(this.ItemData.Items[index].Id,"Primary",this.ItemData.Items[index].ImageTags.Primary,"GUITVEpisodes");
 			htmlToAdd += "<span class='EpisodeListSingleImage' style=background-image:url(" +imgsrc+ ")></span>";
 		} else {
 			htmlToAdd += "<span class='EpisodeListSingleImage'></span>";

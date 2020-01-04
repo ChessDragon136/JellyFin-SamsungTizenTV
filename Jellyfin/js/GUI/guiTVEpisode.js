@@ -99,7 +99,7 @@ guiTVEpisode.start = function(url,selectedItem,topLeftItem) {
 	
 	//Set Episode Primary Image
 	if (this.ItemData.ImageTags.Primary) {			
-		var imgsrc = server.getImageURL(this.ItemData.Id,"Primary");
+		var imgsrc = server.getImageURL(this.ItemData.Id,"Primary",this.ItemData.ImageTags.Primary);
 		document.getElementById("ShowImage").style.backgroundImage="url('" + imgsrc + "')";
 	}
 	
@@ -205,7 +205,8 @@ guiTVEpisode.start = function(url,selectedItem,topLeftItem) {
 	if (this.ItemData.SeriesId != support.getBackdropId()) {
 		if (this.ItemData.ParentBackdropImageTags !== undefined && this.ItemData.ParentBackdropImageTags.length > 0){
 			support.setBackdropId(this.ItemData.SeriesId);
-			var imgsrc = server.getImageURL(this.ItemData.SeriesId,"Backdrop",this.ItemData.ParentBackdropImageTags.length);
+			var imagePos = Math.floor((Math.random() * this.ItemData.ParentBackdropImageTags.length) + 0);
+			var imgsrc = server.getImageURL(this.ItemData.SeriesId,"Backdrop",this.ItemData.ParentBackdropImageTags[imagePos],"AppBackdrop",imagePos);
 			support.fadeImage(imgsrc);
 		}				
 	}

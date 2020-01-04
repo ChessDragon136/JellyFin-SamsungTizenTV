@@ -456,16 +456,17 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 				var title = this.getNameFormat(Items[index].SeriesName, Items[index].ParentIndexNumber, Items[index].Name, Items[index].IndexNumber);
 				var imgsrc = "";
 				if (Items[index].ParentThumbItemId) {
-					imgsrc = server.getImageURL(Items[index].SeriesId,"Thumb");
+					imgsrc = server.getImageURL(Items[index].SeriesId,"Thumb",Items[index].ParentThumbImageTag,"Series");
 				} else if (Items[index].ParentBackdropImageTags !== undefined && Items[index].ParentBackdropImageTags.length > 0) {	
-					imgsrc = server.getImageURL(Items[index].ParentBackdropItemId,"Backdrop",Items[index].ParentBackdropImageTags.length);
+					var imagePos = Math.floor((Math.random() * Items[index].ParentBackdropImageTags.length) + 0);
+					imgsrc = server.getImageURL(Items[index].ParentBackdropItemId,"Backdrop",Items[index].ParentBackdropImageTags[imagePos],"Series",imagePos);
 				} else if (Items[index].ImageTags.Primary) {	
-					imgsrc = server.getImageURL(Items[index].Id,"Primary");
+					imgsrc = server.getImageURL(Items[index].Id,"Primary",Items[index].ImageTags.Primary,"Series");
 				} else {
 					imgsrc = "images/collection.png";
 				}
 				//Add watched and favourite overlays.
-				htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style='background-image:url(" +imgsrc+ ");background-size:contain'><div class=displayedItem-ProgressBar></div><div class=displayedItem-ProgressBarCurrent style='width:"+progress+"%;'></div>";
+				htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style='background-image:url(" +imgsrc+ ")'><div class=displayedItem-ProgressBar></div><div class=displayedItem-ProgressBarCurrent style='width:"+progress+"%;'></div>";
 				if (Items[index].UserData.Played) {
 					htmlToAdd += "<div class='displayedItem-NumberOverlay highlightBackground'>&#10003</div>";	
 				}
@@ -477,16 +478,17 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 			} else {
 				var title = Items[index].Name;
 				if (Items[index].ImageTags.Thumb) {		
-					var imgsrc = server.getImageURL(Items[index].Id,"Thumb");
-					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")><div class=displayedItem-ProgressBar></div><div class=displayedItem-ProgressBarCurrent style='width:"+progress+"%;'></div>";	
+					var imgsrc = server.getImageURL(Items[index].Id,"Thumb",Items[index].ImageTags.Thumb,"Series");
+					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")><div class='displayedItem-ProgressBar displayedItem-ProgressBarTopOverride'></div><div class='displayedItem-ProgressBarCurrent displayedItem-ProgressBarTopOverride' style='width:"+progress+"%;'></div>";	
 				} else if (Items[index].BackdropImageTags.length > 0) {	
-					var imgsrc = server.getImageURL(Items[index].Id,"Backdrop".Items[index].BackdropImageTags.length);
-					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")><div class=displayedItem-ProgressBar></div><div class=displayedItem-ProgressBarCurrent style='width:"+progress+"%;'></div>";	
+					var imagePos = Math.floor((Math.random() * Items[index].BackdropImageTags.length) + 0);
+					var imgsrc = server.getImageURL(Items[index].Id,"Backdrop".Items[index].BackdropImageTags[imagePos],"Series",imagePos);
+					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")><div class='displayedItem-ProgressBar displayedItem-ProgressBarTopOverride'></div><div class='displayedItem-ProgressBarCurrent displayedItem-ProgressBarTopOverride' style='width:"+progress+"%;'></div>";	
 				} else if (Items[index].ImageTags.Primary) {		
-					var imgsrc = server.getImageURL(Items[index].Id,"Primary");
-					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")><div class=displayedItem-ProgressBar></div><div class=displayedItem-ProgressBarCurrent style='width:"+progress+"%;'></div>";	
+					var imgsrc = server.getImageURL(Items[index].Id,"Primary",Items[index].ImageTags.Primary,"Series");
+					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")><div class='displayedItem-ProgressBar displayedItem-ProgressBarTopOverride'></div><div class='displayedItem-ProgressBarCurrent displayedItem-ProgressBarTopOverride' style='width:"+progress+"%;'></div>";	
 				} else {
-					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(images/collection.png)><div class=displayedItem-ProgressBar></div><div class=displayedItem-ProgressBarCurrent style='width:"+progress+"%;'></div>";
+					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(images/collection.png)><div class='displayedItem-ProgressBar displayedItem-ProgressBarTopOverride'></div><div class='displayedItem-ProgressBarCurrent displayedItem-ProgressBarTopOverride' style='width:"+progress+"%;'></div>";
 				}
 				htmlToAdd += "<div class=displayedItem-TitleContainer><div class=displayedItem-TitleContainerText>"+ title + "</div></div></div>";	
 			}			
@@ -496,20 +498,21 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 				var title = Items[index].Name;
 				if (showBackdrop == true) {
 					if (Items[index].ImageTags.Thumb) {		
-						var imgsrc = server.getImageURL(Items[index].Id,"Thumb");
+						var imgsrc = server.getImageURL(Items[index].Id,"Thumb",Items[index].ImageTags.Thumb,"Series");
 						htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style='background-image:url(" +imgsrc+ ")'>";
 					} else if (Items[index].BackdropImageTags.length > 0) {
-						var imgsrc = server.getImageURL(Items[index].Id,"Backdrop",Items[index].BackdropImageTags.length);
+						var imagePos = Math.floor((Math.random() * Items[index].BackdropImageTags.length) + 0);
+						var imgsrc = server.getImageURL(Items[index].Id,"Backdrop",Items[index].BackdropImageTags[imagePos],"Series",imagePos);
 						htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style='background-image:url(" +imgsrc+ ")'>";
 					} else if (Items[index].ImageTags.Primary) {		
-						var imgsrc = server.getImageURL(Items[index].Id,"Primary");
+						var imgsrc = server.getImageURL(Items[index].Id,"Primary",Items[index].ImageTags.Primary,"Series");
 						htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style='background-image:url(" +imgsrc+ ")'>";
 					} else {
 						htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style='background-image:rgba(0,0,0,0.5)'>";				
 					}
 				} else {
 					if (Items[index].ImageTags.Primary) {
-						var imgsrc = (filesystem.getUserProperty("LargerView") == true) ? server.getImageURL(Items[index].Id,"Primary",main.seriesPosterLargeWidth,main.seriesPosterLargeHeight) : server.getImageURL(Items[index].Id,"Primary",main.seriesPosterWidth,main.seriesPosterHeight); 
+						var imgsrc = (filesystem.getUserProperty("LargerView") == true) ? server.getImageURL(Items[index].Id,"Primary",Items[index].ImageTags.Primary,"SeriesPortraitLarge") : server.getImageURL(Items[index].Id,"Primary",Items[index].ImageTags.Primary,"SeriesPortrait"); 
 						htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style='background-image:url(" +imgsrc+ ")'>";
 					} else {
 						htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style='background-image:rgba(0,0,0,0.5)'>";				
@@ -530,7 +533,7 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 			} else if (Items[index].Type == "Season") {
 				var title = Items[index].Name;
 				if (Items[index].ImageTags.Primary) {			
-					var imgsrc = server.getImageURL(Items[index].Id,"Primary",main.seriesPosterLargeWidth,main.seriesPosterLargeHeight);
+					var imgsrc = server.getImageURL(Items[index].Id,"Primary",Items[index].ImageTags.Primary,"Cast");
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style='background-image:url(" +imgsrc+ ")'>";	
 				} else {
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style='background-color:rgba(0,0,0,0.5)'>";
@@ -542,7 +545,7 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 					var title = Items[index].IndexNumber + ". " + Items[index].Name;				
 					var imageData = "";	
 					if (Items[index].ImageTags.Primary) {	
-						var imgsrc = server.getImageURL(Items[index].Id,"Primary");	
+						var imgsrc = server.getImageURL(Items[index].Id,"Primary",Items[index].ImageTags.Primary);	
 						imageData = "'background-image:url(" +imgsrc+ ")'";
 					} else {
 						imageData = "background-color:rgba(0,0,0,0.5)";
@@ -551,13 +554,14 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 					var title = this.getNameFormat(Items[index].SeriesName, Items[index].ParentIndexNumber, Items[index].Name, Items[index].IndexNumber);
 					var imageData = "";	
 					if (Items[index].ParentThumbItemId) {	
-						var imgsrc = server.getImageURL(Items[index].SeriesId,"Thumb");
+						var imgsrc = server.getImageURL(Items[index].SeriesId,"Thumb",Items[index].ParentThumbImageTag,"Series");
 						imageData = "'background-image:url(" +imgsrc+ ")'";
 					} else if (Items[index].ParentBackdropImageTags !== undefined && Items[index].ParentBackdropImageTags.length > 0) {	
-						var imgsrc = server.getImageURL(Items[index].ParentBackdropItemId,"Backdrop",Items[index].ParentBackdropImageTags.length);
+						var imagePos = Math.floor((Math.random() * Items[index].ParentBackdropImageTags.length) + 0);
+						var imgsrc = server.getImageURL(Items[index].ParentBackdropItemId,"Backdrop",Items[index].ParentBackdropImageTags[imagePos],"Series",imagePos);
 						imageData = "'background-image:url(" +imgsrc+ ")'";
 					} else 	if (Items[index].ImageTags.Primary) {	
-						var imgsrc = server.getImageURL(Items[index].Id,"Primary");	
+						var imgsrc = server.getImageURL(Items[index].Id,"Primary",Items[index].ImageTags.Primary,"Series");	
 						imageData = "'background-image:url(" +imgsrc+ ")'";
 					} else {
 						imageData = "background-color:rgba(0,0,0,0.5)";
@@ -577,7 +581,7 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 			} else if (Items[index].Type == "Actor" || Items[index].Type == "GuestStar") {
 				var title = Items[index].Name;
 				if (Items[index].PrimaryImageTag) {			
-					var imgsrc = server.getImageURL(Items[index].Id,"Primary",main.seriesPosterLargeWidth,main.seriesPosterLargeHeight);
+					var imgsrc = server.getImageURL(Items[index].Id,"Primary",Items[index].PrimaryImageTag,"Cast");
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")>";	
 				} else {
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-color:rgba(0,0,0,0.5);>";
@@ -598,11 +602,28 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 					break;
 				}
 				if (Items[index].ImageTags.Primary) {
-					var imgsrc = (filesystem.getUserProperty("LargerView") == true) ? server.getImageURL(Items[index].Id,"Primary",main.seriesPosterLargeWidth,main.seriesPosterLargeHeight) : server.getImageURL(Items[index].Id,"Primary",main.seriesPosterWidth,main.seriesPosterHeight); 
+					var imgsrc = (filesystem.getUserProperty("LargerView") == true) ? server.getImageURL(Items[index].Id,"Primary",Items[index].ImageTags.Primary,"SeriesPortraitLarge") : server.getImageURL(Items[index].Id,"Primary",Items[index].ImageTags.Primary,"SeriesPortrait"); 
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")><div class='displayedItem-NumberOverlay highlightBackground'>"+itemCount+"</div>";	
 					
 				} else {
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-color:rgba(0,0,0,0.5);><div class='displayedItem-NumberOverlay highlightBackground'>"+itemCount+"</div>";
+				}
+				htmlToAdd += "<div class=displayedItem-TitleContainer><div class=displayedItem-TitleContainerText>"+ title + "</div></div></div>";	
+			//----------------------------------------------------------------------------------------------
+			} else if (Items[index].Type == "CollectionFolder" ) { //Items[index].Type == "Playlist" || (Removed until implemented
+				var title = Items[index].Name;	
+				if (Items[index].ImageTags.Primary) {			
+					var imgsrc = server.getImageURL(Items[index].Id,"Primary",Items[index].ImageTags.Primary,"Series");
+					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")>";	
+				} else if (Items[index].ImageTags.Thumb) {			
+					var imgsrc = server.getImageURL(Items[index].Id,"Thumb",Items[index].ImageTags.Thumb,"Series");
+					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")>";	
+				} else if (Items[index].BackdropImageTags.length > 0) {	
+					var imagePos = Math.floor((Math.random() * Items[index].ParentBackdropImageTags.length) + 0);
+					var imgsrc = server.getBackgroundImageURL(Items[index].Id,"Backdrop",Items[index].ParentBackdropImageTags[imagePos],"Series",imagePos);
+					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")>";	
+				} else {
+					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-color:rgba(0,0,0,0.5);>";
 				}
 				htmlToAdd += "<div class=displayedItem-TitleContainer><div class=displayedItem-TitleContainerText>"+ title + "</div></div></div>";	
 			//----------------------------------------------------------------------------------------------
@@ -673,21 +694,6 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-color:rgba(0,0,0,0.5);><div class=displayedItem-TitleContainer>"+ title + "</div></div>";
 				}
 			//----------------------------------------------------------------------------------------------
-			} else if (Items[index].Type == "Playlist" || Items[index].Type == "CollectionFolder" ) {
-				var title = Items[index].Name;	
-				if (Items[index].ImageTags.Primary) {			
-					var imgsrc = server.getImageURL(Items[index].Id,"Primary",0,false,0);
-					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")><div class=displayedItem-TitleContainer>"+ title + "</div></div>";	
-				} else if (Items[index].ImageTags.Thumb) {			
-					var imgsrc = server.getImageURL(Items[index].Id,"Thumb",0,false,0);
-					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")><div class=displayedItem-TitleContainer>"+ title + "</div></div>";	
-				} else if (Items[index].BackdropImageTags.length > 0) {			
-					var imgsrc = server.getBackgroundImageURL(Items[index].Id,"Backdrop",0,false,0,Items[index].BackdropImageTags.length);
-					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")><div class=displayedItem-TitleContainer>"+ title + "</div></div>";	
-				} else {
-					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-color:rgba(0,0,0,0.5);><div class=displayedItem-TitleContainer>"+ title + "</div></div>";
-				}
-			//----------------------------------------------------------------------------------------------
 			}  else if (Items[index].Type == "Photo") {
 				var title = Items[index].Name;		
 				if (Items[index].ImageTags.Primary) {			
@@ -741,10 +747,11 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 				logger.log("Unhandled Item type: "+Items[index].Type)
 				var title = Items[index].Name;		
 				if (Items[index].ImageTags.Thumb) {		
-					var imgsrc = server.getImageURL(Items[index].Id,"Thumb");
+					var imgsrc = server.getImageURL(Items[index].Id,"Thumb",Items[index].ImageTags.Thumb,"Series");
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")>";
 				} else if (Items[index].BackdropImageTags.length > 0) {			
-					var imgsrc = server.getImageURL(Items[index].Id,"Backdrop",Items[index].BackdropImageTags.length);
+					var imagePos = Math.floor((Math.random() * Items[index].BackdropImageTags.length) + 0);
+					var imgsrc = server.getImageURL(Items[index].Id,"Backdrop",Items[index].BackdropImageTags[imagePos],"Series",imagePos);
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")>";	
 				} else {
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-color:rgba(0,0,0,0.5);>";
@@ -773,18 +780,9 @@ support.processSelectedItem = function(page,SelectedItem,startParams,selectedIte
 		}	
 	}
 	if (SelectedItem.CollectionType != null) {
-		/*
-		 * 
-		 * Collections not implemented SWH 20/08/2019
-		 * 
-		 * 
+		
 		logger.log("CollectionType: "+SelectedItem.CollectionType);
 		switch (SelectedItem.CollectionType) {
-		case "boxsets":	
-			//URL Below IS TEMPORARY TO GRAB SERIES OR FILMS ONLY - IN FUTURE SHOULD DISPLAY ALL
-			var url = server.getChildItemsURL(SelectedItem.Id,"&fields=ParentId,SortName,Overview,Genres,RunTimeTicks");
-			guiSeries.start("All Collections",url,0,0);
-			break;
 		case "tvshows" :	
 			var url = server.getChildItemsURL(SelectedItem.Id,"&SortBy=SortName&SortOrder=Ascending&IncludeItemTypes=Series&Recursive=true&CollapseBoxSetItems=false&fields=ParentId,SortName,Overview,Genres,RunTimeTicks");
 			guiSeries.start("All TV",url,0,0);
@@ -792,7 +790,18 @@ support.processSelectedItem = function(page,SelectedItem,startParams,selectedIte
 		case "movies" :
 			var url = server.getChildItemsURL(SelectedItem.Id,"&SortBy=SortName&SortOrder=Ascending&IncludeItemTypes=Movie&Recursive=true&CollapseBoxSetItems=false&fields=ParentId,SortName,Overview,Genres,RunTimeTicks");
 			guiSeries.start("All Movies",url,0,0);
-			break;	
+			break;		
+			
+			/*
+			 * 
+			 * Collections not implemented SWH 20/08/2019
+			 * 
+			 * 
+		case "boxsets":
+			//URL Below IS TEMPORARY TO GRAB SERIES OR FILMS ONLY - IN FUTURE SHOULD DISPLAY ALL
+			var url = server.getChildItemsURL(SelectedItem.Id,"&fields=ParentId,SortName,Overview,Genres,RunTimeTicks");
+			guiSeries.start("All Collections",url,0,0);
+			break;		
 		case "music" :
 			if (main.isMusicEnabled()) {			
 				var url = server.getChildItemsURL(SelectedItem.Id,"&IncludeItemTypes=MusicAlbum&Recursive=true&ExcludeLocationTypes=Virtual&fields=ParentId,SortName&CollapseBoxSetItems=false");
@@ -816,9 +825,9 @@ support.processSelectedItem = function(page,SelectedItem,startParams,selectedIte
 			} else {
 				guiOneItem.start(SelectedItem.Name,url,0,0);
 			}
-			break;
+			break;			
+			*/
 		}
-		*/
 	} else {
 		switch (SelectedItem.Type) {
 		case "ManualCollectionsFolder":
