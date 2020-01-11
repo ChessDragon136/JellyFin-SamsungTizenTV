@@ -1,24 +1,19 @@
 
 var main =
 {
-	version : "0.0.1",
-	debugLevel : 0,
+	//TV Series Version	
+	version : "0.0.3",
+	debugLevel : 0, //-1 == Off : 0 Events minus Key Presses : 1 Events with Key Presses
 	
-	//TV Series Version
-	width : 1920,
-	height : 1080,
-	backdropWidth : 1920,
-	backdropHeight : 1080,
-
+	//Test Server - Really saves time not typing this in - set to NULL for real production!
+	testServer : "192.168.1.130:8096",
+	
 	//Enable . Disable functions
 	enableMusic : false,
 	enableLiveTV : false,
 	enableCollections : false,
 	enableChannels : false,
-	enablePlaylists : false,
-	
-	//Test Server - Really saves time not typing this in - set to NULL for real production!
-	testServer : "192.168.1.130:8096"
+	enablePlaylists : false
 };
 
 main.isMusicEnabled = function() {

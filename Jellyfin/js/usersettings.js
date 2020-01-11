@@ -1,12 +1,12 @@
 var usersettings = {	
 		//Per Setting Type List of settings, names & defaults
-		Settings : ["View1","View2","HighlightColour","LargerView","SkipShow","AutoPlay","ShowDisc","SubtitleSize","SubtitleColour"],
-		SettingsName : ["Home View 1: ","Home View 2: ","Highlight Colour: ","Show Larger Icons: ","Skip TV Show Page: ","Auto Play Next Episode: ","Show Disc Art: ","Subtitle Text Size: ","Subtitle Text Colour: "],
-		SettingsDefaults : ["ContinueWatching","TVNextUp","css/highlights/green.css",true,false,true,true,"50px","white"],
+		Settings : ["View1","View2","HighlightColour","LargerView","SkipShow","AutoPlay","SubtitleSize","SubtitleColour"],
+		SettingsName : ["Home View 1: ","Home View 2: ","Highlight Colour: ","Show Larger Icons: ","Skip TV Show Page: ","Auto Play Next Episode: ","Subtitle Text Size: ","Subtitle Text Colour: "],
+		SettingsDefaults : ["ContinueWatching","TVNextUp","css/highlights/green.css",true,false,true,"50px","white"],
 		
 		TVSettings : ["Bitrate","ItemPaging","ClockOffset"],
 		TVSettingsName : ["Max Bitrate: ","Item Paging: ","Clock Offset: "],
-		TVSettingsDefaults : [60,150,0],
+		TVSettingsDefaults : [60,1000000,0],
 		
 		ServerSettings : ["DisplayMissingEpisodes","DefaultAudioLang","PlayDefaultAudioTrack","DefaultSubtitleLang", "SubtitleMode", "HidePlayedInLatest"],
 		ServerSettingsName : ["Display Missing Episodes: ","Default Audio Language: ","Play default audio track regardless of language: ", "Default Subtitle Language: ","Subtitle Mode:","Hide watched content from latest media:"], 
@@ -24,8 +24,8 @@ var usersettings = {
 		TvConnectionOptions : ["120Mb/s","100Mb/s","80Mb/s","60Mb/s","40Mb/s","30Mb/s","20Mb/s","15Mb/s","10Mb/s","8Mb/s","6Mb/s","5Mb/s","4Mb/s","3Mb/s","2Mb/s","1Mb/s","0.5Mb/s"], 
 		TvConnectionValues : [120,100,80,60,40,30,20,15,10,8,6,5,4,3,2,1,0.5], 
 		
-		ItemPagingOptions : [100,150,200,300,500],
-		ItemPagingValues : [100,150,200,300,500],
+		ItemPagingOptions : ["Off",100,150,200,300,500,1000],
+		ItemPagingValues : [1000000,100,150,200,300,500],
 		
 		SubtitleSizeOptions: ["70px","66px","62px","58px","54px","50px"],
 		SubtitleSizeValues: ["70px","66px","62px","58px","54px","50px"],
@@ -76,10 +76,6 @@ usersettings.setOverview = function(setting) {
 		case "AutoPlay":
 			document.getElementById("guiSettings_Overview_Title").innerHTML = "Auto Play Next Episode";
 			document.getElementById("guiSettings_Overview_Content").innerHTML = "If enabled, when a playing episode has finished, the next episode will automatically load.";
-			break;
-		case "ShowDisc":
-			document.getElementById("guiSettings_Overview_Title").innerHTML = "Show Disc Art";
-			document.getElementById("guiSettings_Overview_Content").innerHTML = "Enable or disable the disc art on episode & film pages.";
 			break;
 		case "SubtitleSize":
 			document.getElementById("guiSettings_Overview_Title").innerHTML = "Subtitle Text Size";

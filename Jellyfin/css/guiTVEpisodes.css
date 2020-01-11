@@ -10,21 +10,24 @@
 	height:280px; /* 220px */
 	width:1820px; /* 1720px */
 	border-bottom: 1px solid grey;
+	background-color:rgba(20,20,20,0.85);
 }
 
 .EpisodeListSingleImage{	
 	display:inline-block;
 	margin:10px 15px;
-	height:200px;
+	height:260px;
 	width:356px;
 	background-repeat: no-repeat;
     background-position:center;
     background-size:contain;
+    background-color:black;
 }
 
 .guiTVEpisodes-EpisodeInfo {
 	position:absolute;
 	width:1318px;
+	padding-top:5px;
 }
 
 .guiTVEpisodes-Options {
@@ -71,8 +74,6 @@
 	overflow-y:hidden;
 }
 
-
-
 .guiTVEpisodes-highlightBackground {
 	background-color:rgba(70,70,70,0.85);
 }
@@ -90,9 +91,8 @@
 
 .EpisodesAllOptions{
 	position:absolute;
-	width:860px;
 	text-align:center;
 	top:102px;
-	left:1020px;
+	right:50px;
 	z-index:5;
 }

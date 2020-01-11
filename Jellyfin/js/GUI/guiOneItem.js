@@ -110,35 +110,36 @@ guiOneItem.keyDown = function() {
 	switch(keyCode) {
 		//Need Logout Key
 		case 37:
-			logger.log("LEFT");	
+			logger.log("LEFT",1);	
 			this.processLeftKey();
 			break;
 		case 39:
-			logger.log("RIGHT");	
+			logger.log("RIGHT",1);	
 			this.processRightKey();
 			break;		
 		case 38:
-			logger.log("UP");
+			logger.log("UP",1);
 			this.processUpKey();
 			break;	
 		case 40:
-			logger.log("DOWN");
+			logger.log("DOWN",1);
 			this.processDownKey();
 			break;	
 		case 10009:
-			logger.log("RETURN");
+			logger.log("RETURN",1);
 			event.preventDefault();
 			pagehistory.processReturnURLHistory();
 			break;	
 		case 13:
-			logger.log("ENTER");
+			logger.log("ENTER",1);
 			this.processSelectedItem();
 			break;
 		case 415:
+			logger.log("PLAY",1);
 			this.playSelectedItem();
 			break;	
 		case 10182:
-			logger.log ("EXIT KEY");
+			logger.log ("EXIT KEY",1);
 			tizen.application.getCurrentApplication().exit(); 
 			break;
 	}

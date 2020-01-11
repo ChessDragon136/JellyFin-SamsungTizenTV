@@ -36,6 +36,9 @@ guiTVShow.start = function(url,selectedItem,topLeftItem) {
 	//Clear Banner
 	document.getElementById("bannerSelection").innerHTML = "";
 	
+	//Reset menuItems (incase Cast was spliced out)
+	this.menuItems = ['Play All','Next Episode','Cast','Watched','Favourite'];
+	
 	//Load Show Data
 	this.ShowData = xmlhttp.getContent(url);
 	if (this.ShowData == null) { return; }
@@ -59,12 +62,14 @@ guiTVShow.start = function(url,selectedItem,topLeftItem) {
 			if (this.ShowData.People.length > 0) {
 				for (var p=0;p<this.ShowData.People.length;p++) {
 					if (this.ShowData.People[p].Type != "Actor" && this.ShowData.People[p].Type != "GuestStar") {
-						this.ShowData.People.splice(p);
+						this.ShowData.People.splice(p,1);
 					}
 				}
-			} else {
+			} 
+			
+			if (this.ShowData.People.length > 0) {
 				//Remove Cast from menu array
-				this.menuItems.splice(this.menuItemCastPos,0,1); 
+				this.menuItems.splice(this.menuItemCastPos,1); 
 			}
 			
 			//Set PageContent
@@ -245,36 +250,36 @@ guiTVShow.keyDown = function() {
 	var keyCode = event.keyCode;
 	switch(keyCode) {	
 		case 37:
-			logger.log("LEFT");
+			logger.log("LEFT",1);
 			this.processLeftKey();
 			break;
 		case 39:
-			logger.log("RIGHT");
+			logger.log("RIGHT",1);
 			this.processRightKey();
 			break;	
 		case 38:
-			logger.log("UP");
+			logger.log("UP",1);
 			this.processUpKey();
 			break;	
 		case 40:
-			logger.log("DOWN");
+			logger.log("DOWN",1);
 			this.processDownKey();
 			break;		
 		case 13:
-			logger.log("ENTER");
+			logger.log("ENTER",1);
 			this.processSelectedItem();
 			break;
 		case 415:
-			logger.log("PLAY");
+			logger.log("PLAY",1);
 			this.playSelectedItem();
 			break;			
 		case 10009:
-			logger.log("RETURN");
+			logger.log("RETURN",1);
 			event.preventDefault();
 			pagehistory.processReturnURLHistory();
 			break;	
 		case 10182:
-			logger.log ("EXIT KEY");
+			logger.log ("EXIT KEY",1);
 			tizen.application.getCurrentApplication().exit(); 
 			break;
 	}

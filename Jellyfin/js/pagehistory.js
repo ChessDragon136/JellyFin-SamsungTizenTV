@@ -9,31 +9,28 @@ pagehistory.updateURLHistory = function(page,title,url,selectedItem,topLeftItem,
 		
 		if (this.previousPageDetails[this.previousPageDetails.length-1][2] != url) {
 			this.previousPageDetails.push([page,title,url,selectedItem,topLeftItem,isTop]);
-			logger.log ("Adding new item: " + this.previousPageDetails.length);
 		} else {
 			if (this.previousPageDetails[this.previousPageDetails.length-1][0] != page) {
 				//Required! Trust me dont remove this if!
 				this.previousPageDetails.push([page,title,url,selectedItem,topLeftItem,isTop]);
-				logger.log  ("Adding new item: " + this.previousPageDetails.length);
 			} else {
-				logger.log  ("New Item not added - Is duplicate of previous page: " + this.previousPageDetails.length);
+				logger.log  ("Page History: New Item not added - Is duplicate of previous page. Length: " + this.previousPageDetails.length);
 			}		
 		}
 	} else {
 		this.previousPageDetails.push([page,title,url,selectedItem,topLeftItem,isTop]);
-		logger.log ("Adding new item: " + this.previousPageDetails.length);
 	}
 }
 
 //Below method used for Main Menu & Playlist Deletion
 pagehistory.removeLatestURL = function() {
 	this.previousPageDetails.pop();
-	logger.log ("Removed item: " + this.previousPageDetails.length);
 }
 	
 pagehistory.processReturnURLHistory = function() {
-	logger.log ("Just before removing item - Length: " + this.previousPageDetails.length);
-
+	//Set Hamburger Menu to be unselected - Required if the user has the menu item selected when pressing return
+	document.getElementById("bannerHamburgerPath").className.baseVal = "bannerHamburgerPath";
+	
 	if (this.previousPageDetails.length > 0) {
 		var array = this.previousPageDetails[this.previousPageDetails.length-1];
 		var page = array[0];
@@ -45,7 +42,6 @@ pagehistory.processReturnURLHistory = function() {
 			
 		//Remove from array
 		this.previousPageDetails.pop();
-		logger.log ("Just after removing item - Length: " + this.previousPageDetails.length);
 		
 		//Handle Navigation?
 		switch (page) {

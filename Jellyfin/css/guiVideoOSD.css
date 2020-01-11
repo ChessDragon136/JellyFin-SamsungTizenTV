@@ -8,6 +8,101 @@
 	z-index:99;
 }
 
+.videoPlayerUI {
+	position:absolute;
+	top:40px;
+	left:50px;
+	width: 1800px;
+	background-color:rgba(59,59,59,1);
+	padding:20px 10px 10px 10px;
+	color:white;
+}
+
+.videoPlayerSettings {
+	position:absolute;
+	right:0px;
+	display:inline-block;
+}
+
+.videoPlayerTimeCurrent {
+	position:absolute;
+	font-size: 26px;
+	top:16px;
+	left:0px;
+	width: 290px;
+	display:inline-block;
+}
+
+.videoPlayerTimeRemaining {
+	position:absolute;
+	font-size: 26px;
+	top:16px;
+	right:0px;
+	width: 290px;
+	display:inline-block;
+}
+
+.videoPlayerSeek {
+	position:relative;
+	padding:30px 0px;
+}
+
+.videoPlayerSeekBar {
+	position:relative;
+	margin:0px auto;
+	height:6px;
+	width:1200px;
+	border-radius:16px;
+	background-color: grey;
+	
+}
+
+.videoPlayerSeekBarPlayed {
+	height:100%;
+	border-radius:16px;
+	background-color:#00a4dc;
+}
+
+.videoPlayerSeekBarPosition {
+	position: absolute;
+    top: -9px;
+	height:24px;
+	width:24px;
+	border-radius:50%;
+	background-color:#00a4dc;
+}
+
+.videoPlayerSeekBarPositionTime {
+position: absolute;
+    top: 40px;
+    left: -50px;
+    padding: 10px;
+    width: 100px;
+    background-color:rgba(59,59,59,1);
+    border: solid black 3px;
+}
+
+
+.videoPlayerMediaInfo {
+    position: absolute;
+    left: 30px;
+    text-align: left;
+    top: 30px;
+    max-width: 640px;
+    overflow: hidden;
+    white-space: nowrap;
+    color: white;
+    font-size: 36px;
+}
+
+.videoPlayerControls {
+	display:inline-block;
+}
+
+
+
+
+
 .videoPlayerSubtitlesContainerTop {
 	position:absolute;
 	bottom:20px;
@@ -29,38 +124,4 @@
 	font-weight: bold;
 	color:white;
 	background-color:rgba(192,192,192,0.5)
-}
-
-.videoVersions {
-	position:absolute;
-	top:200px;
-	left:355px;
-	width:250px;
-	background-color:black;
-}
-
-.videoVersionOption {
-	position:relative;
-	width:240px;
-    height:40px;
-    margin:5px;
-    color:#fff;
-    white-space:nowrap;
-    text-overflow:ellipsis; 
-    overflow: hidden; 
-    border-bottom: 2px solid #222222;
-}
-
-.videoVersionType {
-	position:absolute;
-	top:3px;
-	right:3px;
-	width:50px;
-	height:50px;
-	line-height:50px;
-	text-align:center;
-
-	background-image:url('images/itemCount.png');
-	background-repeat: no-repeat;
-    background-position:center;
 }

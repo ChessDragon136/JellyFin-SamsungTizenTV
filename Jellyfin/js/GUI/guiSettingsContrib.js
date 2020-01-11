@@ -47,12 +47,12 @@ guiSettingsContrib.keyDown = function() {
 		case 37:
 			break;
 		case 10009:
-			logger.log("RETURN");
+			logger.log("RETURN",1);
 			event.preventDefault();
 			pagehistory.processReturnURLHistory();
 			break;	
 		case 10182:
-			logger.log ("EXIT KEY");
+			logger.log ("EXIT KEY",1);
 			tizen.application.getCurrentApplication().exit(); 
 			break;
 	}

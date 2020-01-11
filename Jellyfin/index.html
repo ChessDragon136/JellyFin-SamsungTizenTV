@@ -54,43 +54,31 @@
     <script src="js/AVPlayer/playerTranscoding.js"></script>
     <script src="js/AVPlayer/playerTranscodingParams.js"></script>
     <script src="js/AVPlayer/playerVersions.js"></script>
-    
-    
-    
 </head>
 
 <body id="body" onkeydown="remotecontrol.keyDown()"> 
 	<div id="everything" class="everything">	
-			<!-- Background image -->
-			<div id="allBackground">
-				<div id="pageBackgroundHolder" class="pageBackground"></div>
-				<div id="pageBackground" class="pageBackground"></div>
-				<div id="pageBackgroundFade" class="pageBackgroundFade"></div>
-			</div>	
-			
-			<!-- Main page content -->
-			<div id="page" class="page">
-				<div id=bannerMenu class='bannerMenu'>				
-					<svg id='bannerHamburger' class="bannerHamburger bannerHamburgerHidden" xmlns="http://www.w3.org/2000/svg" width="38pt" height="38pt" viewBox="0 0 38 38">
-						<path id="bannerHamburgerPath" class="bannerHamburgerPath" d="M 4.75 28.5 L 33.25 28.5 L 33.25 25.332031 L 4.75 25.332031 Z M 4.75 20.582031 L 33.25 20.582031 L 33.25 17.417969 L 4.75 17.417969 Z M 4.75 9.5 L 4.75 12.667969 L 33.25 12.667969 L 33.25 9.5 Z M 4.75 9.5 "/>
-					</svg>			
-					<div id='bannerSelection' class='bannerSelection'></div>
-					<div id='bannerClock' class="bannerItemClock"></div>
-				</div>
-				<div id="pageContent"></div>	
-				<div id="Counter" class="counter"></div>	
-				<div id="guiSeriesIndexing" class="guiDisplay_SeriesIndexing" style="opacity:0"></div>
-				
-			</div>	
-			<!-- MUST KEEP OUTSIDE OF page div else its hidden during video playback -->	
-			<object id="av-player" type="application/avplayer" style="display:none;top:0px;left:0px;width:1920px;height:1080px"> </object>
-			<div id="videoplayer" style="display:none" class="videoPlayer">
-				<div id="videoSubtitlesContainerTop" class="videoPlayerSubtitlesContainerTop">
-					<span id="videoSubtitlesContainer" class="videoPlayerSubtitlesContainer">
-						<span id="videoSubtitles" class="videoPlayerSubtitles"></span>
-					</span>
-				</div>
+		<!-- Background image -->
+		<div id="allBackground">
+			<div id="pageBackgroundHolder" class="pageBackground"></div>
+			<div id="pageBackground" class="pageBackground"></div>
+			<div id="pageBackgroundFade" class="pageBackgroundFade"></div>
+		</div>	
+		
+		<!-- Main page content -->
+		<div id="page" class="page">
+			<div id=bannerMenu class='bannerMenu'>				
+				<svg id='bannerHamburger' class="bannerHamburger bannerHamburgerHidden" xmlns="http://www.w3.org/2000/svg" width="38pt" height="38pt" viewBox="0 0 38 38">
+					<path id="bannerHamburgerPath" class="bannerHamburgerPath" d="M 4.75 28.5 L 33.25 28.5 L 33.25 25.332031 L 4.75 25.332031 Z M 4.75 20.582031 L 33.25 20.582031 L 33.25 17.417969 L 4.75 17.417969 Z M 4.75 9.5 L 4.75 12.667969 L 33.25 12.667969 L 33.25 9.5 Z M 4.75 9.5 "/>
+				</svg>			
+				<div id='bannerSelection' class='bannerSelection'></div>
+				<div id='bannerClock' class="bannerItemClock"></div>
 			</div>
+			<div id="pageContent"></div>	
+			<div id="Counter" class="counter"></div>	
+			<div id="guiSeriesIndexing" class="guiDisplay_SeriesIndexing" style="opacity:0"></div>	
+		</div>	
+		
 		<!--  Menu -->
 		<div id="menu" class="menu" style="visibility:hidden">
 			<div id="menuUserImageContainer" class="menu-UserImageContainer">
@@ -99,6 +87,22 @@
 			<div id="menuUserName" class="menu-userName"></div> 
 			<div id="menuItems"></div>	
 			<div id="menuVersion" class="menu-version"></div>	  
+		</div>
+		
+		<!-- MUST KEEP OUTSIDE OF page div else its hidden during video playback -->	
+		<object id="av-player" type="application/avplayer" style="display:none;top:0px;left:0px;width:1920px;height:1080px"> </object>
+		<div id="videoplayer" style="display:none" class="videoPlayer">
+			<div id="videoSubtitlesContainerTop" class="videoPlayerSubtitlesContainerTop">
+				<span id="videoSubtitlesContainer" class="videoPlayerSubtitlesContainer">
+					<span id="videoSubtitles" class="videoPlayerSubtitles"></span>
+				</span>
+			</div>
+			<div id=videoPlayerUI class="videoPlayerUI" style="display:none">
+				<div id="videoPlayerMediaInfo" class="videoPlayerMediaInfo"></div>
+				<div id="videoPlayerControls" class="videoPlayerControls"></div>
+				<div id="videoPlayerSettings" class="videoPlayerSettings"></div>
+				<div id="videoPlayerSeek" class="videoPlayerSeek"></div>	
+			</div>
 		</div>
 	</div>
 </body>

@@ -176,12 +176,15 @@
 	    	query += "maxwidth=200&";
 	    	break; 
 	    case "GUITVEpisodes": //Special View controller in GuiTVEpisodes
-	    	query += "maxwidth=200&";
+	    	query += "maxwidth=356&";
 	    	break;
 	    case "AppBackdrop":
 	    	//background image
 	    	query += "height=1080&width=1920&";
-	    	break;  	    	
+	    	break; 
+	    case "videoPlayer":
+	    	query += "maxwidth=820&maxheight=110&";
+	    	break;
 	    }
 
 	    return server.getserverAddr() + query + "tag=" + tag;//+"&quality=90";

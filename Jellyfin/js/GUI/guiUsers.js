@@ -224,16 +224,13 @@ guiUsers.keyDown = function() {
 			}
 			break;	
 		case 10009:
-			logger.log ("RETURN KEY");
+			logger.log ("RETURN KEY",1);
 			event.preventDefault()
         	guiUsers.start();
 			break;
 		case 10182:
-			logger.log ("EXIT KEY");
+			logger.log ("EXIT KEY",1);
 			tizen.application.getCurrentApplication().exit()
-			break;
-		default:
-			logger.log("Unhandled key");
 			break;
 	}
 };

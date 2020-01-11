@@ -121,7 +121,7 @@ filesystem.addUser = function(UserId, Name, Password, rememberPassword) {
 };
 
 filesystem.deleteUser = function(index) {
-    this.configJSON.Servers[this.ServerEntry].Users.splice(index);
+    this.configJSON.Servers[this.ServerEntry].Users.splice(index,1);
     localStorage.setItem("config", JSON.stringify(this.configJSON));
 };
 

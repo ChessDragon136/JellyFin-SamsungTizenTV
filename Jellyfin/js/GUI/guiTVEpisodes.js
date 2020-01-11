@@ -108,11 +108,44 @@ guiTVEpisodes.updateDisplayedItems = function() {
 		}
 		
 		htmlToAdd += "<span class='guiTVEpisodes-EpisodeInfo'>" + 
-				"<div class='guiTVEpisodes-EpisodeTitle'>"+ title +"</div>";
+				"<div class='guiTVEpisodes-EpisodeTitle'>"+ title +"</div>" +
+				"<div id='ShowMetadata' class='metadata-Container guiTVEpisode-MetaDataPadding'>";
+		
+		//Set Show MetaData
+		var stars = this.ItemData.Items[index].CommunityRating;
+		if (stars){
+	    	if (stars <3.1){
+	    		htmlToAdd += "<span class='metadata-Item'><span class='metadata-ItemImageStarEmpty'></span><span class='metadata-ItemStar'><span class='metadata-ItemText'>" + stars + "</span></span></span>";
+	    	} else if (stars >=3.1 && stars < 6.5) {
+	    		htmlToAdd += "<span class='metadata-Item'><span class='metadata-ItemImageStarHalf'></span><span class='metadata-ItemStar'><span class='metadata-ItemText'>" + stars + "</span></span></span>";
+	    	} else {
+	    		htmlToAdd += "<span class='metadata-Item'><span class='metadata-ItemImageStarFull'></span><span class='metadata-ItemStar'><span class='metadata-ItemText'>" + stars + "</span></span></span>";
+	    	}
+		}
+		if (this.ItemData.Items[index].OfficialRating !== undefined) {
+			htmlToAdd += "<span class='metadata-Item'><span class='metadata-ItemText'>" + this.ItemData.Items[index].OfficialRating + "</span></span>";
+		}
 		
 		if (this.ItemData.Items[index].RunTimeTicks != null) {
-			htmlToAdd += "<div class='guiTVEpisodes-Metadata'>"+support.convertTicksToMinutesJellyfin(this.ItemData.Items[index].RunTimeTicks)+"</div>";
+			htmlToAdd += "<span class='metadata-Item'><span class='metadata-ItemText'>"+support.convertTicksToMinutesJellyfin(this.ItemData.Items[index].RunTimeTicks)+"</span></span>";
 		}
+		
+		if (this.ItemData.Items[index].UserData.IsFavorite) {
+			htmlToAdd += "<span id='guiTVEpisode-Favourite"+index+"' class='metadata-Item metadata-ItemImageFavourite'></span>";
+		} else {
+			htmlToAdd += "<span id='guiTVEpisode-Favourite"+index+"'></span>";
+		}
+		if (this.ItemData.Items[index].UserData.Played) {
+			htmlToAdd += "<span id='guiTVEpisode-Watched"+index+"' class='metadata-Item metadata-ItemImageWatched'></span>";
+		} else {
+			htmlToAdd += "<span id='guiTVEpisode-Watched"+index+"'></span>";
+		}
+		
+		if (this.ItemData.Items[index].OfficialRating !== undefined) {
+			htmlToAdd += "<span class='metadata-Item'><span class='metadata-ItemText'>" + this.ItemData.Items[index].OfficialRating + "</span></span>";
+		}
+		
+		htmlToAdd += "</div>";
 		
 		if (this.ItemData.Items[index].Overview != null) {
 			htmlToAdd += "<div class='guiTVEpisodes-Overview'>"+this.ItemData.Items[index].Overview+"</div>";
@@ -169,35 +202,35 @@ guiTVEpisodes.keyDown = function() {
 	var keyCode = event.keyCode;
 	switch(keyCode) {	
 		case 38:
-			logger.log("UP");
+			logger.log("UP",1);
 			this.processUpKey();
 			break;	
 		case 40:
-			logger.log("DOWN");
+			logger.log("DOWN",1);
 			this.processDownKey();
 			break;	
 		case 37:
-			logger.log("LEFT");
+			logger.log("LEFT",1);
 			this.processLeftKey();
 			break;
 		case 39:
-			logger.log("RIGHT");
+			logger.log("RIGHT",1);
 			this.processRightKey();
 			break;	
 		case 10009:
-			logger.log("RETURN");
+			logger.log("RETURN",1);
 			event.preventDefault();
 			pagehistory.processReturnURLHistory();
 			break;	
 		case 13:	
-			logger.log("ENTER");
+			logger.log("ENTER",1);
 			this.processSelectedItem();
 			break;
 		case 415:
 			this.playSelectedItem();
 			break;	
 		case 10182:
-			logger.log ("EXIT KEY");
+			logger.log ("EXIT KEY",1);
 			tizen.application.getCurrentApplication().exit(); 
 			break;
 	}
@@ -331,9 +364,6 @@ guiTVEpisodes.processSelectedItem = function() {
 		case ('Play All') :
 			support.playSelectedItem("guiTVEpisodes",this.SeasonData,this.startParams,this.selectedItem,this.topLeftItem,null);	
 			break;
-		case ('Shuffle All') :
-			support.playSelectedItem("guiTVEpisodes",this.SeasonData,this.startParams,this.selectedItem,this.topLeftItem,null,true);	
-			break;
 		}
 		break;
 	case (remotecontrol.ITEM1):
@@ -344,9 +374,28 @@ guiTVEpisodes.processSelectedItem = function() {
 		case ('Info') :
 			support.processSelectedItem("guiTVEpisodes", this.ItemData.Items[this.selectedItem], this.startParams, this.selectedItem, this.topLeftItem, null, null, null);
 			break;
-		case ('Watched') :
-			break;
 		case ('Favourite') :
+			if (this.ItemData.Items[this.selectedItem].UserData.IsFavorite == false) {
+				this.ItemData.Items[this.selectedItem].UserData.IsFavorite = true;
+				document.getElementById("guiTVEpisode-Favourite"+[this.selectedItem]).className = "metadata-Item metadata-ItemImageFavourite";
+				server.setFavourite(this.ItemData.Items[this.selectedItem].Id,true);
+			} else {
+				this.ItemData.Items[this.selectedItem].UserData.IsFavorite = false;
+				document.getElementById("guiTVEpisode-Favourite"+[this.selectedItem]).className = "";
+				server.setFavourite(this.ItemData.Items[this.selectedItem].Id,false);
+			}
+			break;
+		case ('Watched') :
+			//Check if Watched or not
+			if (this.ItemData.Items[this.selectedItem].UserData.Played == false) {
+				this.ItemData.Items[this.selectedItem].UserData.Played = true;
+				document.getElementById("guiTVEpisode-Watched"+[this.selectedItem]).className = "metadata-Item metadata-ItemImageWatched";
+				server.setWatched(this.ItemData.Items[this.selectedItem].Id,true);
+			} else {
+				this.ItemData.Items[this.selectedItem].UserData.Played = false;
+				document.getElementById("guiTVEpisode-Watched"+[this.selectedItem]).className = "";
+				server.setWatched(this.ItemData.Items[this.selectedItem].Id,false);				
+			}
 			break;			
 		}		
 		break;			
