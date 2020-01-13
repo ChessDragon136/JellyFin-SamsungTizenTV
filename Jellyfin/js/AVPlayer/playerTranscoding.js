@@ -27,7 +27,7 @@ var playerTranscoding = {
 }
 
 //--------------------------------------------------------------------------------------
-playerTranscoding.start = function(showId, MediaSource,MediaSourceIndex, videoIndex, audioIndex, isFirstAudioIndex, subtitleIndex) {	
+playerTranscoding.start = function(showId, MediaSource,MediaSourceIndex, videoIndex, audioIndex, isFirstAudioIndex, subtitleIndex, resumeTicks) {	
 	//Set Class Vars
 	this.MediaSource = MediaSource;
 	this.videoIndex = videoIndex;
@@ -37,34 +37,44 @@ playerTranscoding.start = function(showId, MediaSource,MediaSourceIndex, videoIn
 	this.checkCodec(videoIndex);
 	this.checkAudioCodec(audioIndex);
 
+	var url = ""
 	var streamparams = "";
 	var transcodeStatus = "";
 	var streamAudioCodec = "aac"; //Temp - Not sure what to use! Probably was tied into settings
+	var playSessionId = this.generatePlaySessionId();
 
 	if (this.isVideo && this.isAudio) {
 		transcodeStatus = "Direct Play";
 		streamparams = '/Stream.'+this.MediaSource.Container+'?static=true&MediaSourceId='+this.MediaSource.Id + '&api_key=' + server.getAuthToken();
-		
 	} else if (this.isVideo == false) {
 		transcodeStatus = "Transcoding Audio & Video";	
-		streamparams = '/master.m3u8?VideoStreamIndex='+this.videoIndex+'&AudioStreamIndex='+this.audioIndex+'&VideoCodec=h264&Profile=high&Level=41&MaxVideoBitDepth=8&MaxWidth=1920&VideoBitrate='+this.bitRateToUse+'&AudioCodec=' + streamAudioCodec +'&AudioBitrate=360000&MaxAudioChannels=6&MediaSourceId='+this.MediaSource.Id + '&api_key=' + server.getAuthToken();	
+		streamparams = '/master.m3u8?VideoStreamIndex='+this.videoIndex+'&AudioStreamIndex='+this.audioIndex+'&VideoCodec=h264&Profile=high&Level=41&MaxVideoBitDepth=8&MaxWidth=1920&VideoBitrate='+this.bitRateToUse+'&AudioCodec=' + streamAudioCodec +'&AudioBitrate=360000&MaxAudioChannels=6&MediaSourceId='+this.MediaSource.Id + '&PlaySessionId='+playSessionId+'&api_key=' + server.getAuthToken();
 		if (subtitleIndex != -1) {
 			streamparams += '&SubtitleStreamIndex='+subtitleIndex; //SubtitleMethod is broken
 		}
 	} else if (this.isVideo == true && (this.isAudio == false || convertAACtoDolby == true)) {
 		transcodeStatus = "Transcoding Audio";	
-		streamparams = '/master.m3u8?VideoStreamIndex='+this.videoIndex+'&AudioStreamIndex='+this.audioIndex+'&VideoCodec=copy&AudioCodec='+ streamAudioCodec +'&audioBitrate=360000&MaxAudioChannels=6&MediaSourceId='+this.MediaSource.Id + '&api_key=' + server.getAuthToken();
+		streamparams = '/master.m3u8?VideoStreamIndex='+this.videoIndex+'&AudioStreamIndex='+this.audioIndex+'&VideoCodec=copy&AudioCodec='+ streamAudioCodec +'&audioBitrate=360000&MaxAudioChannels=6&MediaSourceId='+this.MediaSource.Id + '&PlaySessionId='+playSessionId+'&api_key=' + server.getAuthToken();
 		if (subtitleIndex != -1) {
 			streamparams += '&SubtitleStreamIndex='+subtitleIndex; //SubtitleMethod is broken
 		}
 	}
-	var url = server.getserverAddr() + '/Videos/' + showId + streamparams + '&DeviceId='+server.getDeviceID();
+	
+	url = server.getserverAddr() + '/Videos/' + showId + streamparams + '&DeviceId='+server.getDeviceID();
 	logger.log("Video : Transcode Status : " + transcodeStatus);
 	logger.log("Video : URL : " + url);
 	
 	//Return results to Versions
 	//MediaSourceId,Url,transcodeStatus,videoIndex,audioIndex
-	return [MediaSourceIndex,url,transcodeStatus,videoIndex,audioIndex,subtitleIndex];	
+	return [MediaSourceIndex,url,transcodeStatus,videoIndex,audioIndex,subtitleIndex,playSessionId];	
+}
+
+playerTranscoding.generatePlaySessionId = function() {
+	var result = '';
+	var length = 32;
+	var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+	for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
+	return result;
 }
 
 playerTranscoding.checkCodec = function() {

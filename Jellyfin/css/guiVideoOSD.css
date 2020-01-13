@@ -13,7 +13,7 @@
 	top:40px;
 	left:50px;
 	width: 1800px;
-	background-color:rgba(59,59,59,1);
+	background-color:rgba(30,30,30,1);
 	padding:20px 10px 10px 10px;
 	color:white;
 }
@@ -93,6 +93,31 @@ position: absolute;
     white-space: nowrap;
     color: white;
     font-size: 36px;
+}
+
+.videoPlayerPlaybackMethod {
+    position: absolute;
+    width: 200px;
+    right: 200px;
+    text-align: right;
+    top: 34px;
+    max-width: 640px;
+    overflow: hidden;
+    white-space: nowrap;
+    color: white;
+    font-size: 26px;
+}
+
+.videoPlayerSeekSpeed {
+    position: absolute;
+    left: 1150px;
+    text-align: left;
+    top: 34px;
+    max-width: 640px;
+    overflow: hidden;
+    white-space: nowrap;
+    color: white;
+    font-size: 26px;
 }
 
 .videoPlayerControls {

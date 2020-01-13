@@ -78,7 +78,7 @@ guiTVEpisode.start = function(url,selectedItem,topLeftItem) {
 	//var episodesUrl = server.getChildItemsURL(this.ItemData.SeriesId,"&IncludeItemTypes=Episode&fields=SortName,Overview");
 	var episodesUrl = server.getEpisodesURL(this.ItemData.SeriesId,null);//,this.ItemData.SeasonId); 
 	this.EpisodeData = xmlhttp.getContent(episodesUrl);
-	
+		
 	//If there is More Episodes & Cast, Push Cast Button
 	//Mode Episodes is default view so needs no button - Cast Button changes to More Episodes when Cast is displayed
 	if (this.EpisodeData.Items !== undefined && this.EpisodeData.Items.length > 1 && this.ItemData.People !== undefined && this.ItemData.People.length > 0) {

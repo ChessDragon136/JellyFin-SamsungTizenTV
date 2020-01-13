@@ -482,7 +482,7 @@ support.updateDisplayedItems = function(Items,selectedItemID,startPos,endPos,Div
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")><div class='displayedItem-ProgressBar displayedItem-ProgressBarTopOverride'></div><div class='displayedItem-ProgressBarCurrent displayedItem-ProgressBarTopOverride' style='width:"+progress+"%;'></div>";	
 				} else if (Items[index].BackdropImageTags.length > 0) {	
 					var imagePos = Math.floor((Math.random() * Items[index].BackdropImageTags.length) + 0);
-					var imgsrc = server.getImageURL(Items[index].Id,"Backdrop".Items[index].BackdropImageTags[imagePos],"Series",imagePos);
+					var imgsrc = server.getImageURL(Items[index].Id,"Backdrop",Items[index].BackdropImageTags[imagePos],"Series",imagePos);
 					htmlToAdd += "<div id="+ DivIdPrepend + Items[index].Id + " style=background-image:url(" +imgsrc+ ")><div class='displayedItem-ProgressBar displayedItem-ProgressBarTopOverride'></div><div class='displayedItem-ProgressBarCurrent displayedItem-ProgressBarTopOverride' style='width:"+progress+"%;'></div>";	
 				} else if (Items[index].ImageTags.Primary) {		
 					var imgsrc = server.getImageURL(Items[index].Id,"Primary",Items[index].ImageTags.Primary,"Series");
@@ -935,7 +935,6 @@ support.processSelectedItem = function(page,SelectedItem,startParams,selectedIte
 
 support.playSelectedItem = function(page,SelectedItem,startParams,selectedItemID,topLeftItem,isTop,shuffle, resumeTimeJellyfin) {
 	shuffle = (shuffle === undefined) ? null : shuffle;
-	
 	if (startParams == null) {
 		pagehistory.updateURLHistory(page,startParams[0],startParams[1],selectedItemID,topLeftItem,null);
 	} else {

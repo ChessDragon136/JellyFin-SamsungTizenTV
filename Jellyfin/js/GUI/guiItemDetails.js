@@ -559,7 +559,7 @@ guiItemDetails.playSelectedItem = function () {
 		if (this.menuItems[this.selectedMenuItem] == "Resume") {
 			support.playSelectedItem("guiItemDetails",this.ItemData,this.startParams,this.selectedItem,this.topLeftItem,null,null,this.ItemData.UserData.PlaybackPositionTicks);
 		}
-		if (this.menuItems[this.selectedMenuUtem] == "Play") {
+		if (this.menuItems[this.selectedMenuItem] == "Play") {
 			support.playSelectedItem("guiItemDetails",this.ItemData,this.startParams,this.selectedItem,this.topLeftItem,null,null);
 		}		
 	}

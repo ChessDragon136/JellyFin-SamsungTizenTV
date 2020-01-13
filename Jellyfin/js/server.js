@@ -128,6 +128,29 @@
 		}
 	   
 	}
+	
+	server.getAdjacentEpisodesURL = function(seriesID, seasonID,episodeID) {
+		return server.getserverAddr() + "/Shows/" + seriesID +  "/Episodes?format=json&SeasonId="+seasonID+"&UserId="+server.getUserID() +"&AdjacentTo=" + episodeID;
+	}	
+	
+	 //------------------------------------------------------------
+	 //  Transcoding Functions
+	 //------------------------------------------------------------	
+	server.getPlaybackInfoURL = function(itemId,startTimeTicks,audioStreamIndex,subtitleStreamIndex,mediaSourceId) {
+		var contentToPost = '{"UserId":'+server.getUserID()+',"StartTimeTicks":'+startTimeTicks+',"isPlayback":true,"AutoOpenLiveStream":true,"EnableTranscoding":true,"EnableDirectPlay":false,"EnableDirectStream":false,"AllowVideoStreamCopy":false,"MediaSourceId":'+mediaSourceId;
+	    if (audioStreamIndex !== undefined) {
+	    	contentToPost  += ',"AudioStreamIndex":'+audioStreamIndex;
+		}
+		
+		if (subtitleStreamIndex !== undefined) {
+			contentToPost  += ',"SubtitleStreamIndex":'+subtitleStreamIndex;
+		}
+		
+
+		
+	    return contentToPost + ',"MaxStreamingBitrate":140000000}'; //Should probably change MaxStreamingRate to that in user settings..	
+	}
+	
 
 	 //------------------------------------------------------------
 	 //  Image Functions
@@ -226,27 +249,56 @@
 	 //  Media Updates
 	 //------------------------------------------------------------	
 
-	server.videoStarted = function(showId, MediaSourceID, ticks, PlayMethod) {
+	server.videoStarted = function(showId, MediaSourceID, ticks, PlayMethod,playSessionId) {
 	    var url = this.serverAddr + "/Sessions/Playing";
-	    var contentToPost = '{"QueueableMediaTypes":["Video"],"CanSeek":false,"ItemId":' + showId + ',"MediaSourceId":' + MediaSourceID + ',"IsPaused":false,"IsMuted":false,"PositionTicks":' + ticks * 10000 + ',"PlayMethod":' + PlayMethod + '}';
+	    var contentToPost = '{"QueueableMediaTypes":["Video"],"CanSeek":false,"ItemId":' + showId + ',"MediaSourceId":' + MediaSourceID + ',"IsPaused":false,"IsMuted":false,"PositionTicks":' + ticks * 10000 + ',"PlayMethod":' + PlayMethod;
+	    
+	    if (playSessionId !== undefined && (PlayMethod != "DirectPlay" && PlayMethod != "DirectStream")) {
+	    	contentToPost += ',"PlaySessionId":' + playSessionId;
+	    }
+	    contentToPost += '}';
+	    
 	    xmlhttp.postContent(url, contentToPost);
 	}
 
-	server.videoStopped = function(showId, MediaSourceID, ticks, PlayMethod) {
+	server.videoStopped = function(showId, MediaSourceID, ticks, PlayMethod,playSessionId) {
 	    var url = this.serverAddr + "/Sessions/Playing/Stopped";
-	    var contentToPost = '{"QueueableMediaTypes":["Video"],"CanSeek":false,"ItemId":' + showId + ',"MediaSourceId":' + MediaSourceID + ',"IsPaused":false,"IsMuted":false,"PositionTicks":' + ticks * 10000 + ',"PlayMethod":' + PlayMethod + '}';
+	    var contentToPost = '{"QueueableMediaTypes":["Video"],"CanSeek":false,"ItemId":' + showId + ',"MediaSourceId":' + MediaSourceID + ',"IsPaused":false,"IsMuted":false,"PositionTicks":' + ticks * 10000 + ',"PlayMethod":' + PlayMethod;
+	    
+	    if (playSessionId !== undefined && (PlayMethod != "DirectPlay" && PlayMethod != "DirectStream")) {
+	    	contentToPost += ',"PlaySessionId":' + playSessionId;
+	    }
+	    contentToPost += '}';
+	    
 	    xmlhttp.postContent(url, contentToPost);
 	}
 
-	server.videoPaused = function(showId, MediaSourceID, ticks, PlayMethod) {
+	server.videoPaused = function(showId, MediaSourceID, ticks, PlayMethod, isPaused,playSessionId) {
 	    var url = this.serverAddr + "/Sessions/Playing/Progress";
-	    var contentToPost = '{"QueueableMediaTypes":["Video"],"CanSeek":false,"ItemId":' + showId + ',"MediaSourceId":' + MediaSourceID + ',"IsPaused":true,"IsMuted":false,"PositionTicks":' + ticks * 10000 + ',"PlayMethod":' + PlayMethod + '}';
+	    
+	    if (isPaused) {
+	    	var contentToPost = '{"QueueableMediaTypes":["Video"],"CanSeek":false,"ItemId":' + showId + ',"MediaSourceId":' + MediaSourceID + ',"IsPaused":true,"IsMuted":false,"PositionTicks":' + ticks * 10000 + ',"PlayMethod":' + PlayMethod + ',"EventName":"Pause"';
+	    } else {
+	    	var contentToPost = '{"QueueableMediaTypes":["Video"],"CanSeek":false,"ItemId":' + showId + ',"MediaSourceId":' + MediaSourceID + ',"IsPaused":false,"IsMuted":false,"PositionTicks":' + ticks * 10000 + ',"PlayMethod":' + PlayMethod + ',"EventName":"Unpause"';	    
+	    }
+	    
+	    if (playSessionId !== undefined && (PlayMethod != "DirectPlay" && PlayMethod != "DirectStream")) {
+	    	contentToPost += ',"PlaySessionId":' + playSessionId;
+	    }
+	    contentToPost += '}';
+	    
 	    xmlhttp.postContent(url, contentToPost);
 	}
 
-	server.videoTime = function(showId, MediaSourceID, ticks, PlayMethod) {
+	server.videoTime = function(showId, MediaSourceID, ticks, PlayMethod,playSessionId) {
 	    var url = this.serverAddr + "/Sessions/Playing/Progress";
-	    var contentToPost = '{"QueueableMediaTypes":["Video"],"CanSeek":false,"ItemId":' + showId + ',"MediaSourceId":' + MediaSourceID + ',"IsPaused":false,"IsMuted":false,"PositionTicks":' + ticks * 10000 + ',"PlayMethod":' + PlayMethod + '}';
+	    var contentToPost = '{"QueueableMediaTypes":["Video"],"CanSeek":false,"ItemId":' + showId + ',"MediaSourceId":' + MediaSourceID + ',"IsPaused":false,"IsMuted":false,"PositionTicks":' + ticks * 10000 + ',"PlayMethod":' + PlayMethod + ',"EventName":"TimeUpdate"';
+	    
+	    if (playSessionId !== undefined && (PlayMethod != "DirectPlay" && PlayMethod != "DirectStream")) {
+	    	contentToPost += ',"PlaySessionId":' + playSessionId;
+	    }
+	    contentToPost += '}';
+	    
 	    xmlhttp.postContent(url, contentToPost);
 	}
 

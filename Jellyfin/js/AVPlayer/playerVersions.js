@@ -57,7 +57,7 @@ playerVersions.start = function(playerData,resumeTicks,playedFromPage) {
 	logger.log("Video : Determine Playback of Media Streams");
 	for (var index = 0; index < this.MediaOptions.length; index++) {
 		var result = playerTranscoding.start(this.PlayerData.Id, this.PlayerData.MediaSources[this.MediaOptions[index][0]],this.MediaOptions[index][0],
-			this.MediaOptions[index][1],this.MediaOptions[index][2],this.MediaOptions[index][3],this.MediaOptions[index][4]);
+			this.MediaOptions[index][1],this.MediaOptions[index][2],this.MediaOptions[index][3],this.MediaOptions[index][4], resumeTicks);
 		logger.log("Video : Playback Added")
 		this.MediaPlayback.push(result);	
 	}
@@ -163,6 +163,8 @@ playerVersions.getMainStreamIndex = function(MediaSource, MediaSourceIndex) {
 	var UserData = xmlhttp.getContent(userURL);
 	if (UserData == null) { return; }
 	
+	
+	
 	var AudioLanguagePreferenece = (UserData.Configuration.AudioLanguagePreference !== undefined) ? UserData.Configuration.AudioLanguagePreference : "none";
 	var PlayDefaultAudioTrack = (UserData.Configuration.PlayDefaultAudioTrack !== undefined) ? UserData.Configuration.PlayDefaultAudioTrack: false;
 	
@@ -236,7 +238,32 @@ playerVersions.getMainStreamIndex = function(MediaSource, MediaSourceIndex) {
 	// these are reported by the server to be always on (unless specified by the user)
 	
 	//Really should check if there is a hassubtitles field on video - skip all of this if there isnt!
+	logger.log("Video: Checking For Subtitles");
 	if (this.PlayerData.HasSubtitles == true) {
+		//If user mnever wants subs - may as well skip
+		if (SubtitlePreference != "None") {
+			//See if Server has dedicated a default
+			if (MediaSource.DefaultSubtitletreamIndex !== undefined) {
+				//Check if preference is Forced Only - Check that index isforced
+				if (SubtitlePreference == "OnlyForced") {
+					if (MediaSource.MediaStreams[MediaSource.DefaultSubtitletreamIndex].IsForced == true) {
+						logger.log("Video: Forced Subtitles Only, Stream Found: " + MediaSource.DefaultSubtitletreamIndex);
+						subtitleIndex = MediaSource.DefaultSubtitletreamIndex;
+					} 
+				} else {
+					logger.log("Video: Subtitle Found: " + MediaSource.DefaultSubtitletreamIndex);
+					subtitleIndex = MediaSource.DefaultSubtitletreamIndex;
+				}
+			}
+		}
+			
+		if (subtitleIndex == -1) {
+			logger.log("Video: No Suitable Subtitles found");
+		}
+		
+		/*
+		
+		
 		logger.log("Video : Video has subtitles");
 		if (SubtitlePreference != "None") {
 			for (var index = 0;index < MediaStreams.length;index++) {
@@ -308,6 +335,8 @@ playerVersions.getMainStreamIndex = function(MediaSource, MediaSourceIndex) {
 				}
 			}	
 		}
+		
+		*/
 	} else {
 		logger.log("Video : Video has no subtitles");
 	}

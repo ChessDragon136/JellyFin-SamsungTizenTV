@@ -86,6 +86,29 @@ xmlhttp.getContent = function(url) {
 };		
 
 
+xmlhttp.getContentPost = function(url,contentToPost) {
+	var xmlHttp = new XMLHttpRequest();
+	if (xmlHttp) {
+		xmlHttp.open("POST", url , false); //must be false
+		xmlHttp = this.setRequestHeaders(xmlHttp);
+		xmlHttp.send(contentToPost);
+		    
+		if (xmlHttp.status != 200) {
+			logger.log("Server Error: The HTTP status returned by the server was "+xmlHttp.status);
+			logger.log(url);
+			return null;
+		} else {
+			return JSON.parse(xmlHttp.responseText);
+		}
+	} else {
+		logger.log ("Bad xmlHTTP Request");
+		//jellyfin.Logout();
+		guiUsers.start();
+		return null;
+	}
+};	
+
+
 //------------------------------------------------------------
 //POST content - Video Playback
 //------------------------------------------------------------

@@ -1,5 +1,4 @@
 //NOTE
-//
 //Samsung Player accepts seconds
 //Samsung Current time works in seconds * 1000
 //Emby works in seconds * 10000000
@@ -11,13 +10,19 @@ var player = {
 		offsetSeconds : 0, //For transcode, this holds the position the transcode started in the file
 		duration : 0,
 		
+		seekTimeForwardMs : 30000, //30s
+		seekTimeBackMs : 30000,
 		seekPos : -1, //Used to rememver where user has seeked to, -1 shows no user interaction
+		
+		speed : [-4,-2,1,2,4],//Used for fast forward / reqwin
+		speedPos : 2,
 		
 		menuItems : [],
 		menuItemsPlayPausePos : 0, //Used for quick menu substitution of play / pause icon on respeective play states. 
 		selectedMenuItem : 0, //Menu Item
 		selectedRow : 0, //Menu or Seek Bar
 		menuTimer : null, //Timer to hide menu after X seconds
+		showSubtitles : false,
 		
 		playingMediaSource : null,
 		playingMediaSourceIndex : null,
@@ -26,21 +31,20 @@ var player = {
 		playingVideoIndex : null,
 		playingAudioIndex : null,
 		playingSubtitleIndex : null,
+		playingPlaySessionId : null,
 			
 		VideoData : null,
 		PlayerData : null,
 		PlayerDataSubtitle : null,
 		PlayerIndex : null,
-		
-		subtitleInterval : null,
-		subtitleShowingIndex : 0,
-		subtitleSeeking : false,
+		AdjacentData : null,
+
 		startParams : [],
-		infoTimer : null
 };
 
 
 player.start = function(title,url,startingPlaybackTick,playedFromPage) { 
+	logger.log("Player.Start");
 	//Run only once in loading initial request - subsequent vids should go thru the startPlayback
 	this.startParams = [title,url,startingPlaybackTick,playedFromPage];
 	
@@ -70,7 +74,7 @@ player.start = function(title,url,startingPlaybackTick,playedFromPage) {
 
 
 player.startPlayback = function(TranscodeAlg, resumeTicksSamsung) {
-	 logger.log("Start Playback");
+	 logger.log("Player.StartPlayback");
 	//Expand TranscodeAlg to useful variables!!!
 	this.playingMediaSourceIndex = TranscodeAlg[0];
 	this.playingMediaSource = this.PlayerData.MediaSources[TranscodeAlg[0]];
@@ -79,19 +83,25 @@ player.startPlayback = function(TranscodeAlg, resumeTicksSamsung) {
 	this.playingVideoIndex = TranscodeAlg[3];
 	this.playingAudioIndex = TranscodeAlg[4];
 	this.playingSubtitleIndex = TranscodeAlg[5];
+	this.playingPlaySessionId = TranscodeAlg[6];
 	
 	//Reset some Vars
-	this.seekPos = 0;
-	
+	this.seekPos = -1;
+	this.showSubtitles = (this.playingSubtitleIndex != -1) ? true : false;
+
 	//Set PlayMethod
 	if (this.playingTranscodeStatus == "Direct Play"){
 		this.PlayMethod = "DirectPlay";
 	} else {
 		this.PlayMethod = "Transcode";
 	}
-
-	//Register Keys
-	tizen.tvinputdevice.registerKey('MediaStop');
+	
+	//Get Adjacent Data if episode
+	this.AdjacentData = null;
+	if (filesystem.getUserProperty("AutoPlay") == true && this.PlayerData.Type == "Episode") {
+		var url = server.getAdjacentEpisodesURL(this.PlayerData.SeriesId, this.PlayerData.SeasonId,this.PlayerData.Id);
+		this.AdjacentData = xmlhttp.getContent(url);	
+	}
 	
 	//Hide Current Page
 	document.getElementById("page").style.display = "none";	
@@ -99,13 +109,15 @@ player.startPlayback = function(TranscodeAlg, resumeTicksSamsung) {
 	//Set Media Info 
 	this.generateUI();
 	
-	/*
-
 	logger.log("Initialise Playback URL");
 	webapis.avplay.open(this.playingURL);
 	webapis.avplay.setDisplayRect(0,0,1920,1080);
 	webapis.avplay.setDisplayMethod("PLAYER_DISPLAY_MODE_FULL_SCREEN");
-	webapis.avplay.seekTo(this.startParams[2]);
+	
+	//Seek does work for transcoded - Unableto 
+	if (resumeTicksSamsung !== undefined && resumeTicksSamsung > 0) {
+		webapis.avplay.seekTo(resumeTicksSamsung);
+	}
 	
 	var listener = {
 			  onbufferingstart: function() {
@@ -133,24 +145,24 @@ player.startPlayback = function(TranscodeAlg, resumeTicksSamsung) {
 					logger.log("Subtitle Index: " + player.playingSubtitleIndex);
 					
 				  	//Set audio track
-					webapis.avplay.setSelectTrack('AUDIO',totalTrackInfo[player.playingAudioIndex].index);
+					//webapis.avplay.setSelectTrack('AUDIO',totalTrackInfo[player.playingAudioIndex].index);
 					
 					//Set subtitle track
-					if (player.playingSubtitleIndex != -1) {
-						//webapis.avplay.setSelectTrack('TEXT',totalTrackInfo[player.playingSubtitleIndex].index);
-					}
+					//if (player.playingSubtitleIndex != -1) {
+					//	webapis.avplay.setSelectTrack('TEXT',totalTrackInfo[player.playingSubtitleIndex].index);
+					//}
 			  },
 			  
 			  onsubtitlechange: function(duration, text, data3, data4) {
 				  //Samsung limitation - Can not show overlapping subtitles
-				  if (player.playingSubtitleIndex != -1) {
+				  if (player.showSubtitles == true) {
 					  document.getElementById("videoSubtitles").innerHTML=text;
 				  }
 			  },
 			  
 			  onstreamcompleted: function() {
 			    logger.log("Stream Completed");
-			    player.stop();
+			    player.playbackEnd();
 			  },
 			  oncurrentplaytime: function(currentTime) {
 				  //Seems to run every 0.5 seconds
@@ -166,20 +178,22 @@ player.startPlayback = function(TranscodeAlg, resumeTicksSamsung) {
 				  //If user is on seeker bar, dont update position as user may be interacting with it!
 				  if (player.seekPos == -1) {
 				  	document.getElementById("videoPlayerSeekBarPosition").style.left = pos-16+"px"; //circle is 32px diameter, minus half to get it right
+				  	document.getElementById("videoPlayerSeekBarPositionTime").innerHTML = player.convertmstotime(currentTime);	
+				  	
 				  }
 				  
 				  
-				  //Update Server - Counter to prevent doing it too often (30 sec approx)
+				  //Update Server - Counter to prevent doing it too often (10 sec approx)
 					player.updateTimeCount++;
-					if (player.updateTimeCount == 60) {
+					if (player.updateTimeCount == 20) {
 						player.updateTimeCount = 0;
-						server.videoTime(player.PlayerData.Id,player.playingMediaSource.Id,currentTime,player.PlayMethod);
+						server.videoTime(player.PlayerData.Id,player.playingMediaSource.Id,currentTime,player.PlayMethod,player.playingPlaySessionId);
 					}
 			  },
 			  onerror: function(eventType,data) {
 				  logger.log("An error has happened :(");
 				  logger.log("Stream Error: " + data);
-				  player.stop();
+				  player.stop(true);
 			  },
 			  onevent: function(eventType, eventData) {
 				  logger.log("An event has happened");
@@ -195,9 +209,7 @@ player.startPlayback = function(TranscodeAlg, resumeTicksSamsung) {
 	webapis.avplay.play();
 	
 	//Update Server content is playing * update time
-	server.videoStarted(this.PlayerData.Id,this.playingMediaSource.Id,webapis.avplay.getCurrentTime(),this.PlayMethod);
-	
-	*/
+	server.videoStarted(this.PlayerData.Id,this.playingMediaSource.Id,webapis.avplay.getCurrentTime(),this.PlayMethod,this.playingPlaySessionId);
 	
 	//Hide Background - Showing video
 	document.getElementById("allBackground").style.display="none";
@@ -206,15 +218,213 @@ player.startPlayback = function(TranscodeAlg, resumeTicksSamsung) {
 	remotecontrol.setCurrentPage("videoPlayer");
 }
 
+//---------------------------------------------------------------------------------------------------
+//   PLAYBACK FUNCTIONS 
+//---------------------------------------------------------------------------------------------------
+
+player.play = function() {
+	if (webapis.avplay.getState() == "PAUSED") {
+		webapis.avplay.play();
+		server.videoPaused(this.PlayerData.Id,this.playingMediaSource.Id,webapis.avplay.getCurrentTime(),this.PlayMethod,false,this.playingPlaySessionId);	
+	}
+}
+
+player.pause = function() {
+	if (webapis.avplay.getState() == "PLAYING") {
+		webapis.avplay.pause();
+		server.videoPaused(this.PlayerData.Id,this.playingMediaSource.Id,webapis.avplay.getCurrentTime(),this.PlayMethod,true,this.playingPlaySessionId);
+	}
+}
+
+player.seek = function(seekTime) {
+	if (this.PlayMethod == "DirectPlay") {
+		var successCallback = function() { server.videoTime(player.PlayerData.Id,player.playingMediaSource.Id,webapis.avplay.getCurrentTime(),player.PlayMethod,player.playingPlaySessionId);}
+		webapis.avplay.seekTo(seekTime,successCallback);
+	} else {
+		//Transcoding - Need to be smart and do something..
+		//Sadly I'm not smart
+		var successCallback = function() { server.videoTime(player.PlayerData.Id,player.playingMediaSource.Id,webapis.avplay.getCurrentTime(),player.PlayMethod,player.playingPlaySessionId);}
+		webapis.avplay.seekTo(seekTime,successCallback);
+	}
+}
+
+player.rewind = function() {
+	if (webapis.avplay.getState() == "PLAYING" && this.PlayMethod == "DirectPlay") {
+		this.speedPos--;
+		if (this.speedPos < 0) {
+			this.speedPos++;
+		} else {
+			webapis.avplay.setSpeed(this.speed[this.speedPos]);
+			
+			if (this.speed[this.speedPos] == 1) {
+				document.getElementById("videoPlayerSeekSpeed").innerHTML = "";
+			} else {
+				document.getElementById("videoPlayerSeekSpeed").innerHTML = "Speed: " + this.speed[this.speedPos];
+			}	
+		}	
+	}
+}
+
+player.fastforward = function() {
+	if (webapis.avplay.getState() == "PLAYING" && this.PlayMethod == "DirectPlay") {
+		this.speedPos++;
+		if (this.speedPos < this.speed.length) {
+			webapis.avplay.setSpeed(this.speed[this.speedPos]);
+			
+			if (this.speed[this.speedPos] == 1) {
+				document.getElementById("videoPlayerSeekSpeed").innerHTML = "";
+			} else {
+				document.getElementById("videoPlayerSeekSpeed").innerHTML = "Speed: " + this.speed[this.speedPos];
+			}	
+		} else {
+			this.speedPos--;
+		}
+	}
+}
+
+player.previous = function() {
+	//Check if playlist - 
+	logger.log("Player.Previous");
+	if (this.startParams[0] == "PlayAll") {
+		this.PlayerIndex--
+		if (this.PlayerIndex >= 0) {
+			//Load Next Video
+			logger.log("Loading Next Video - To Be Implemented");
+			player.stop(false);
+			remotecontrol.setCurrentPage("NoItems");
+		} else {
+			//End Playback
+			player.stop(true);
+		} 
+	} else {
+		//Check if autoplay is enabled
+		if (filesystem.getUserProperty("AutoPlay") == true && this.PlayerData.Type == "Episode" && this.AdjacentData != null) {	
+			logger.log("Player.Previous Adjacent Episode");			
+			if (this.AdjacentData.Items.length == 2 && (this.AdjacentData.Items[0].IndexNumber < this.PlayerData.IndexNumber)) {
+				logger.log("Player.Previous Adjacent Episode == 2");
+				player.stop(false);
+				//Take focus to no input
+				remotecontrol.setCurrentPage("NoItems");
+				var url = server.getItemInfoURL(this.AdjacentData.Items[0].Id);
+				this.PlayerData = xmlhttp.getContent(url);
+				playerVersions.start(this.PlayerData,0,this.startParams[3]);
+			} else if (this.AdjacentData.Items.length > 2) {
+				logger.log("Player.Previous Adjacent Episode >2");
+				player.stop(false);
+				//Take focus to no input
+				remotecontrol.setCurrentPage("NoItems");
+				var url = server.getItemInfoURL(this.AdjacentData.Items[0].Id);
+				this.PlayerData = xmlhttp.getContent(url);
+				playerVersions.start(this.PlayerData,0,this.startParams[3]);
+			} else {
+				logger.log("Player.Previous Adjacent Episode Stop");
+				player.stop(true);
+			}
+		} else {
+			//End Playback
+			player.stop(true);
+		}
+	}
+}
+
+player.next = function() {
+	logger.log("Player.Next");
+	this.playbackEnd();
+}
+
+player.playbackEnd = function() {
+	//Check if playlist - 
+	logger.log("Player.PlaybackEnd");
+	if (this.startParams[0] == "PlayAll") {
+		this.PlayerIndex++
+		if (this.PlayerIndex < this.VideoData.Items.length) {
+			//Load Next Video
+			logger.log("Loading Next Video - To Be Implemented");
+			player.stop(false);
+			remotecontrol.setCurrentPage("NoItems");
+		} else {
+			//End Playback
+			player.stop(true);
+		} 
+	} else {
+		//Check if autoplay is enabled
+		if (filesystem.getUserProperty("AutoPlay") == true && this.PlayerData.Type == "Episode" && this.AdjacentData != null) {	
+			logger.log("Player.PlaybackEnd Adjacent Episode");			
+			if (this.AdjacentData.Items.length == 2 && (this.AdjacentData.Items[1].IndexNumber > this.PlayerData.IndexNumber)) {
+				logger.log("Player.PlaybackEnd Adjacent Episode == 2");
+				player.stop(false);
+				//Take focus to no input
+				remotecontrol.setCurrentPage("NoItems");
+				var url = server.getItemInfoURL(this.AdjacentData.Items[1].Id);
+				this.PlayerData = xmlhttp.getContent(url);
+				playerVersions.start(this.PlayerData,0,this.startParams[3]);
+			} else if (this.AdjacentData.Items.length > 2) {
+				logger.log("Player.PlaybackEnd Adjacent Episode >2");
+				player.stop(false);
+				//Take focus to no input
+				remotecontrol.setCurrentPage("NoItems");
+				var url = server.getItemInfoURL(this.AdjacentData.Items[2].Id);
+				this.PlayerData = xmlhttp.getContent(url);
+				playerVersions.start(this.PlayerData,0,this.startParams[3]);
+			} else {
+				logger.log("Player.PlaybackEnd Adjacent Episode Stop");
+				player.stop(true);
+			}
+		} else {
+			//End Playback
+			player.stop(true);
+		}
+	}
+}
+
+player.stop = function(cleanup) {
+	cleanup = (cleanup === undefined) ? false : cleanup;
+	
+	server.videoStopped(this.PlayerData.Id,this.playingMediaSource.Id,webapis.avplay.getCurrentTime(),this.PlayMethod,this.playingPlaySessionId);
+	server.videoStopTranscode(); //Is safe to run on all videos
+	webapis.avplay.stop();
+	
+	if (cleanup) {
+		this.cleanup();
+	}
+}
+
+player.cleanup = function() {
+	//Clear subtitles & hide player
+	document.getElementById("videoSubtitles").innerHTML="";
+	document.getElementById("videoplayer").style.display="none";
+	
+	//Turn on screensaver
+	webapis.appcommon.setScreenSaver(webapis.appcommon.AppCommonScreenSaverState.SCREEN_SAVER_ON);
+	
+	//Hide Page
+	document.getElementById("allBackground").style.display="";
+	document.getElementById("page").style.display = "";	
+	pagehistory.removeLatestURL();
+	remotecontrol.setCurrentPage(this.startParams[3]);
+}
+
+//---------------------------------------------------------------------------------------------------
+//    ITEM HANDLERS
+//---------------------------------------------------------------------------------------------------
+
+//Menu
+player.updateSelectedMenuItems = function() {
+	support.updateSelectedMenuItems(this.menuItems.length,this.selectedMenuItem,"guiTVEpisode-MenuItem highlightBackground","guiTVEpisode-MenuItem","videoPlayer-MenuItem","guiTVEpisode-MenuItemSVG highlightBackground","guiTVEpisode-MenuItemSVG");
+}
+
+//---------------------------------------------------------------------------------------------------
+//    REMOTE CONTROL HANDLER
+//---------------------------------------------------------------------------------------------------
+
 player.keyDown = function() {
 	var keyCode = event.keyCode;
-	
+
 	if (document.getElementById("videoPlayerUI").style.display == "") {
 		clearTimeout(this.menuTimer);
 		this.menuTimer = setTimeout(function(){ player.menuTimeout() }, 10000);
 	}
-	
-	
+		
 	switch(keyCode) {
 	//Need Logout Key
 	case 37:
@@ -230,12 +440,36 @@ player.keyDown = function() {
 		this.processDownKey();
 		break;	
 	case 13:
-		//this.processSelectedItem();
+		this.processSelectedItem();
 		break;
+	case 415:
+		logger.log  ("Play Key",1);
+		player.play();
+		break;
+	case 19:
+		logger.log  ("Pause Key",1);
+		player.pause();
+		break;	
 	case 413:
 		logger.log  ("Stop Key",1);
-		player.stop();
+		player.stop(true);
 		break;
+	case 412:
+		logger.log  ("Rewind Key",1);
+		player.rewind();
+		break;
+	case 417:
+		logger.log  ("FastForward Key",1);
+		player.fastforward();
+		break;
+	case 10232:
+		logger.log  ("Previous Key",1);
+		player.previous();
+		break;
+	case 10233:
+		logger.log  ("Next Key",1);
+		player.next();
+		break;			
 	case 10009:
 		logger.log("RETURN",1);
 		event.preventDefault();
@@ -245,9 +479,7 @@ player.keyDown = function() {
 		logger.log ("EXIT KEY",1);
 		event.preventDefault();
 		//Server updated before video stop to get currentPlayTime
-		server.videoStopped(this.PlayerData.Id,this.playingMediaSource.Id,webapis.avplay.getCurrentTime(),this.PlayMethod);
-		webapis.avplay.stop();
-		server.videoStopTranscode(); //Is safe to run on all videos
+		player.stop(false);
 		tizen.application.getCurrentApplication().exit();
 		break;
 	}
@@ -263,26 +495,28 @@ player.processLeftKey = function() {
 			}
 		} else {
 			//Seek Bar
-			if (this.seekPos > 0) {
+			if (this.seekPos > 0 || this.seekPos == -1) {
 				if (this.seekPos == -1) {
-					this.seekPos = 0 - 60000; //webapis.avplay.getCurrentTime() + 60000;
+					this.seekPos = webapis.avplay.getCurrentTime() - this.seekTimeBackMs; //webapis.avplay.getCurrentTime() + 60000;
 				} else {
-					this.seekPos-= 60000;
+					this.seekPos-= this.seekTimeBackMs;
 				}	
 				
 				if (this.seekPos >= 0) {
-					var pos =  1200 * (this.seekPos / 2700000) //webapis.avplay.getDuration()
+					var pos =  1200 * (this.seekPos / webapis.avplay.getDuration()) //webapis.avplay.getDuration()
 					document.getElementById("videoPlayerSeekBarPosition").style.left = pos-16+"px";
 					document.getElementById("videoPlayerSeekBarPositionTime").innerHTML = player.convertmstotime(this.seekPos);
 				} else {
 					document.getElementById("videoPlayerSeekBarPosition").style.left = 0-16+"px";
-					document.getElementById("videoPlayerSeekBarPositionTime").innerHTML = player.convertmstotime(this.seekPos);	
+					document.getElementById("videoPlayerSeekBarPositionTime").innerHTML = player.convertmstotime(0);	
 				}
 			}
 		}
 	} else {
-		var successCallback = function() { server.videoTime(player.PlayerData.Id,player.playingMediaSource.Id,webapis.avplay.getCurrentTime(),player.PlayMethod);}
-		webapis.avplay.seekTo(webapis.avplay.getCurrentTime() - 60000,successCallback);
+		//This if here as I dont want to allow multiple short 30s seeking for transcoding - seek can be done via seek bar whilst transcoding
+		if (this.PlayMethod == "DirectPlay") {
+			this.seek(webapis.avplay.getCurrentTime() - this.seekTimeBackMs);
+		}
 	}
 }
 
@@ -296,26 +530,28 @@ player.processRightKey = function() {
 			}
 		} else {
 			//Seek Bar
-			if (this.seekPos < 2700000) { //webapis.avplay.getDuration()
+			if (this.seekPos < webapis.avplay.getDuration()) { //webapis.avplay.getDuration()
 				if (this.seekPos == -1) {
-					this.seekPos = 0 + 60000; //webapis.avplay.getCurrentTime() + 60000;
+					this.seekPos = webapis.avplay.getCurrentTime() + this.seekTimeForwardMs; //webapis.avplay.getCurrentTime() + this.seekTimeForwardMs;
 				} else {
-					this.seekPos+= 60000;
+					this.seekPos+= this.seekTimeForwardMs;
 				}			
 				
-				if (this.seekPos <=  2700000) { //webapis.avplay.getDuration()
-					var pos =  1200 * (this.seekPos / 2700000) //webapis.avplay.getDuration()
+				if (this.seekPos <=  webapis.avplay.getDuration()) { //webapis.avplay.getDuration()
+					var pos =  1200 * (this.seekPos / webapis.avplay.getDuration()) //webapis.avplay.getDuration()
 					document.getElementById("videoPlayerSeekBarPosition").style.left = pos-16+"px";
 					document.getElementById("videoPlayerSeekBarPositionTime").innerHTML = player.convertmstotime(this.seekPos);
 				} else {
 					document.getElementById("videoPlayerSeekBarPosition").style.left = 1200-16+"px";
-					document.getElementById("videoPlayerSeekBarPositionTime").innerHTML = player.convertmstotime(this.seekPos);				
+					document.getElementById("videoPlayerSeekBarPositionTime").innerHTML = player.convertmstotime(webapis.avplay.getDuration());				
 				}	
 			}
 		}
 	} else {
-		var successCallback = function() { server.videoTime(player.PlayerData.Id,player.playingMediaSource.Id,webapis.avplay.getCurrentTime(),player.PlayMethod);}
-		webapis.avplay.seekTo(webapis.avplay.getCurrentTime() + 60000,successCallback);
+		//This if here as I dont want to allow multiple short 30s seeking for transcoding - seek can be done via seek bar whilst transcoding
+		if (this.PlayMethod == "DirectPlay") {
+			this.seek(webapis.avplay.getCurrentTime() + this.seekTimeForwardMs);
+		}
 	}	
 }
 
@@ -323,6 +559,7 @@ player.processUpKey = function() {
 	if (document.getElementById("videoPlayerUI").style.display == "") {
 		if (this.selectedRow == 1) {
 			this.selectedRow = 0;
+			document.getElementById("videoPlayerSeekBarPositionTime").style.display = "none";
 			document.getElementById("videoPlayerSeekBarPosition").className = "videoPlayerSeekBarPosition";
 			this.selectedMenuItem = this.menuItemsPlayPausePos;
 			this.updateSelectedMenuItems();
@@ -343,7 +580,7 @@ player.processDownKey = function() {
 			//Set Seek Position
 			document.getElementById("videoPlayerSeekBarPosition").className = "videoPlayerSeekBarPosition highlightBackground";
 			//Unhide Seek Position Time
-			document.getElementById("videoPlayerSeekBarPositionTime").innerHTML = player.convertmstotime(0); //player.convertmstotime(webapis.avplay.getCurrentTime());
+			document.getElementById("videoPlayerSeekBarPositionTime").innerHTML = player.convertmstotime(webapis.avplay.getCurrentTime()); //player.convertmstotime(webapis.avplay.getCurrentTime());
 			document.getElementById("videoPlayerSeekBarPositionTime").style.display = "";
 		}
 	} else {
@@ -352,39 +589,66 @@ player.processDownKey = function() {
 	}
 }
 
-player.stop = function() {
-	//Server updated before video stop to get currentPlayTime
-	server.videoStopped(this.PlayerData.Id,this.playingMediaSource.Id,webapis.avplay.getCurrentTime(),this.PlayMethod);
-	webapis.avplay.stop();
-	server.videoStopTranscode(); //Is safe to run on all videos
-	
-	//Clear subtitles & hide player
-	document.getElementById("videoSubtitles").innerHTML="";
-	document.getElementById("videoplayer").style.display="none";
-	
-	//Turn on screensaver
-	webapis.appcommon.setScreenSaver(webapis.appcommon.AppCommonScreenSaverState.SCREEN_SAVER_ON);
-	
-	//Hide Page
-	document.getElementById("allBackground").style.display="";
-	document.getElementById("page").style.display = "";	
-	pagehistory.removeLatestURL();
-	remotecontrol.setCurrentPage(this.startParams[3]);
+player.processSelectedItem = function() {
+	if (document.getElementById("videoPlayerUI").style.display == "") {
+		if (this.selectedRow == 0) {
+			//Menu Bar
+			switch (this.menuItems[this.selectedMenuItem]) {
+			case "Play":
+				this.play();
+				document.getElementById('videoPlayer-MenuItemPlayPausePath').setAttribute('d','M6 19h4V5H6v14zm8-14v14h4V5h-4z');
+				this.menuItems[this.menuItemsPlayPausePos] = "Pause";
+				break;
+			case "Pause":
+				this.pause();
+				document.getElementById('videoPlayer-MenuItemPlayPausePath').setAttribute('d',"M8 5v14l11-7z");
+				this.menuItems[this.menuItemsPlayPausePos] = "Play";
+				break;
+			case "Rewind":
+				player.rewind();
+				break;
+			case "Fast Forward":
+				player.fastforward();
+				break;	
+			case "Previous":
+				player.previous();
+				break;
+			case "Next":
+				player.next();
+				break;
+			case "CC":
+				this.showSubtitles = (this.showSubtitles == true) ? false : true;
+				if (this.showSubtitles == false) {
+					//Need to hide UI
+					document.getElementById("videoSubtitles").innerHTML = "";
+				}
+				break;
+			}
+		} else if (this.selectedRow == 1) {
+			//Seek Bar
+			this.seek(this.seekPos);
+			this.menuTimeout();
+		}
+	} else {
+		//Show menu
+		this.menuDisplay();
+	}
 }
 
+//---------------------------------------------------------------------------------------------------
+//   Helper Functions
+//---------------------------------------------------------------------------------------------------
 
-//Menu
-player.updateSelectedMenuItems = function() {
-	support.updateSelectedMenuItems(this.menuItems.length,this.selectedMenuItem,"guiTVEpisode-MenuItem highlightBackground","guiTVEpisode-MenuItem","videoPlayer-MenuItem","guiTVEpisode-MenuItemSVG highlightBackground","guiTVEpisode-MenuItemSVG");
-}
 
 player.menuDisplay = function() {
 	this.updateSelectedMenuItems();
 	document.getElementById("videoPlayerUI").style.display = "";
+	clearTimeout(this.menuTimer);
 	this.menuTimer = setTimeout(function(){ player.menuTimeout() }, 10000);
 }
 
 player.menuTimeout = function() {
+	clearTimeout(this.menuTimer);
 	document.getElementById("videoPlayerUI").style.display = "none";
 	document.getElementById("videoPlayerSeekBarPositionTime").style.display = "none";
 	document.getElementById("videoPlayerSeekBarPosition").className = "videoPlayerSeekBarPosition";
@@ -396,21 +660,33 @@ player.menuTimeout = function() {
 player.generateUI = function() {
 	
 	//Reset
-	this.menuItems = [];
+	this.menuItems.length = 0;
 	this.menuItemsPlayPausePos = 0;
 	this.selectedMenuItem = 0; 
 	this.selectedRow = 0;
+	this.seekPos = -1;
+	this.speedPos = 2;
 	
-	//Until I work out how to implement time skip, seek for transcoding, dont offer it!
 	if (this.PlayMethod == "DirectPlay") {
-		this.menuItems.push("Previous");
+		//Only Add Previous if there is previous in current playlist or if autoplay is on and adjacentData has a previous eposide
+		//AdjacentData will be null here if autoplay is disabled! No need to check here
+		if (this.startParams[0] == "PlayAll" && this.VideoData[this.PlayerIndex-1] !== undefined) {
+			this.menuItems.push("Previous");
+		} else if (this.AdjacentData != null && this.AdjacentData.Items[0].IndexNumber < this.PlayerData.IndexNumber) {
+			this.menuItems.push("Previous");
+		}
+	
 		this.menuItems.push("Rewind");
-		//this.menuItems.push("Play");
 		this.menuItems.push("Pause");
-		//this.menuItems.push("Stop");
 		this.menuItems.push("Fast Forward");
-		this.menuItems.push("Next");
 		
+		//Only Add Previous if there is previous in current playlist or if autoplay is on and adjacentData has a previous eposide
+		//AdjacentData will be null here if autoplay is disabled! No need to check here
+		if (this.startParams[0] == "PlayAll" && this.VideoData[this.PlayerIndex+1] !== undefined) {
+			this.menuItems.push("Next");
+		} else if (this.AdjacentData != null && ((this.AdjacentData.Items.length == 2 && this.AdjacentData.Items[1].IndexNumber > this.PlayerData.IndexNumber) || (this.AdjacentData.Items.length == 3))) {
+			this.menuItems.push("Next");
+		}	
 	} else {
 		this.menuItems.push("Previous");
 		this.menuItems.push("Pause");
@@ -420,18 +696,15 @@ player.generateUI = function() {
 	this.menuItems.push("Settings");
 	
 	document.getElementById("videoPlayerControls").innerHTML = "";
+	document.getElementById("videoPlayerSettings").innerHTML = "";
 	for (var index = 0; index < this.menuItems.length; index++) {
 		if (this.menuItems[index] == "Previous") {
 			document.getElementById("videoPlayerControls").innerHTML += "<svg id='videoPlayer-MenuItem" + index + "' class='guiTVEpisode-MenuItemSVG ' xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24'><path d='M6 6h2v12H6zm3.5 6l8.5 6V6z'/></svg></span>";
 		} else if (this.menuItems[index] == "Rewind") {
 			document.getElementById("videoPlayerControls").innerHTML += "<svg id='videoPlayer-MenuItem" + index + "' class='guiTVEpisode-MenuItemSVG ' xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24'><path d='M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6l-8.5 6z'/></svg></span>";
-		} else if (this.menuItems[index] == "Play") {
-			document.getElementById("videoPlayerControls").innerHTML += "<svg id='videoPlayer-MenuItem" + index + "' class='guiTVEpisode-MenuItemSVG ' xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24'><path d='M8 5v14l11-7z'/></svg></span>";
 		} else if (this.menuItems[index] == "Pause") {
 			this.menuItemsPlayPausePos = index;
-			document.getElementById("videoPlayerControls").innerHTML += "<svg id='videoPlayer-MenuItem" + index + "' class='guiTVEpisode-MenuItemSVG ' xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24'><path d='M6 19h4V5H6v14zm8-14v14h4V5h-4z'/></svg></span>";
-		} else if (this.menuItems[index] == "Stop") {
-			//document.getElementById("videoPlayerControls").innerHTML += "<svg id='videoPlayer-MenuItem" + index + "' class='guiTVEpisode-MenuItemSVG ' xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24'><path d='M6 6h12v12H6z'/></svg></span>";
+			document.getElementById("videoPlayerControls").innerHTML += "<svg id='videoPlayer-MenuItem" + index + "' class='guiTVEpisode-MenuItemSVG ' xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24'><path id='videoPlayer-MenuItemPlayPausePath' d='M6 19h4V5H6v14zm8-14v14h4V5h-4z'/></svg></span>";
 		} else if (this.menuItems[index] == "Fast Forward") {
 			document.getElementById("videoPlayerControls").innerHTML += "<svg id='videoPlayer-MenuItem" + index + "' class='guiTVEpisode-MenuItemSVG ' xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24'><path d='M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z'/></svg></span>";
 		} else if (this.menuItems[index] == "Next") {
@@ -451,17 +724,16 @@ player.generateUI = function() {
 	    '<div id="videoPlayerSeekBarPosition" class="videoPlayerSeekBarPosition"><div id="videoPlayerSeekBarPositionTime" class="videoPlayerSeekBarPositionTime" style="display:none"></div></div>' +
 	    '</div><div id="videoPlayerTimeRemaining" class="videoPlayerTimeRemaining">00:12:14</div>';
 
+	if (this.PlayMethod == "DirectPlay") {
+		document.getElementById("videoPlayerPlaybackMethod").innerHTML = "Direct Play";
+	} else {
+		document.getElementById("videoPlayerPlaybackMethod").innerHTML = "Transcoding";
+	}
+	
 	if (this.PlayerData.Type == "Episode") {
-		//Add the series logo at the top left.
-		//if (this.PlayerData.ParentLogoImageTag) {
-			//var videoTitle = support.getNameFormat(this.PlayerData.SeriesName, this.PlayerData.ParentIndexNumber, this.PlayerData.Name, this.PlayerData.IndexNumber);
-			//videoTitle = videoTitle.replace("<br>", " ");					
-			//var imgsrc = server.getImageURL(this.PlayerData.SeriesId,"Logo",this.PlayerData.ParentLogoImageTag,"videoPlayer");
-			//document.getElementById("videoPlayerMediaItemLogo").style.backgroundImage="url('"+imgsrc+"')";	
-		//} 
 		var videoTitle ="";
 		if (this.PlayerData.ParentIndexNumber != undefined && this.PlayerData.IndexNumber != undefined) {
-			videoTitle =  "<span class=''>"+this.PlayerData.SeriesName+" S" + this.PlayerData.ParentIndexNumber + ",E" + this.PlayerData.IndexNumber + " - " + this.PlayerData.Name + "</span>";		
+			videoTitle =  "<span>"+this.PlayerData.SeriesName+" S" + this.PlayerData.ParentIndexNumber + ",E" + this.PlayerData.IndexNumber + " - " + this.PlayerData.Name + "</span>";		
 		} else {
 			videoTitle = this.PlayerData.SeriesName + " - "+this.PlayerData.Name;
 		}

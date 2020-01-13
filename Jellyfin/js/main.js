@@ -57,6 +57,13 @@ window.onload = function () {
 	
 	//Register common keys
 	tizen.tvinputdevice.registerKey('Exit'); //Registered to close video playback cleanly
+	tizen.tvinputdevice.registerKey('MediaPlay');
+	tizen.tvinputdevice.registerKey('MediaPause');
+	tizen.tvinputdevice.registerKey('MediaStop');
+	tizen.tvinputdevice.registerKey('MediaRewind');
+	tizen.tvinputdevice.registerKey('MediaFastForward');
+	tizen.tvinputdevice.registerKey('MediaTrackPrevious');
+	tizen.tvinputdevice.registerKey('MediaTrackNext');
 	
 	//Set screensaver
 	webapis.appcommon.setScreenSaver(webapis.appcommon.AppCommonScreenSaverState.SCREEN_SAVER_ON);
