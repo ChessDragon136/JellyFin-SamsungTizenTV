@@ -39,8 +39,7 @@ guiTVEpisode.start = function(url,selectedItem,topLeftItem) {
 	
 	//Load Item Data
 	this.ItemData = xmlhttp.getContent(url);
-	if (this.ItemData == null) { pagehistory.processReturnURLHistory(); }
-		
+	
 	//Setup Menu Items
 	if (this.ItemData.LocationType != "Virtual") {
 		if (this.ItemData.UserData.PlaybackPositionTicks > 0) {

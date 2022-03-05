@@ -1,15 +1,13 @@
 var xmlhttp = {};
 
+
 xmlhttp.setRequestHeaders = function (xmlHttp) {
-	xmlHttp.setRequestHeader("Authorization", "MediaBrowser Client=\"Samsung Tizen TV\", Device=\""+server.getDevice()+"\", DeviceId=\""+server.getDeviceID()+"\", Version=\""+main.getVersion()+"\", UserId=\""+server.getUserID()+"\"");
-	var authToken = server.getAuthToken();
-	if (authToken != null) {
-		xmlHttp.setRequestHeader("X-MediaBrowser-Token", authToken);		
-	}
+	xmlHttp.setRequestHeader("X-Emby-Authorization", "MediaBrowser Client=\"Samsung Tizen TV\", Device=\""+server.getDevice()+"\", DeviceId=\""+server.getDeviceID()+"\", Version=\""+main.getVersion()+"\", Token=\""+server.getAuthToken()+"\"");
 	xmlHttp.setRequestHeader("Content-Type", 'application/json; charset=UTF-8');	
 	//xmlHttp.setRequestHeader("Accept-Charset", 'utf-8');
 	return xmlHttp;
 };	
+
 
 xmlhttp.testConnectionSettings = function (servervar,fromFile) {	
 	xmlHttp = new XMLHttpRequest();
@@ -32,8 +30,8 @@ xmlhttp.testConnectionSettings = function (servervar,fromFile) {
 	    }
 		xmlHttp.send(null);
 	} else {
-	    logger.log("Failed to create XHR");
-	    guiServer.start();
+		logger.log ("Bad xmlHTTP Request");
+		tizen.application.getCurrentApplication().exit(); 
 	}
 };
 
@@ -55,6 +53,7 @@ xmlhttp.Authenticate = function(UserId, UserName, Password) {
     	server.setUserID(session.User.Id);
     	server.setUserName(UserName);
 		logger.log("User "+ UserName +" authenticated. ");
+		logger.log("Authentication Token:  "+ session.AccessToken);
     	return true;
     }
 }
@@ -73,15 +72,13 @@ xmlhttp.getContent = function(url) {
 		if (xmlHttp.status != 200) {
 			logger.log("Server Error: The HTTP status returned by the server was "+xmlHttp.status);
 			logger.log(url);
-			return null;
+			tizen.application.getCurrentApplication().exit(); 
 		} else {
 			return JSON.parse(xmlHttp.responseText);
 		}
 	} else {
 		logger.log ("Bad xmlHTTP Request");
-		//jellyfin.Logout();
-		guiUsers.start();
-		return null;
+		tizen.application.getCurrentApplication().exit(); 
 	}
 };		
 
@@ -96,15 +93,13 @@ xmlhttp.getContentPost = function(url,contentToPost) {
 		if (xmlHttp.status != 200) {
 			logger.log("Server Error: The HTTP status returned by the server was "+xmlHttp.status);
 			logger.log(url);
-			return null;
+			tizen.application.getCurrentApplication().exit(); 
 		} else {
 			return JSON.parse(xmlHttp.responseText);
 		}
 	} else {
 		logger.log ("Bad xmlHTTP Request");
-		//jellyfin.Logout();
-		guiUsers.start();
-		return null;
+		tizen.application.getCurrentApplication().exit(); 
 	}
 };	
 
@@ -115,7 +110,7 @@ xmlhttp.getContentPost = function(url,contentToPost) {
 
 xmlhttp.postContent = function(url,contentToPost) {
 	xmlHttp = new XMLHttpRequest();
-	if (xmlHttp) {
+	if (xmlHttp) {	
 		xmlHttp.open("POST", url , true); //must be true!
 		xmlHttp = this.setRequestHeaders(xmlHttp);
 		xmlHttp.send(contentToPost);

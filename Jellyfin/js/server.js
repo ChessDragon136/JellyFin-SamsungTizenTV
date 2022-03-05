@@ -251,10 +251,10 @@
 
 	server.videoStarted = function(showId, MediaSourceID, ticks, PlayMethod,playSessionId) {
 	    var url = this.serverAddr + "/Sessions/Playing";
-	    var contentToPost = '{"QueueableMediaTypes":["Video"],"CanSeek":false,"ItemId":' + showId + ',"MediaSourceId":' + MediaSourceID + ',"IsPaused":false,"IsMuted":false,"PositionTicks":' + ticks * 10000 + ',"PlayMethod":' + PlayMethod;
+	    var contentToPost = '{"CanSeek":false,"ItemId":"' + showId + '","MediaSourceId":"' + MediaSourceID + '","IsPaused":false,"IsMuted":false,"PositionTicks":' + ticks * 10000 + ',"PlayMethod":"' + PlayMethod+'"';
 	    
 	    if (playSessionId !== undefined && (PlayMethod != "DirectPlay" && PlayMethod != "DirectStream")) {
-	    	contentToPost += ',"PlaySessionId":' + playSessionId;
+	    	contentToPost += ',"PlaySessionId":"' + playSessionId + '"';
 	    }
 	    contentToPost += '}';
 	    
@@ -263,10 +263,10 @@
 
 	server.videoStopped = function(showId, MediaSourceID, ticks, PlayMethod,playSessionId) {
 	    var url = this.serverAddr + "/Sessions/Playing/Stopped";
-	    var contentToPost = '{"QueueableMediaTypes":["Video"],"CanSeek":false,"ItemId":' + showId + ',"MediaSourceId":' + MediaSourceID + ',"IsPaused":false,"IsMuted":false,"PositionTicks":' + ticks * 10000 + ',"PlayMethod":' + PlayMethod;
+	    var contentToPost = '{"CanSeek":false,"ItemId":"' + showId + '","MediaSourceId":"' + MediaSourceID + '","IsPaused":false,"IsMuted":false,"PositionTicks":' + ticks * 10000 + ',"PlayMethod":"' + PlayMethod+'"';
 	    
 	    if (playSessionId !== undefined && (PlayMethod != "DirectPlay" && PlayMethod != "DirectStream")) {
-	    	contentToPost += ',"PlaySessionId":' + playSessionId;
+	    	contentToPost += ',"PlaySessionId":"' + playSessionId + '"';
 	    }
 	    contentToPost += '}';
 	    
@@ -277,13 +277,13 @@
 	    var url = this.serverAddr + "/Sessions/Playing/Progress";
 	    
 	    if (isPaused) {
-	    	var contentToPost = '{"QueueableMediaTypes":["Video"],"CanSeek":false,"ItemId":' + showId + ',"MediaSourceId":' + MediaSourceID + ',"IsPaused":true,"IsMuted":false,"PositionTicks":' + ticks * 10000 + ',"PlayMethod":' + PlayMethod + ',"EventName":"Pause"';
+	    	var contentToPost = '{"CanSeek":false,"ItemId":"' + showId + '","MediaSourceId":"' + MediaSourceID + '","IsPaused":true,"IsMuted":false,"PositionTicks":' + ticks * 10000 + ',"PlayMethod":"' + PlayMethod + '","EventName":"Pause"';
 	    } else {
-	    	var contentToPost = '{"QueueableMediaTypes":["Video"],"CanSeek":false,"ItemId":' + showId + ',"MediaSourceId":' + MediaSourceID + ',"IsPaused":false,"IsMuted":false,"PositionTicks":' + ticks * 10000 + ',"PlayMethod":' + PlayMethod + ',"EventName":"Unpause"';	    
+	    	var contentToPost = '{"CanSeek":false,"ItemId":"' + showId + '","MediaSourceId":"' + MediaSourceID + '","IsPaused":false,"IsMuted":false,"PositionTicks":' + ticks * 10000 + ',"PlayMethod":"' + PlayMethod + '","EventName":"Unpause"';	    
 	    }
 	    
 	    if (playSessionId !== undefined && (PlayMethod != "DirectPlay" && PlayMethod != "DirectStream")) {
-	    	contentToPost += ',"PlaySessionId":' + playSessionId;
+	    	contentToPost += ',"PlaySessionId":"' + playSessionId + '"';
 	    }
 	    contentToPost += '}';
 	    
@@ -292,10 +292,10 @@
 
 	server.videoTime = function(showId, MediaSourceID, ticks, PlayMethod,playSessionId) {
 	    var url = this.serverAddr + "/Sessions/Playing/Progress";
-	    var contentToPost = '{"QueueableMediaTypes":["Video"],"CanSeek":false,"ItemId":' + showId + ',"MediaSourceId":' + MediaSourceID + ',"IsPaused":false,"IsMuted":false,"PositionTicks":' + ticks * 10000 + ',"PlayMethod":' + PlayMethod + ',"EventName":"TimeUpdate"';
+	    var contentToPost = '{"CanSeek":false,"ItemId":"' + showId + '","MediaSourceId":"' + MediaSourceID + '","IsPaused":true,"IsMuted":false,"PositionTicks":' + ticks * 10000 + ',"PlayMethod":"' + PlayMethod + '","EventName":"TimeUpdate"';
 	    
 	    if (playSessionId !== undefined && (PlayMethod != "DirectPlay" && PlayMethod != "DirectStream")) {
-	    	contentToPost += ',"PlaySessionId":' + playSessionId;
+	    	contentToPost += ',"PlaySessionId":"' + playSessionId + '"';
 	    }
 	    contentToPost += '}';
 	    

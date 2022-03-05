@@ -112,9 +112,9 @@ player.startPlayback = function(TranscodeAlg, resumeTicksSamsung) {
 	logger.log("Initialise Playback URL");
 	webapis.avplay.open(this.playingURL);
 	webapis.avplay.setDisplayRect(0,0,1920,1080);
-	webapis.avplay.setDisplayMethod("PLAYER_DISPLAY_MODE_FULL_SCREEN");
+	webapis.avplay.setDisplayMethod("PLAYER_DISPLAY_MODE_AUTO_ASPECT_RATIO"); //YES THIS IS CORRECT! Else Will stretch
 	
-	//Seek does work for transcoded - Unableto 
+	//Seek does work for transcoded - Unable to 
 	if (resumeTicksSamsung !== undefined && resumeTicksSamsung > 0) {
 		webapis.avplay.seekTo(resumeTicksSamsung);
 	}
@@ -724,11 +724,14 @@ player.generateUI = function() {
 	    '<div id="videoPlayerSeekBarPosition" class="videoPlayerSeekBarPosition"><div id="videoPlayerSeekBarPositionTime" class="videoPlayerSeekBarPositionTime" style="display:none"></div></div>' +
 	    '</div><div id="videoPlayerTimeRemaining" class="videoPlayerTimeRemaining">00:12:14</div>';
 
+	/*
 	if (this.PlayMethod == "DirectPlay") {
 		document.getElementById("videoPlayerPlaybackMethod").innerHTML = "Direct Play";
 	} else {
 		document.getElementById("videoPlayerPlaybackMethod").innerHTML = "Transcoding";
 	}
+	*/
+	document.getElementById("videoPlayerPlaybackMethod").innerHTML = this.playingTranscodeStatus;
 	
 	if (this.PlayerData.Type == "Episode") {
 		var videoTitle ="";

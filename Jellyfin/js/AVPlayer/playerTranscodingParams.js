@@ -42,7 +42,7 @@ playerTranscodingParams.getParameters = function(codec,videoWidth) {
 				this.codec = true;
 				this.container = ["asf","avi","mkv","mp4","3gpp","mpg","mpeg","ts","m4v","m2ts","mov","vro","tp","trp","flv","vob","svi","mts","divx"];
 				this.resolution = [3840,2160];
-				this.bitrate = 50720000;
+				this.bitrate = 50720000; //SWH TEMP - Legend of Vox Machina Stutters
 				this.framerate = 30;
 				this.level = 41;
 				this.profile = ["Base","Constrained Baseline","Baseline","Main","High"];
@@ -78,7 +78,7 @@ playerTranscodingParams.getParameters = function(codec,videoWidth) {
 				this.codec = true;
 				this.container = ["asf"];
 				this.resolution = [3840,2160];
-				this.resolution = 25600000;
+				this.bitrate = 25600000;
 				this.framerate = 30;
 				this.level = true;
 				this.profile = true;
@@ -87,7 +87,7 @@ playerTranscodingParams.getParameters = function(codec,videoWidth) {
 				this.codec = true;
 				this.container = ["asf"];
 				this.resolution = [3840,2160];
-				this.resolution = 25600000;
+				this.bitrate = 25600000;
 				this.framerate = 30;
 				this.level = true;
 				this.profile = true;
@@ -165,7 +165,7 @@ playerTranscodingParams.getAudioParameters = function(audiocodec) {
 			this.audiochannels = 8;
 			break;
 		case "eac3":	
-			this.audiocodec = true;
+			this.audiocodec = false;
 			this.audiocontainer = ["asf","avi","mkv","mp4","3gpp","mpg","mpeg","ts","m4v","m2ts","mov","vro","tp","trp","flv","vob","svi","mts","divx"];
 			this.audiochannels = 6;
 			break;

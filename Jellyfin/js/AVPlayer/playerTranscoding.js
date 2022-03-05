@@ -167,13 +167,14 @@ playerTranscoding.checkContainer = function(supportedContainers) {
 }
 
 playerTranscoding.checkBitRate = function(maxBitRate) {
+	
 	//Get Bitrate from Settings File
 	var maxBitRateSetting = filesystem.getTVProperty("Bitrate")*1024*1024;
+	// MCB - Ignore bitrate in file
+    this.bitRateToUse = maxBitRate;
 
-    // MCB - Ignore bitrate in file
-    this.bitRateToUse = maxBitRateSetting;
-
-	if (this.MediaSource.MediaStreams[this.videoIndex].BitRate > maxBitRateSetting) {
+	
+	if (this.MediaSource.MediaStreams[this.videoIndex].BitRate > maxBitRate) {
 		return false;
 	} else {
 		return true;

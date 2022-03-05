@@ -31,19 +31,11 @@ guiHomeOneItem.start = function(selectedItem,topLeftItem) {
 	
 	//Load Data
 	this.ItemData = xmlhttp.getContent(url);
-	if (this.ItemData == null) { 
-		//Logger.log
-		//Exit App
-	}
 	
 	if (this.ItemData.Items.length == 0) {
 		var title = filesystem.getUserViewName("View2");
 		var url = guiHome[filesystem.getUserProperty("View2")];
 		this.ItemData = xmlhttp.getContent(url);
-		if (this.ItemData == null) { 
-			//Logger.log
-			//Exit App
-		}
 	}
 	
 	//If all user selected homepages are blank try media items
@@ -51,10 +43,6 @@ guiHomeOneItem.start = function(selectedItem,topLeftItem) {
 		title = "Media Folders"
 		var url = server.getItemTypeURL("&SortBy=SortName&SortOrder=Ascending&CollapseBoxSetItems=false&fields=SortName");
 		this.ItemData = xmlhttp.getContent(url);
-		if (this.ItemData == null) { 
-			//Logger.log
-			//Exit App - Nothing on home page is a problem
-		}
 	}
 	
 	//If array like MoviesRecommended alter 
@@ -108,7 +96,6 @@ guiHomeOneItem.start = function(selectedItem,topLeftItem) {
 		this.backdropTimeout = setTimeout(function(){
 			var randomImageURL = server.getItemTypeURL("&SortBy=Random&IncludeItemTypes=Series,Movie&Recursive=true&CollapseBoxSetItems=false&Limit=20&EnableTotalRecordCount=false");
 			var randomImageData = xmlhttp.getContent(randomImageURL);
-			if (randomImageData == null) { return; }
 			
 			for (var index = 0; index < randomImageData.Items.length; index++) {
 				if (randomImageData.Items[index ].BackdropImageTags.length > 0) {

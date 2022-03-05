@@ -97,11 +97,11 @@ position: absolute;
 
 .videoPlayerPlaybackMethod {
     position: absolute;
-    width: 200px;
+    width: 400px;
     right: 200px;
     text-align: right;
     top: 34px;
-    max-width: 640px;
+    max-width: 400px;
     overflow: hidden;
     white-space: nowrap;
     color: white;
@@ -148,5 +148,6 @@ position: absolute;
 	font-size: 64px;
 	font-weight: bold;
 	color:white;
-	background-color:rgba(192,192,192,0.5)
+	/*background-color:rgba(192,192,192,0.5);*/
+	text-shadow: -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000;
 }
